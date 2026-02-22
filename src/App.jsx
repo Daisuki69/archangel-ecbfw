@@ -492,7 +492,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
             Log in with screen lock
           </button>
           
-          <div style={{fontSize:14,color:C.med, marginBottom: isKeyboardOpen ? 0 : 24}}>Not you? <span style={{fontSize:30, color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
+          <div style={{fontSize:14,color:C.med, marginBottom: isKeyboardOpen ? 0 : 24}}>Not you? <span style={{fontSize:14, color:C.green,fontWeight:200,cursor:"pointer"}}>Switch account</span></div>
         </div>
 
       </div>
