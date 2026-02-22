@@ -917,21 +917,29 @@ export default function MayaApp() {
         )}
 
         <div style={{flex:1,overflow:"hidden",position:"relative"}}>
+          {/* STEP 3: Fixed Login Logic */}
           {screen === "login" && (
-  <LoginScreen 
-    onLogin={() => {
-      setIsLoggingIn(true); // Pull the splash screen curtain
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
-          {screen==="home"&&<HomeScreen balance={balance} todayTxns={todayTxns} onPBB={()=>navigate("pbb")} onSeeAll={()=>navigate("transactions")} onSettings={()=>setShowSettings(true)}/>}
-          {screen==="pbb"&&<PBBScreen balance={balance} onBack={()=>navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode}/>}
-          {screen==="transactions"&&<TransactionsScreen onBack={()=>navigate("home")} todayTxns={todayTxns}/>}
+            <LoginScreen 
+              onLogin={() => { 
+                setIsLoggingIn(true); 
+                setTimeout(() => { 
+                  setIsLoggingIn(false); 
+                  navigate("home"); 
+                }, 3000); 
+              }} 
+              fastMode={fastMode} 
+            />
+          )}
+
+          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} />}
+          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
+          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
           
           {/* Settings Modal */}
-          {showSettings&&<SettingsModal balance={balance} onClose={()=>setShowSettings(false)} onSaveBalance={b=>setBalance(b)} onAddTxn={handleAddTxn} onClearToday={()=>setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max})=>{setDaysLeft(days);setChancesLeft(chances);setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} showFrame={showFrame} onSetShowFrame={setShowFrame}/>}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => setBalance(b)} onAddTxn={handleAddTxn} onClearToday={() => setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => {setDaysLeft(days); setChancesLeft(chances); setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} showFrame={showFrame} onSetShowFrame={setShowFrame} />}
           
           {/* Transition loading overlay */}
-          {transitioning&&(
-
+          {transitioning && (
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",borderRadius: showFrame ? 34 : 0}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
