@@ -323,37 +323,58 @@ const TransactionsScreen = ({onBack, todayTxns}) => (
   </div>
 );
 
-// ── LOGIN ──────────────────────────────────────────────────────────────────────
+/// ── LOGIN ──────────────────────────────────────────────────────────────────────
 const LoginScreen = ({onLogin, fastMode}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(false);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
-  const [isFocused, setIsFocused]=useState(false);
+  
+  // NEW: Bulletproof Keyboard Detector
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const inputRef = useRef(null);
 
-  // SAFE resize detector: It only changes the visual layout, it NEVER forces the keyboard closed.
   useEffect(() => {
-    const originalHeight = window.innerHeight;
+    // This physically watches the screen height without interrupting your typing
     const handleResize = () => {
-      if (window.innerHeight > originalHeight * 0.85) { 
-        setIsFocused(false); // Keyboard is hidden -> reset UI
+      const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      // If the screen height is less than 550px, the keyboard is open
+      if (currentHeight < 550) {
+        setIsKeyboardOpen(true);
       } else {
-        setIsFocused(true);  // Keyboard is open -> shrink UI
+        setIsKeyboardOpen(false);
       }
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+    } else {
+      window.addEventListener('resize', handleResize);
+    }
+    
+    // Initial check
+    handleResize();
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+      } else {
+        window.removeEventListener('resize', handleResize);
+      }
+    };
   }, []);
 
+  // NEW: Updated to use your requested hex color #d08893
   const showRequired = loginAttempted && pw.length === 0;
-  const boxBorderColor = showRequired ? '#e53935' : C.gray;
-  const labelColor = showRequired ? '#e53935' : C.green;
+  const boxBorderColor = showRequired ? '#d08893' : C.gray;
+  const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
-    if(!pw) return;
-    setLoginAttempted(true);
+    if(!pw) {
+      setLoginAttempted(true);
+      return;
+    }
     setLoading(true);
     const delay = fastMode ? 0 : 500 + Math.random() * 1000;
     setTimeout(() => {
@@ -365,6 +386,13 @@ const LoginScreen = ({onLogin, fastMode}) => {
       }
     }, delay);
   };
+
+  // Reusable Login Button to prevent duplicated code
+  const LoginBtn = (
+    <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
+      Log in
+    </button>
+  );
 
   return (
     <div style={{
@@ -393,14 +421,15 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </div>
       )}
 
+      {/* Top Right Help Icon */}
       <div style={{position:"absolute", top: 24, right: 24, zIndex: 10}}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{cursor: "pointer"}}>
           <path fillRule="evenodd" clipRule="evenodd" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12.02 8.00391C11.0291 8.00391 10.2227 8.80898 10.2227 9.78009V9.98879H8.22266V9.78009C8.22266 7.68471 9.94438 6.00391 12.02 6.00391C14.0724 6.00391 15.775 7.66591 15.775 9.73809C15.775 11.0011 15.1366 12.1785 14.0782 12.8676L12.7911 13.7054V14.4868H10.7911V12.621L12.987 11.1914C13.4785 10.8714 13.775 10.3246 13.775 9.73809C13.775 8.79018 12.9877 8.00391 12.02 8.00391ZM12.7949 16.001V18.001H10.7949V16.001H12.7949Z" fill="black"/>
         </svg>
       </div>
 
-      {/* UPPER SECTION: Swaps between 16vh and 23vh smoothly */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isFocused ? "16vh" : "23vh", transition: "margin-top 0.3s ease"}}>
+      {/* UPPER SECTION: Swaps margins cleanly without interrupting typing */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isKeyboardOpen ? "16vh" : "23vh", transition: "margin-top 0.3s ease"}}>
         
         <div style={{marginBottom: 32}}>
           <svg width="142" height="42" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -413,7 +442,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         <div style={{fontSize:23,fontWeight:800,marginBottom:4}}>+63 994 304 0344</div>
         <div style={{fontSize:13,color:C.med,letterSpacing:0, marginBottom: 36}}>CARL CEDRIC</div>
         
-        {/* Password field */}
+        {/* Password field - Border color updates to #d08893 when error happens */}
         <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
           <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
             
@@ -425,9 +454,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
                 type={show ? "text" : "password"}
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
-                
-                // Keep the input simple. We removed the onFocus/onBlur traps here!
-                
                 placeholder="Enter password"
                 style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
               />
@@ -440,35 +466,48 @@ const LoginScreen = ({onLogin, fastMode}) => {
           </div>
         </div>
         
+        {/* Uses the #d08893 hex you requested */}
         {showRequired && (
-          <div style={{width:"100%",color:"#e53935",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
+          <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
         )}
         
         <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer"}}>Forgot your password?</div>
       </div>
 
-      <div style={{flex: 1}} />
+      {/* --- CONDITIONAL LAYOUT SWAP --- */}
 
-      {/* LOWER SECTION */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", paddingBottom: "16px"}}>
+      {/* When CLOSED: Giant invisible space pushes buttons to the bottom */}
+      {!isKeyboardOpen && <div style={{ flex: 1 }} />}
+
+      {/* When OPEN: "Log in" button snaps directly underneath "Forgot your password?" */}
+      {isKeyboardOpen && (
+        <div style={{ width: "100%", padding: "24px 0 0 0" }}>
+          {LoginBtn}
+        </div>
+      )}
+
+      {/* When OPEN: Giant invisible space pushes the secondary text completely out of view (so you have to scroll to find them) */}
+      {isKeyboardOpen && <div style={{ flex: 1, minHeight: "60px" }} />}
+
+      {/* Secondary Links (Pushed down) */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%"}}>
+        <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: 24}}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <path d="M9 14l2 2 4-4"></path>
+          </svg>
+          Log in with screen lock
+        </button>
         
-        {/* HIDE these buttons to match the real app when keyboard opens */}
-        {!isFocused && (
-          <>
-            <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: 24}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                <path d="M9 14l2 2 4-4"></path>
-              </svg>
-              Log in with screen lock
-            </button>
-            
-            <div style={{fontSize:14,color:C.med, marginBottom: 24}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
-          </>
-        )}
-        
-        <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>Log in</button>
+        <div style={{fontSize:14,color:C.med, marginBottom: 24}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
       </div>
+
+      {/* When CLOSED: "Log in" button sits at the very bottom of the screen */}
+      {!isKeyboardOpen && (
+        <div style={{ width: "100%", paddingBottom: "16px" }}>
+          {LoginBtn}
+        </div>
+      )}
 
     </div>
   );
