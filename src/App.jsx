@@ -223,7 +223,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0",borderBottom:`1px solid ${C.gray}`}}>
           <div style={{fontWeight:800,fontSize:15,display:"flex",alignItems:"center",gap:8}}>
-            📱 iPhone
+            📱 iPhone Maya is Live!
           </div>
           <div style={{display:"flex",gap:8}}>
             <button onClick={() => onSetShowFrame(false)} style={{padding:"6px 16px",borderRadius:20,border:"none",fontWeight:800,fontSize:13,background:!showFrame?C.green:C.bg,color:!showFrame?"white":C.med,cursor:"pointer"}}>Off</button>
