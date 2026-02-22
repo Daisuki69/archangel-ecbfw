@@ -331,29 +331,39 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
   
-  // NEW: Bulletproof percentage-based keyboard detector
+  // Clean Keyboard Detector: Only triggers on actual viewport shrink, no focus traps.
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    // Grab the exact height of your phone when the app first loads
-    const initialHeight = window.innerHeight;
-    
+    const initHeight = window.innerHeight;
     const handleResize = () => {
-      // If the screen shrinks by more than 15%, the keyboard is definitely open
-      if (window.innerHeight < initialHeight * 0.85) {
+      // Use visualViewport if available (Android Chrome), fallback to window height
+      const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      
+      // If screen shrinks by more than 150px, the keyboard is definitely open
+      if (initHeight - currentHeight > 150) {
         setIsKeyboardOpen(true);
       } else {
         setIsKeyboardOpen(false);
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const vp = window.visualViewport;
+    if (vp) vp.addEventListener('resize', handleResize);
+    else window.addEventListener('resize', handleResize);
+    
+    // Initial check
+    handleResize();
+
+    return () => {
+      if (vp) vp.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
-  // Your custom error color
   const showRequired = loginAttempted && pw.length === 0;
+  // Requested specific color: #d08893
   const boxBorderColor = showRequired ? '#d08893' : C.gray;
   const labelColor = showRequired ? '#d08893' : C.green;
 
@@ -374,17 +384,11 @@ const LoginScreen = ({onLogin, fastMode}) => {
     }, delay);
   };
 
-  // Reusable Log In Button so it can jump around the screen
-  const LoginBtn = (
-    <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
-      Log in
-    </button>
-  );
-
   return (
     <div style={{
-      display:"flex", flexDirection:"column", height:"100%", padding:"24px",
+      display:"flex", flexDirection:"column", height:"100%", padding:"24px 24px 0 24px",
       background:C.white, position:"relative", fontFamily: "'JekoMedium', sans-serif",
+      // Crucial: Container must be scrollable to allow elements to slide under the sticky button
       overflowY: "auto", overflowX: "hidden" 
     }}>
       
@@ -415,9 +419,9 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      {/* UPPER SECTION: Static margin so it stays perfectly still while the keyboard slides up */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: "16vh", flexShrink: 0}}>
-        
+      {/* --- DOM ORDER SECTION --- */}
+      {/* 1. TOP BLOCK: Always sits at the very top */}
+      <div style={{ order: 1, display:"flex", flexDirection:"column", alignItems:"center", width: "100%", marginTop: isKeyboardOpen ? "8vh" : "23vh", transition: "margin-top 0.3s ease" }}>
         <div style={{marginBottom: 32}}>
           <svg width="142" height="42" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.9846 0.5C14.3885 0.499563 12.8556 1.13491 11.7139 2.27011L12.3328 3.46698L12.079 3.67486C11.5427 2.72918 10.774 1.94165 9.8484 1.38948C8.92281 0.837307 7.87211 0.53947 6.79931 0.525193C3.43217 0.525193 0.708736 3.52368 0.708736 7.0387V14.5979C0.706114 14.6623 0.716653 14.7266 0.739676 14.7866C0.7627 14.8467 0.797719 14.9012 0.842509 14.9468C0.887299 14.9924 0.940883 15.028 0.999893 15.0515C1.0589 15.0749 1.12206 15.0856 1.18535 15.0829H3.63024C3.68929 15.0829 3.74773 15.071 3.80221 15.0478C3.85669 15.0246 3.90608 14.9907 3.94754 14.9479C3.98901 14.9051 4.02174 14.8543 4.04377 14.7986C4.06579 14.7428 4.0767 14.6832 4.07588 14.6231V6.95681C4.07588 5.21189 5.11571 3.80715 6.88594 3.80715C8.53856 3.80715 9.72078 5.06701 9.72078 6.92531V13.2246C9.71657 13.2871 9.72492 13.3498 9.74534 13.4088C9.76576 13.4679 9.79783 13.5221 9.83956 13.5681C9.88128 13.6141 9.93178 13.6509 9.98799 13.6763C10.0442 13.7018 10.1049 13.7153 10.1665 13.716H12.4999C12.5614 13.7153 12.6222 13.7018 12.6784 13.6763C12.7346 13.6509 12.7851 13.6141 12.8268 13.5681C12.8685 13.5221 12.9006 13.4679 12.921 13.4088C12.9414 13.3498 12.9498 13.2871 12.9456 13.2246V6.92531C12.9182 6.52302 12.973 6.11931 13.1067 5.73969C13.2403 5.36006 13.4499 5.01277 13.7221 4.71975C13.9943 4.42672 14.3232 4.19434 14.6882 4.03726C15.0531 3.88018 15.4461 3.80182 15.8423 3.80715C17.6063 3.80715 18.5905 5.23709 18.5905 6.95681V14.6105C18.5953 14.7352 18.6478 14.8532 18.7369 14.9391C18.8259 15.025 18.9444 15.0721 19.0671 15.0703H21.481C21.5445 15.074 21.6081 15.0639 21.6676 15.0409C21.727 15.0178 21.781 14.9822 21.826 14.9364C21.871 14.8906 21.906 14.8356 21.9286 14.7751C21.9513 14.7146 21.9612 14.6499 21.9576 14.5853V7.0261C21.9329 3.49848 19.358 0.5 15.9846 0.5Z" fill="#00A651"/>
@@ -429,12 +433,10 @@ const LoginScreen = ({onLogin, fastMode}) => {
         <div style={{fontSize:23,fontWeight:800,marginBottom:4}}>+63 994 304 0344</div>
         <div style={{fontSize:13,color:C.med,letterSpacing:0, marginBottom: 36}}>CARL CEDRIC</div>
         
-        {/* Password field */}
+        {/* Password Box */}
         <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
           <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
-            
             <div style={{fontSize:10,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
-            
             <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
               <input
                 ref={inputRef}
@@ -445,37 +447,44 @@ const LoginScreen = ({onLogin, fastMode}) => {
                 style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
               />
             </div>
-            
             <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <Ic n={show?"eyeOff":"eye"} s={20} c={C.med}/>
             </button>
-            
           </div>
         </div>
         
-        {/* Uses the #d08893 hex you requested */}
+        {/* Error Text using #d08893 */}
         {showRequired && (
           <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
         )}
         
-        <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer"}}>Forgot your password?</div>
+        <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer", marginBottom: 24}}>Forgot your password?</div>
       </div>
 
-      {/* --- THIS IS WHERE THE MAGIC HAPPENS --- */}
+      {/* 2. SPACER BLOCK: Disappears when keyboard opens to pull everything tight */}
+      <div style={{ order: 2, flex: isKeyboardOpen ? 0 : 1 }} />
 
-      {/* If Keyboard is OPEN: Render "Log In" button right under "Forgot password" */}
-      {isKeyboardOpen && (
-        <div style={{ width: "100%", marginTop: "24px", flexShrink: 0 }}>
-          {LoginBtn}
-        </div>
-      )}
+      {/* 3. LOG IN BUTTON: Becomes order 3 (under Forgot Password) when open, order 5 (very bottom) when closed */}
+      <div style={{ 
+        order: isKeyboardOpen ? 3 : 5, 
+        position: "sticky", 
+        bottom: 24, // Keeps it pinned securely above the keyboard frame
+        zIndex: 20, 
+        background: C.white, // Covers the secondary text as they scroll underneath
+        padding: "8px 0",
+        width: "100%",
+        marginBottom: isKeyboardOpen ? 0 : 16 // Bottom spacing adjustment
+      }}>
+        <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>Log in</button>
+      </div>
 
-      {/* This invisible spacer crushes when open, or pushes buttons down when closed */}
-      <div style={{ flex: 1, minHeight: isKeyboardOpen ? "32px" : "40px" }} />
-
-      {/* Secondary Items (Pushed down to the bottom) */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", flexShrink: 0, paddingBottom: "16px"}}>
-        
+      {/* 4. SECONDARY LINKS: Order 4 (underneath Log in) when open, order 3 when closed */}
+      <div style={{ 
+        order: isKeyboardOpen ? 4 : 3, 
+        display:"flex", flexDirection:"column", alignItems:"center", width: "100%",
+        // Gives them enough scroll room to slide completely into view above the keyboard
+        paddingBottom: isKeyboardOpen ? "140px" : 0 
+      }}>
         <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: 24}}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
@@ -485,15 +494,8 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </button>
         
         <div style={{fontSize:14,color:C.med, marginBottom: isKeyboardOpen ? 0 : 24}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
-
-        {/* If Keyboard is CLOSED: Render "Log In" at the very bottom */}
-        {!isKeyboardOpen && (
-          <div style={{ width: "100%" }}>
-            {LoginBtn}
-          </div>
-        )}
-
       </div>
+
     </div>
   );
 };
