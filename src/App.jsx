@@ -785,8 +785,8 @@ export default function MayaApp() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    const delay = Math.floor(Math.random() * 2000) + 3000;
-    const timer = setTimeout(() => setIsAppLoading(false), delay);
+    // Exactly 7 seconds (7000 ms) delay at the start
+    const timer = setTimeout(() => setIsAppLoading(false), 7000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -841,8 +841,7 @@ export default function MayaApp() {
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
-          
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
