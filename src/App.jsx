@@ -1,6 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import React from "react";
 
+// --- STEP 1: Add this component at the top ---
+const SplashScreen = ({ message }) => (
+  <div style={{
+    position: 'fixed', inset: 0, backgroundColor: '#000',
+    display: 'flex', flexDirection: 'column', justifyContent: 'center',
+    alignItems: 'center', zIndex: 10000
+  }}>
+    {/* Ensure this filename matches exactly what is in your public folder */}
+    <img src="/logo.jpg" alt="Maya" style={{ width: '180px', height: 'auto' }} />
+    {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
+  </div>
+);
+
 const GlobalStyle = () => (
   <style>{`
     /* 1. Cerebri Sans Pro (Dashboard) */
@@ -803,6 +816,19 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
 // ── ROOT ───────────────────────────────────────────────────────────────────────
 export default function MayaApp() {
   const [screen,setScreen]=useState("login");
+  
+  // --- INSERT THESE 3 BLOCKS HERE ---
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  useEffect(() => {
+    // Initial random 3-5 second delay
+    const delay = Math.floor(Math.random() * 2000) + 3000;
+    const timer = setTimeout(() => setIsAppLoading(false), delay);
+    return () => clearTimeout(timer);
+  }, []);
+  // ----------------------------------
+
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
   const [balance,setBalance]=useState(3190.75);
@@ -843,6 +869,21 @@ export default function MayaApp() {
     if(tx.positive) setBalance(p=>p+tx.amount);
     else setBalance(p=>Math.max(0,p-tx.amount));
   };
+
+// --- STEP 4: The Gatekeeper ---
+  if (isAppLoading) return <SplashScreen />;
+  if (isLoggingIn) return <SplashScreen message="Logging in..." />;
+
+  return (
+    <div style={{
+      display:"flex",
+// ... existing code continues ...
+
+  return (
+    <div style={{
+      display:"flex",
+      justifyContent:"center",
+      // ... the rest of your code ...
 
   return (
     <div style={{
@@ -887,7 +928,11 @@ export default function MayaApp() {
         )}
 
         <div style={{flex:1,overflow:"hidden",position:"relative"}}>
-          {screen==="login"&&<LoginScreen onLogin={()=>navigate("home")} fastMode={fastMode}/>}
+          {screen === "login" && (
+  <LoginScreen 
+    onLogin={() => {
+      setIsLoggingIn(true); // Pull the splash screen curtain
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
           {screen==="home"&&<HomeScreen balance={balance} todayTxns={todayTxns} onPBB={()=>navigate("pbb")} onSeeAll={()=>navigate("transactions")} onSettings={()=>setShowSettings(true)}/>}
           {screen==="pbb"&&<PBBScreen balance={balance} onBack={()=>navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode}/>}
           {screen==="transactions"&&<TransactionsScreen onBack={()=>navigate("home")} todayTxns={todayTxns}/>}
@@ -897,6 +942,7 @@ export default function MayaApp() {
           
           {/* Transition loading overlay */}
           {transitioning&&(
+
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",borderRadius: showFrame ? 34 : 0}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
