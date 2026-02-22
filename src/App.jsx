@@ -390,7 +390,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
       </div>
 
       {/* UPPER SECTION: Margin transitions from 20vh to 4vh smoothly when focused */}
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isFocused ? "18vh" : "23vh", transition: "margin-top 0.3s ease"}}>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isFocused ? "17vh" : "22vh", transition: "margin-top 0.3s ease"}}>
         
         {/* Logo and Name gaps shrink slightly on focus to save space */}
         <div style={{marginBottom: isFocused ? 16 : 32, transition: "margin-bottom 0.3s ease"}}>
