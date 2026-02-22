@@ -18,7 +18,7 @@ const SplashScreen = ({ message = "" }) => {
       <img 
         src="/mayasplashscreen.jpg" 
         alt="Maya Logo" 
-        style={{ width: '591px', height: '1280' }} 
+        style={{ width: '360', height: '780' }} 
       />
       {message && <p style={{ color: '#00ffaa', marginTop: '20px', fontFamily: 'sans-serif' }}>{message}</p>}
     </div>

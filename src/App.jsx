@@ -8,8 +8,8 @@ const SplashScreen = ({ message }) => (
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000
   }}>
-    {/* Ensure this filename matches exactly what is in your public folder */}
-    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '180px', height: 'auto' }} />
+    {/* Image zoomed 50% more to 300px */}
+    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '300px', height: 'auto' }} />
     {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
@@ -26,8 +26,8 @@ const GlobalStyle = () => (
 
     /* 2. Jeko Medium (Login Screen & Transactions) */
     @font-face {
-      font-family: 'JekoMedium'; /* NO SPACES HERE */
-      src: url('/Jeko-Medium.otf') format('opentype'); /* CHANGE TO .otf IF YOUR FILE ENDS IN .otf */
+      font-family: 'JekoMedium';
+      src: url('/Jeko-Medium.otf') format('opentype');
       font-weight: normal;
       font-style: normal;
     }
@@ -132,22 +132,16 @@ const FEB21 = [
   {id:"h31",label:"Maya Savings",            time:"09:27 AM", amount:15000, positive:true,  sub:"Received money from"},
 ];
 
-// Compute display timestamp for today's transactions
-// tx.timestamp = ms epoch when created
-// Rule: if current time is still same calendar day as transaction → relative label
-//       if midnight has passed (new calendar day) → exact time like "5:52 PM"
 const relativeTime = (ts) => {
   const now = Date.now();
   const diffMs = now - ts;
   const diffMins = Math.floor(diffMs / 60000);
   const txDate = new Date(ts);
   const nowDate = new Date(now);
-  // Check if it's a different calendar day (midnight passed)
   const sameDay = txDate.getFullYear()===nowDate.getFullYear() &&
                   txDate.getMonth()===nowDate.getMonth() &&
                   txDate.getDate()===nowDate.getDate();
   if(!sameDay) {
-    // Show exact time
     const h=txDate.getHours(), m=String(txDate.getMinutes()).padStart(2,"0");
     const ampm=h>=12?"PM":"AM"; const h12=((h%12)||12);
     return `${h12}:${m} ${ampm}`;
@@ -162,7 +156,7 @@ const TxRow = ({tx, isToday}) => {
   const [,tick]=useState(0);
   useEffect(()=>{
     if(!isToday||!tx.timestamp) return;
-    const iv=setInterval(()=>tick(t=>t+1),30000); // refresh every 30s
+    const iv=setInterval(()=>tick(t=>t+1),30000);
     return ()=>clearInterval(iv);
   },[isToday,tx.timestamp]);
   const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
@@ -191,7 +185,7 @@ const DateChip = ({label}) => (
 );
 
 // ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
-const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, showFrame, onSetShowFrame}) => {
+const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
   const [form, setForm] = useState({label:"",amount:"",time:"",positive:false});
@@ -234,15 +228,6 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
               ))}
             </div>
           </div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0",borderBottom:`1px solid ${C.gray}`}}>
-          <div style={{fontWeight:800,fontSize:15,display:"flex",alignItems:"center",gap:8}}>
-            📱 iPhone
-          </div>
-          <div style={{display:"flex",gap:8}}>
-            <button onClick={() => onSetShowFrame(false)} style={{padding:"6px 16px",borderRadius:20,border:"none",fontWeight:800,fontSize:13,background:!showFrame?C.green:C.bg,color:!showFrame?"white":C.med,cursor:"pointer"}}>Off</button>
-            <button onClick={() => onSetShowFrame(true)} style={{padding:"6px 16px",borderRadius:20,border:"none",fontWeight:800,fontSize:13,background:showFrame?C.green:C.bg,color:showFrame?"white":C.med,cursor:"pointer"}}>On</button>
-          </div>
-        </div>
           <div style={{...row,borderBottom:"none"}} onClick={()=>{onClearToday();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
           </div>
@@ -309,7 +294,6 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
   );
 };
 
-// ── STICKY DATE CHIP ──────────────────────────────────────────────────────────
 // ── TRANSACTIONS SCREEN ────────────────────────────────────────────────────────
 const TransactionsScreen = ({onBack, todayTxns}) => (
   <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'Jeko Light'"}}>
@@ -397,7 +381,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      {/* UPPER SECTION: Increased marginTop to 20vh to push Maya logo closer to center! */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: "20vh"}}>
         <div style={{marginBottom:32}}>
           <svg width="142" height="42" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -423,7 +406,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
                 placeholder="Enter password"
-                // Forced explicitly to JekoMedium to prevent browser font-swapping!
                 style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
               />
             </div>
@@ -468,7 +450,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode}) => {
   const [sel,setSel]=useState(null);
   const [cnt,setCnt]=useState(10);
-  const [voting,setVoting]=useState(false); // loading before success
+  const [voting,setVoting]=useState(false); 
   const [voted,setVoted]=useState(false);
   const [vInfo,setVInfo]=useState(null);
   const hm=[{name:"Princess",bg:"#c62828"},{name:"Robi",bg:"#1565c0"},{name:"Yen",bg:"#b71c1c"}];
@@ -489,12 +471,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   return (
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white,position:"relative"}}>
       <div style={{display:"flex",alignItems:"center",padding:"12px 20px"}}>
-        {/* X close button - left */}
         <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.2098 12.0377L3.25403 18.9935L5.0218 20.7613L11.9775 13.8055L18.9993 20.8273L20.7671 19.0595L13.7453 12.0377L20.7672 5.01581L18.9995 3.24805L11.9775 10.27L5.02167 3.3141L3.25391 5.08187L10.2098 12.0377Z" fill="black"/></svg>
         </button>
         <span style={{fontSize:16,fontWeight:900,flex:1,textAlign:"center"}}>PBB</span>
-        {/* back chevron (grey) + retry on right */}
         <div style={{display:"flex",alignItems:"center",gap:2}}>
           <button style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
             <svg width="9" height="17" viewBox="0 0 9 17" fill="none"><path fillRule="evenodd" clipRule="evenodd" d="M0.738769 14.6521L5.87283 8.54766L0.740211 2.33208L2.66792 0.740244L8.46384 7.75907C8.84807 8.22437 8.84503 8.89774 8.45662 9.35956L2.65205 16.2612L0.738769 14.6521Z" fill="#A9A9A9"/></svg>
@@ -579,7 +559,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               <span style={{color:C.med,fontSize:15}}>{vInfo.cnt} vote{vInfo.cnt>1?"s":""} to save {vInfo.name}</span>
               <span style={{fontWeight:900,fontSize:15}}>₱{fmt(vInfo.cnt)}</span>
             </div>
-            <DoneButton onDone={()=>setVoted(false)} fastMode={fastMode}/>
+            <button onClick={()=>setVoted(false)} style={{width:"100%",padding:"15px",borderRadius:30,background:C.green,border:"none",fontSize:16,fontWeight:800,color:C.white,cursor:"pointer",marginTop:20}}>Done</button>
           </div>
         </div>
       )}
@@ -592,7 +572,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
   
-  // Hidden timer forces the "Just now" / "mins ago" text to update automatically
   const [, setTick] = useState(0);
   useEffect(() => {
     const iv = setInterval(() => setTick(t => t + 1), 30000);
@@ -611,10 +590,8 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
     {icon:"more",label:"More"},
   ];
   
-  // Grab the 3 most recent transactions from today + the hardcoded history
   const combinedTxns = [...[...todayTxns].reverse(), ...FEB21].slice(0, 3);
 
-  // Smart date formatter: Relative if today, Date string if yesterday/older
   const getDisplayDate = (tx) => {
     if (!tx.timestamp) return "21 Feb 2026";
     const txDate = new Date(tx.timestamp);
@@ -635,7 +612,9 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
-           <Ic n="chat" s={22}/>
+            {/* The Settings Button is back! */}
+            <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
+            <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
               <Ic n="bell" s={22}/>
               <div style={{position:"absolute",top:-6,right:-8,background:C.green,borderRadius:10,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"white",border:"2px solid white"}}>90</div>
@@ -650,7 +629,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
       </div>
 
       <div style={{flex:1,overflowY:"auto",padding:"12px 12px 100px"}}>
-        {/* Balance card */}
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
@@ -675,7 +653,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
         </div>
 
-        {/* Shortcuts */}
         <div style={{background:C.white,borderRadius:20,padding:"14px 8px",marginBottom:12}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
             {shortcuts.map((s,i)=>(
@@ -691,7 +668,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
         </div>
 
-        {/* Refer Promo Banner */}
         <div style={{background:"#000",borderRadius:20,marginBottom:12,padding:"20px 20px 0",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column"}}>
           <div style={{color:C.green,fontSize:22,fontWeight:900,lineHeight:1.1,maxWidth:"75%",marginBottom:16,zIndex:2}}>
             Refer friends<br/>and get P100 per<br/>successful referral
@@ -703,7 +679,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
         </div>
 
-        {/* MAYA XP Beta Section */}
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:16}}>
             <div style={{fontSize:16,fontWeight:900}}>MAYA XP</div>
@@ -711,7 +686,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
           
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"16px 0",marginBottom:20}}>
-            {/* Hexagon item generator */}
             {[
               {l:"Unlock\nmore", c:C.green, bg:"#e6f9f0", icon:"LVL\nUP", locked:false},
               {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"🛡️", locked:false},
@@ -721,7 +695,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
               {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"🛡️", locked:true},
             ].map((xp, i) => (
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
-                {/* Hexagon Shape */}
                 <div style={{width:54,height:60,position:"relative",marginBottom:8}}>
                   <svg viewBox="0 0 100 100" width="100%" height="100%">
                     <polygon points="50 5, 90 25, 90 75, 50 95, 10 75, 10 25" fill={xp.bg} stroke={xp.c} strokeWidth="4"/>
@@ -729,7 +702,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
                   <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",fontSize:14,fontWeight:900,color:xp.c,lineHeight:1.1,whiteSpace:"pre-line"}}>
                     {xp.icon}
                   </div>
-                  {/* Lock Badge */}
                   {xp.locked && (
                     <div style={{position:"absolute",bottom:0,left:0,background:"#000",borderRadius:"50%",width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid white"}}>
                       <span style={{fontSize:10}}>🔒</span>
@@ -746,15 +718,12 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
         </div>
 
-        {/* Transactions Section */}
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:24}}>
-          {/* Header Row */}
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
             <div style={{fontSize:20,fontWeight:900}}>Transactions</div>
             <div onClick={onSeeAll} style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all</div>
           </div>
 
-          {/* Dynamic Transactions Only */}
           {combinedTxns.map((tx)=>(
             <div key={tx.id} style={{padding:"10px 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div>
@@ -769,7 +738,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           ))}
         </div>
 
-        {/* Get Rewards Section */}
         <div style={{padding:"0 4px",marginBottom:32}}>
           <div style={{fontSize:18,fontWeight:900,marginBottom:14}}>Get rewards</div>
           <div style={{display:"flex",gap:12}}>
@@ -790,7 +758,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
           </div>
         </div>
 
-        {/* Footer Text */}
         <div style={{textAlign:"center",padding:"0 10px"}}>
           <div style={{color:C.green,fontSize:26,fontWeight:900,letterSpacing:-1,marginBottom:12}}>maya</div>
           <div style={{fontSize:11,color:C.med,lineHeight:1.6,fontWeight:600}}>
@@ -800,7 +767,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
         </div>
       </div>
 
-      {/* Floating Bottom Nav */}
       <div style={{position:"absolute",bottom:24,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:"0 20px"}}>
         <div style={{background:"#000",borderRadius:24,padding:"12px 36px",display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:280,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
           <div style={{background:C.green,borderRadius:8,width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:900,fontSize:16}}>m</div>
@@ -815,18 +781,14 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
 // ── ROOT ───────────────────────────────────────────────────────────────────────
 export default function MayaApp() {
   const [screen,setScreen]=useState("login");
-  
-  // --- INSERT THESE 3 BLOCKS HERE ---
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    // Initial random 3-5 second delay
     const delay = Math.floor(Math.random() * 2000) + 3000;
     const timer = setTimeout(() => setIsAppLoading(false), delay);
     return () => clearTimeout(timer);
   }, []);
-  // ----------------------------------
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
@@ -837,9 +799,6 @@ export default function MayaApp() {
   const [chancesLeft,setChancesLeft]=useState(29);
   const [maxChances,setMaxChances]=useState(30);
   const [fastMode,setFastMode]=useState(false);
-  
-  // Frame toggle state
-  const [showFrame, setShowFrame] = useState(false);
 
   const navigate=(dest)=>{
     if(transitioning) return;
@@ -873,57 +832,27 @@ export default function MayaApp() {
   if (isAppLoading) return <SplashScreen />;
   if (isLoggingIn) return <SplashScreen message="Logging in..." />;
 
+  // Clean, edge-to-edge mobile container without borders
   return (
-    <div style={{
-      display:"flex",
-      justifyContent:"center",
-      alignItems:"center",
-      minHeight:"100vh",
-      background: showFrame ? "linear-gradient(135deg,#0a0a1a,#1f155f 50%,#071a0a)" : "#f0f2f5",
-      position: "relative",
-      transition: "background 0.3s ease"
-    }}>
+    <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
       <GlobalStyle/>
 
-      {/* Dynamic iPhone Wrapper - Locked to 360x780 F12 dimensions! */}
-      <div style={{
-	width: showFrame ? 360 : "100%",
-        height: showFrame ? 780 : "100vh",
-        maxWidth: showFrame ? "none" : 480, // <--- Widened to 480px so it's not a thin strip!
-        background:C.white,
-        borderRadius: showFrame ? 40 : 0,
-        overflow:"hidden",
-        boxShadow: showFrame ? "0 40px 80px rgba(0,0,0,0.7),0 0 0 6px #1a1a1a" : "none",
-        position:"relative",
-        display:"flex",
-        flexDirection:"column",
-        transform: showFrame ? "scale(0.8)" : "none",
-        transformOrigin:"center center",
-        transition: "all 0.3s ease"
-      }}>
+      <div style={{ width: "100%", maxWidth: 480, height: "100vh", background: C.white, overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
         
-        {/* Notch */}
-        {showFrame && (
-          <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:110,height:24,background:"#111",borderRadius:"0 0 16px 16px",zIndex:200}}/>
-        )}
-
-        <div style={{flex:1,overflow:"hidden",position:"relative"}}>
-          {screen === "login" && (
-  <LoginScreen 
-    onLogin={() => {
-      setIsLoggingIn(true); // Pull the splash screen curtain
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
-          {screen==="home"&&<HomeScreen balance={balance} todayTxns={todayTxns} onPBB={()=>navigate("pbb")} onSeeAll={()=>navigate("transactions")} onSettings={()=>setShowSettings(true)}/>}
-          {screen==="pbb"&&<PBBScreen balance={balance} onBack={()=>navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode}/>}
-          {screen==="transactions"&&<TransactionsScreen onBack={()=>navigate("home")} todayTxns={todayTxns}/>}
+        <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {/* Settings Modal */}
-          {showSettings&&<SettingsModal balance={balance} onClose={()=>setShowSettings(false)} onSaveBalance={b=>setBalance(b)} onAddTxn={handleAddTxn} onClearToday={()=>setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max})=>{setDaysLeft(days);setChancesLeft(chances);setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} showFrame={showFrame} onSetShowFrame={setShowFrame}/>}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
+          
+          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} />}
+          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
+          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
+          
+          {/* Settings Modal (iPhone toggle successfully removed) */}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => setBalance(b)} onAddTxn={handleAddTxn} onClearToday={() => setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => {setDaysLeft(days); setChancesLeft(chances); setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} />}
           
           {/* Transition loading overlay */}
-          {transitioning&&(
-
-            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",borderRadius: showFrame ? 34 : 0}}>
+          {transitioning && (
+            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
