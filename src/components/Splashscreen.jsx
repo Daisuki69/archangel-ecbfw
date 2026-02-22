@@ -16,7 +16,7 @@ const SplashScreen = ({ message = "" }) => {
       zIndex: 9999, // Ensure it's on top of everything
     }}>
       <img 
-        src="/splash.jpg" 
+        src="/mayasplash.jpg" 
         alt="Maya Logo" 
         style={{ width: '200px', height: 'auto' }} 
       />
