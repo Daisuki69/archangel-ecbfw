@@ -8,12 +8,12 @@ const SplashScreen = ({ message = "" }) => {
       left: 0,
       width: '100vw',
       height: '100vh',
-      backgroundColor: '#000', // Black background to match your image
+      backgroundColor: '#000', 
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 9999, // Ensure it's on top of everything
+      zIndex: 9999, 
     }}>
       <img 
         src="/mayasplashscreen.jpg" 
