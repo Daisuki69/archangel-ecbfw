@@ -455,7 +455,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
             <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
-              <div style={{fontSize:10,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
+              <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
                   ref={inputRef}
@@ -463,7 +463,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   value={pw}
                   onChange={(e) => setPw(e.target.value)}
                   placeholder="Enter password"
-                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
+                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
                 />
               </div>
               <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
