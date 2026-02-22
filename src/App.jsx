@@ -277,8 +277,8 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
             <label style={{fontSize:13,fontWeight:800,color:C.med}}>Days Till Voting Ends</label>
             <input style={iStyle} type="number" min="0" value={newDays} onChange={e=>setNewDays(e.target.value)} placeholder="e.g. 3"/>
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Chances Left to Vote</label>
-            <input style={{...iStyle,borderColor:chancesOverMax?"#e53935":C.gray}} type="number" min="0" value={newChances} onChange={e=>setNewChances(e.target.value)} placeholder="e.g. 25"/>
-            {chancesOverMax&&<div style={{color:"#e53935",fontSize:12,fontWeight:700,marginTop:5}}>⚠️ Chances left cannot exceed max chances ({parsedMax})</div>}
+            <input style={{...iStyle,borderColor:chancesOverMax?"#d08893":C.gray}} type="number" min="0" value={newChances} onChange={e=>setNewChances(e.target.value)} placeholder="e.g. 25"/>
+            {chancesOverMax&&<div style={{color:"#d08893",fontSize:12,fontWeight:700,marginTop:5}}>⚠️ Chances left cannot exceed max chances ({parsedMax})</div>}
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Max Chances (denominator)</label>
             <input style={iStyle} type="number" min="1" value={newMax} onChange={e=>setNewMax(e.target.value)} placeholder="e.g. 30"/>
             <button style={{...btnPrimary,background:chancesOverMax?"#aaa":C.green,cursor:chancesOverMax?"not-allowed":"pointer"}} onClick={()=>{
@@ -330,11 +330,15 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
+  
+  // NEW: State to track if the keyboard is open
+  const [isFocused, setIsFocused]=useState(false); 
+  
   const inputRef = useRef(null);
 
   const showRequired = loginAttempted && pw.length === 0;
-  const boxBorderColor = showRequired ? '#e53935' : C.gray;
-  const labelColor = showRequired ? '#e53935' : C.green;
+  const boxBorderColor = showRequired ? '#d08893' : C.gray;
+  const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
     if(!pw) return;
@@ -352,7 +356,11 @@ const LoginScreen = ({onLogin, fastMode}) => {
   };
 
   return (
-    <div style={{display:"flex",flexDirection:"column",height:"100%",padding:"24px",background:C.white,position:"relative", fontFamily: "'JekoMedium', sans-serif"}}>
+    <div style={{
+      display:"flex", flexDirection:"column", height:"100%", padding:"24px",
+      background:C.white, position:"relative", fontFamily: "'JekoMedium', sans-serif",
+      overflowY: "auto", overflowX: "hidden" // Allows safe scrolling if keyboard is huge
+    }}>
       
       {loading && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.35)",zIndex:50,borderRadius:34}}/>}
       
@@ -381,8 +389,11 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: "20vh"}}>
-        <div style={{marginBottom:32}}>
+      {/* UPPER SECTION: Margin transitions from 20vh to 4vh smoothly when focused */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isFocused ? "4vh" : "20vh", transition: "margin-top 0.3s ease"}}>
+        
+        {/* Logo and Name gaps shrink slightly on focus to save space */}
+        <div style={{marginBottom: isFocused ? 16 : 32, transition: "margin-bottom 0.3s ease"}}>
           <svg width="142" height="42" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.9846 0.5C14.3885 0.499563 12.8556 1.13491 11.7139 2.27011L12.3328 3.46698L12.079 3.67486C11.5427 2.72918 10.774 1.94165 9.8484 1.38948C8.92281 0.837307 7.87211 0.53947 6.79931 0.525193C3.43217 0.525193 0.708736 3.52368 0.708736 7.0387V14.5979C0.706114 14.6623 0.716653 14.7266 0.739676 14.7866C0.7627 14.8467 0.797719 14.9012 0.842509 14.9468C0.887299 14.9924 0.940883 15.028 0.999893 15.0515C1.0589 15.0749 1.12206 15.0856 1.18535 15.0829H3.63024C3.68929 15.0829 3.74773 15.071 3.80221 15.0478C3.85669 15.0246 3.90608 14.9907 3.94754 14.9479C3.98901 14.9051 4.02174 14.8543 4.04377 14.7986C4.06579 14.7428 4.0767 14.6832 4.07588 14.6231V6.95681C4.07588 5.21189 5.11571 3.80715 6.88594 3.80715C8.53856 3.80715 9.72078 5.06701 9.72078 6.92531V13.2246C9.71657 13.2871 9.72492 13.3498 9.74534 13.4088C9.76576 13.4679 9.79783 13.5221 9.83956 13.5681C9.88128 13.6141 9.93178 13.6509 9.98799 13.6763C10.0442 13.7018 10.1049 13.7153 10.1665 13.716H12.4999C12.5614 13.7153 12.6222 13.7018 12.6784 13.6763C12.7346 13.6509 12.7851 13.6141 12.8268 13.5681C12.8685 13.5221 12.9006 13.4679 12.921 13.4088C12.9414 13.3498 12.9498 13.2871 12.9456 13.2246V6.92531C12.9182 6.52302 12.973 6.11931 13.1067 5.73969C13.2403 5.36006 13.4499 5.01277 13.7221 4.71975C13.9943 4.42672 14.3232 4.19434 14.6882 4.03726C15.0531 3.88018 15.4461 3.80182 15.8423 3.80715C17.6063 3.80715 18.5905 5.23709 18.5905 6.95681V14.6105C18.5953 14.7352 18.6478 14.8532 18.7369 14.9391C18.8259 15.025 18.9444 15.0721 19.0671 15.0703H21.481C21.5445 15.074 21.6081 15.0639 21.6676 15.0409C21.727 15.0178 21.781 14.9822 21.826 14.9364C21.871 14.8906 21.906 14.8356 21.9286 14.7751C21.9513 14.7146 21.9612 14.6499 21.9576 14.5853V7.0261C21.9329 3.49848 19.358 0.5 15.9846 0.5Z" fill="#00A651"/>
             <path d="M38.1396 0.772125H35.8861C35.8234 0.767832 35.7606 0.776377 35.7014 0.797218C35.6423 0.818058 35.5883 0.850743 35.5427 0.893192C35.4971 0.935641 35.461 0.986927 35.4367 1.04381C35.4124 1.10069 35.4003 1.16191 35.4013 1.2236V1.52665L36.2008 2.76357L35.9868 2.97385C35.3251 2.20998 34.5048 1.59404 33.5808 1.16735C32.6569 0.740672 31.6507 0.513125 30.6299 0.5C28.6616 0.5 26.7739 1.26823 25.382 2.63568C23.9902 4.00314 23.2083 5.8578 23.2083 7.79167C23.2083 9.72554 23.9902 11.5802 25.382 12.9476C26.7739 14.3151 28.6616 15.0833 30.6299 15.0833C31.6548 15.0725 32.6654 14.8461 33.5938 14.4194C34.5221 13.9927 35.3467 13.3755 36.012 12.6095L36.2008 12.7579L35.4013 14.0443V14.3288C35.4005 14.3916 35.4125 14.4539 35.4365 14.512C35.4606 14.5702 35.4962 14.623 35.5414 14.6674C35.5866 14.7118 35.6404 14.7468 35.6996 14.7705C35.7587 14.7941 35.8222 14.8059 35.8861 14.805H38.1396C38.2042 14.8086 38.2688 14.7987 38.3293 14.7761C38.3897 14.7534 38.4447 14.7185 38.4904 14.6735C38.5362 14.6286 38.5718 14.5746 38.5948 14.5152C38.6179 14.4558 38.6279 14.3923 38.6243 14.3288V1.2236C38.6273 1.16137 38.6167 1.09924 38.593 1.04144C38.5694 0.983631 38.5333 0.931513 38.4873 0.888653C38.4413 0.845792 38.3864 0.813195 38.3264 0.793084C38.2664 0.772974 38.2027 0.765823 38.1396 0.772125ZM30.6299 11.9354C29.5097 11.9354 28.4353 11.4981 27.6432 10.7199C26.8511 9.94164 26.4061 8.8861 26.4061 7.78548C26.4061 6.68486 26.8511 5.62933 27.6432 4.85108C28.4353 4.07283 29.5097 3.63561 30.6299 3.63561C31.7501 3.63561 32.8244 4.07283 33.6166 4.85108C34.4087 5.62933 34.8537 6.68486 34.8537 7.78548C34.8537 8.8861 34.4087 9.94164 33.6166 10.7199C32.8244 11.4981 31.7501 11.9354 30.6299 11.9354Z" fill="#00A651"/>
@@ -391,10 +402,10 @@ const LoginScreen = ({onLogin, fastMode}) => {
           </svg>
         </div>
         <div style={{fontSize:23,fontWeight:800,marginBottom:4}}>+63 994 304 0344</div>
-        <div style={{fontSize:13,color:C.med,letterSpacing:0,marginBottom:36}}>CARL CEDRIC</div>
+        <div style={{fontSize:13,color:C.med,letterSpacing:0, marginBottom: isFocused ? 16 : 36, transition: "margin-bottom 0.3s ease"}}>CARL CEDRIC</div>
         
-        {/* Password field - increased marginBottom to drop "Forgot password" down slightly */}
-        <div style={{width:"100%",marginBottom: showRequired ? 4 : 24}}>
+        {/* Password field */}
+        <div style={{width:"100%", marginBottom: showRequired ? 4 : (isFocused ? 12 : 24), transition: "margin-bottom 0.3s ease"}}>
           <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
             
             <div style={{fontSize:10,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
@@ -405,6 +416,12 @@ const LoginScreen = ({onLogin, fastMode}) => {
                 type={show ? "text" : "password"}
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
+                
+                /* NEW: Focus handlers to trigger the layout shrink */
+                onFocus={() => setIsFocused(true)}
+                /* A slight delay on blur ensures the "Log in" click registers before layout shifts back */
+                onBlur={() => setTimeout(() => setIsFocused(false), 150)} 
+                
                 placeholder="Enter password"
                 style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
               />
@@ -418,18 +435,20 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </div>
         
         {showRequired && (
-          <div style={{width:"100%",color:"#e53935",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
+          <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
         )}
         
-        <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer"}}>Forgot your password?</div>
+        {/* Forgot password gets pulled down slightly when not focused */}
+        <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer", marginBottom: isFocused ? 20 : 0, transition: "margin-bottom 0.3s ease"}}>Forgot your password?</div>
       </div>
 
-      <div style={{flex: 1}} />
+      {/* Spacer instantly shrinks to 0 when keyboard opens, crushing the white padding */}
+      <div style={{flex: isFocused ? 0 : 1, transition: "all 0.3s ease"}} />
 
-      {/* LOWER SECTION: Buttons */}
+      {/* LOWER SECTION: Bottom buttons compact themselves */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", paddingBottom: "16px"}}>
         
-        <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:24}}>
+        <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: isFocused ? 12 : 24, transition: "margin-bottom 0.3s ease"}}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <path d="M9 14l2 2 4-4"></path>
@@ -437,7 +456,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           Log in with screen lock
         </button>
         
-        <div style={{fontSize:14,color:C.med,marginBottom:24}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
+        <div style={{fontSize:14,color:C.med, marginBottom: isFocused ? 12 : 24, transition: "margin-bottom 0.3s ease"}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
         
         <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>Log in</button>
       </div>
