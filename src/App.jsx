@@ -9,7 +9,7 @@ const SplashScreen = ({ message }) => (
     alignItems: 'center', zIndex: 10000
   }}>
     {/* Ensure this filename matches exactly what is in your public folder */}
-    <img src="/logo.jpg" alt="Maya" style={{ width: '180px', height: 'auto' }} />
+    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '180px', height: 'auto' }} />
     {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
@@ -907,21 +907,11 @@ export default function MayaApp() {
         {showFrame && (
           <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:110,height:24,background:"#111",borderRadius:"0 0 16px 16px",zIndex:200}}/>
         )}
-        
-        {/* Status bar */}
-        {showFrame && (
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"4px 22px 0",height:28,flexShrink:0,fontSize:11,fontWeight:800,background:C.white,zIndex:10}}>
-            <span>{screen==="login"?"4:46":"4:47"}</span>
-            <div style={{display:"flex",gap:4,alignItems:"center",fontSize:10}}><span>📶</span><span>LTE</span><span>🔋 66%</span></div>
-          </div>
-        )}
 
         <div style={{flex:1,overflow:"hidden",position:"relative"}}>
-          {screen === "login" && (
-  <LoginScreen 
-    onLogin={() => {
-      setIsLoggingIn(true); // Pull the splash screen curtain
+          
           {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
+          
           {screen==="home"&&<HomeScreen balance={balance} todayTxns={todayTxns} onPBB={()=>navigate("pbb")} onSeeAll={()=>navigate("transactions")} onSettings={()=>setShowSettings(true)}/>}
           {screen==="pbb"&&<PBBScreen balance={balance} onBack={()=>navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode}/>}
           {screen==="transactions"&&<TransactionsScreen onBack={()=>navigate("home")} todayTxns={todayTxns}/>}
@@ -931,7 +921,6 @@ export default function MayaApp() {
           
           {/* Transition loading overlay */}
           {transitioning&&(
-
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",borderRadius: showFrame ? 34 : 0}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
