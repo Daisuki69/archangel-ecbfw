@@ -333,13 +333,14 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [isFocused, setIsFocused]=useState(false);
   const inputRef = useRef(null);
 
-  // NEW: Bulletproof detector. If the keyboard physically closes, reset the layout.
+  // SAFE resize detector: It only changes the visual layout, it NEVER forces the keyboard closed.
   useEffect(() => {
+    const originalHeight = window.innerHeight;
     const handleResize = () => {
-      // If the screen height expands back to normal, we know the keyboard closed
-      if (window.innerHeight > 550) { 
-        setIsFocused(false);
-        if (inputRef.current) inputRef.current.blur();
+      if (window.innerHeight > originalHeight * 0.85) { 
+        setIsFocused(false); // Keyboard is hidden -> reset UI
+      } else {
+        setIsFocused(true);  // Keyboard is open -> shrink UI
       }
     };
     window.addEventListener('resize', handleResize);
@@ -398,7 +399,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      {/* UPPER SECTION: Swaps between 16vh and 23vh as requested, with STATIC internal margins! */}
+      {/* UPPER SECTION: Swaps between 16vh and 23vh smoothly */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center", width: "100%", marginTop: isFocused ? "16vh" : "23vh", transition: "margin-top 0.3s ease"}}>
         
         <div style={{marginBottom: 32}}>
@@ -425,8 +426,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
                 
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setTimeout(() => setIsFocused(false), 200)} 
+                // Keep the input simple. We removed the onFocus/onBlur traps here!
                 
                 placeholder="Enter password"
                 style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 15,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
