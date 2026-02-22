@@ -635,7 +635,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            <Ic n="chat" s={22}/>
+           <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
               <Ic n="bell" s={22}/>
               <div style={{position:"absolute",top:-6,right:-8,background:C.green,borderRadius:10,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"white",border:"2px solid white"}}>90</div>
@@ -869,28 +869,61 @@ export default function MayaApp() {
     else setBalance(p=>Math.max(0,p-tx.amount));
   };
 
- // --- STEP 4: The Gatekeeper ---
+  // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
   if (isLoggingIn) return <SplashScreen message="Logging in..." />;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
+    <div style={{
+      display:"flex",
+      justifyContent:"center",
+      alignItems:"center",
+      minHeight:"100vh",
+      background: showFrame ? "linear-gradient(135deg,#0a0a1a,#1f155f 50%,#071a0a)" : "#f0f2f5",
+      position: "relative",
+      transition: "background 0.3s ease"
+    }}>
       <GlobalStyle/>
 
-      {/* Clean, edge-to-edge mobile container without borders */}
-      <div style={{ width: "100%", maxWidth: 480, height: "100vh", background: C.white, overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
+      {/* Dynamic iPhone Wrapper - Locked to 360x780 F12 dimensions! */}
+      <div style={{
+	width: showFrame ? 360 : "100%",
+        height: showFrame ? 780 : "100vh",
+        maxWidth: showFrame ? "none" : 480, // <--- Widened to 480px so it's not a thin strip!
+        background:C.white,
+        borderRadius: showFrame ? 40 : 0,
+        overflow:"hidden",
+        boxShadow: showFrame ? "0 40px 80px rgba(0,0,0,0.7),0 0 0 6px #1a1a1a" : "none",
+        position:"relative",
+        display:"flex",
+        flexDirection:"column",
+        transform: showFrame ? "scale(0.8)" : "none",
+        transformOrigin:"center center",
+        transition: "all 0.3s ease"
+      }}>
         
-        <div style={{flex:1, overflow:"hidden", position:"relative"}}>
-          
+        {/* Notch */}
+        {showFrame && (
+          <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:110,height:24,background:"#111",borderRadius:"0 0 16px 16px",zIndex:200}}/>
+        )}
+
+        <div style={{flex:1,overflow:"hidden",position:"relative"}}>
+          {screen === "login" && (
+  <LoginScreen 
+    onLogin={() => {
+      setIsLoggingIn(true); // Pull the splash screen curtain
           {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 3000); }} fastMode={fastMode} />}
+          {screen==="home"&&<HomeScreen balance={balance} todayTxns={todayTxns} onPBB={()=>navigate("pbb")} onSeeAll={()=>navigate("transactions")} onSettings={()=>setShowSettings(true)}/>}
+          {screen==="pbb"&&<PBBScreen balance={balance} onBack={()=>navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode}/>}
+          {screen==="transactions"&&<TransactionsScreen onBack={()=>navigate("home")} todayTxns={todayTxns}/>}
           
-          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} />}
-          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
-          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
+          {/* Settings Modal */}
+          {showSettings&&<SettingsModal balance={balance} onClose={()=>setShowSettings(false)} onSaveBalance={b=>setBalance(b)} onAddTxn={handleAddTxn} onClearToday={()=>setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max})=>{setDaysLeft(days);setChancesLeft(chances);setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} showFrame={showFrame} onSetShowFrame={setShowFrame}/>}
           
           {/* Transition loading overlay */}
-          {transitioning && (
-            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          {transitioning&&(
+
+            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",borderRadius: showFrame ? 34 : 0}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
