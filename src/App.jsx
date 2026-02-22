@@ -870,20 +870,9 @@ export default function MayaApp() {
     else setBalance(p=>Math.max(0,p-tx.amount));
   };
 
-// --- STEP 4: The Gatekeeper ---
+  // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
   if (isLoggingIn) return <SplashScreen message="Logging in..." />;
-
-  return (
-    <div style={{
-      display:"flex",
-// ... existing code continues ...
-
-  return (
-    <div style={{
-      display:"flex",
-      justifyContent:"center",
-      // ... the rest of your code ...
 
   return (
     <div style={{
