@@ -350,6 +350,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
+  const [hasBeenClicked, setHasBeenClicked] = useState(false); 
   
   // Clean Keyboard & Viewport Detectors
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -385,7 +386,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 
   const showRequired = loginAttempted && pw.length === 0;
   // Exact hex requested by you
-  const boxBorderColor = showRequired ? '#d08893' : C.gray;
+  const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
   const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
@@ -475,7 +476,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
             {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
-            <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: showRequired ? "1.5px solid #d08893" : "1.5px solid transparent", transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
+            <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
@@ -483,6 +484,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   type={show ? "text" : "password"}
                   value={pw}
                   onChange={(e) => setPw(e.target.value)}
+                  onFocus={() => setHasBeenClicked(true)} 
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
                 />
