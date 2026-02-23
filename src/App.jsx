@@ -483,7 +483,15 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   ref={inputRef}
                   type={show ? "text" : "password"}
                   value={pw}
-                  onChange={(e) => setPw(e.target.value)}
+                  onChange={(e) => {
+                    setPw(e.target.value);
+                   if (e.target.value.length === 0 && loginAttempted) {
+                    // already attempted, stays red
+                  }
+                  if (e.target.value.length > 0) {
+                    setLoginAttempted(false); // typing again removes the red
+                  }
+                }}
                   onFocus={() => setHasBeenClicked(true)} 
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
