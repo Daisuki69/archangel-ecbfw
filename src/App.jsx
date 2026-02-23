@@ -501,8 +501,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
                     setPw(e.target.value);
                     if (e.target.value.length > 0) {
                       setLoginAttempted(false);
-                    } else if (loginAttempted) {
-                     setLoginAttempted(true);
                     }
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
