@@ -471,7 +471,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
             </svg>
           </div>
           <div style={{fontSize:23.5,fontWeight:800,marginBottom:11}}>+63 994 304 0344</div>
-          <div style={{fontSize:14,fontWeight:700,color:C.med,letterSpacing:0, marginBottom: 36}}>CARL CEDRIC</div>
+          <div style={{fontSize:14,fontWeight:500,color:C.med,letterSpacing:0, marginBottom: 36}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
             <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
