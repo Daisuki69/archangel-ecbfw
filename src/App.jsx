@@ -18,22 +18,39 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* 1. Cerebri Sans Pro (Dashboard) */
+    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
     @font-face {
       font-family: 'CerebriBook';
       src: url('/CerebriSansPro-Book.otf') format('opentype'); 
-      font-weight: normal;
-      font-style: normal;
+    }
+    @font-face {
+      font-family: 'CerebriBold';
+      src: url('/CerebriSansPro-Bold.otf') format('opentype'); 
     }
 
-    /* 2. Jeko Medium (Login Screen & Transactions) */
+    /* ─── JEKO (Numbers, Balances, Login) ─── */
+    @font-face {
+      font-family: 'JekoLight';
+      src: url('/fonnts.com-Jeko_Light.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'JekoRegular';
+      src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype');
+    }
     @font-face {
       font-family: 'JekoMedium';
       src: url('/Jeko-Medium.otf') format('opentype');
-      font-weight: normal;
-      font-style: normal;
+    }
+    @font-face {
+      font-family: 'JekoBold';
+      src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'JekoBlack';
+      src: url('/fonnts.com-Jeko_Black.ttf') format('truetype');
     }
 
+    /* Default App Font */
     body { 
       font-family: 'CerebriBook', sans-serif; 
     }
@@ -46,6 +63,7 @@ const GlobalStyle = () => (
     .txn-scroll::-webkit-scrollbar-track { background: transparent; }
     .txn-scroll::-webkit-scrollbar-thumb { background: #aaa; border-radius: 10px; }
     .txn-scroll::-webkit-scrollbar-thumb:hover { background: #888; }
+    
     input::-ms-reveal, input::-ms-clear { display: none; }
     input::-webkit-credentials-auto-fill-button { display: none !important; }
     input[type='password']::-webkit-textfield-decoration-container { display: none; }
@@ -298,7 +316,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
 // ── TRANSACTIONS SCREEN ────────────────────────────────────────────────────────
 const TransactionsScreen = ({onBack, todayTxns}) => (
-  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
+  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoLight', sans-serif"}}>
     <div style={{background:C.white,display:"flex",alignItems:"center",padding:"12px 20px",gap:8, position: "relative", zIndex: 30}}>
       <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="back" s={22}/></button>
       <span style={{fontSize:17,fontWeight:900,flex:1,textAlign:"center"}}>Transactions</span>
@@ -682,7 +700,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
   };
 
 return (
-    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'CerebriBook', sans-serif", fontWeight: 400}}>
+    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'Jeko', sans-serif", fontWeight: 400}}>
       <div style={{background:C.white}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 18px"}}>
           <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center"}}>
