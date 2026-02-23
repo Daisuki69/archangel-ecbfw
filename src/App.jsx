@@ -399,13 +399,16 @@ const LoginScreen = ({onLogin, fastMode}) => {
     };
   }, []);
 
-  const showRequired = hasTyped && pw.length === 0;
+  const showRequired = loginAttempted && pw.length === 0;
   // Exact hex requested by you
   const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
   const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
-   if (!pw) return;
+   if (!pw) {
+    setLoginAttempted(true);
+    return;
+   }
    setLoading(true);
    const delay = fastMode ? 0 : 500 + Math.random() * 1000;
    setTimeout(() => {
