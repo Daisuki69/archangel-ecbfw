@@ -19,7 +19,7 @@ const GlobalStyle = () => (
     /* 1. Cerebri Sans Pro (Dashboard) */
     @font-face {
       font-family: 'CerebriBook';
-      src: url('/CerebriSansPro-Book.ttf') format('truetype'); 
+      src: url('/CerebriSansPro-Book.otf') format('opentype'); 
       font-weight: normal;
       font-style: normal;
     }
