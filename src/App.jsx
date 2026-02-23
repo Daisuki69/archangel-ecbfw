@@ -501,9 +501,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   onChange={(e) => {
                    const val = e.target.value;
                    setPw(val);
-                    if (val.length > 0) {
-                      setHasTyped(true);
-                   }
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
                   placeholder="Enter password"
