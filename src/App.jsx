@@ -359,7 +359,7 @@ const TransactionsScreen = ({onBack, todayTxns}) => (
 // ── LOGIN ──────────────────────────────────────────────────────────────────────
 const LoginScreen = ({onLogin, fastMode}) => {
   const [pw,setPw]=useState("");
-  const [show,setShow]=useState(false);
+  const [show,setShow]=useState(true);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
@@ -515,7 +515,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           </div>
           
           {showRequired && (
-            <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:4}}>Password is required</div>
+            <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:8,marginTop:4}}>Password is required</div>
           )}
           
           <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer", marginBottom: 24}}>Forgot your password?</div>
