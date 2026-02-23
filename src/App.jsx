@@ -68,6 +68,19 @@ const GlobalStyle = () => (
     input::-webkit-credentials-auto-fill-button { display: none !important; }
     input[type='password']::-webkit-textfield-decoration-container { display: none; }
     input::-webkit-contacts-auto-fill-button, input::-webkit-caps-lock-indicator { display: none !important; }
+    @keyframes blink {
+     0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .fake-caret {
+     display: inline-block;
+     width: 2px;
+     height: 18px;
+     background: #2ff29e;
+     animation: blink 1s step-start infinite;
+     margin-left: 1px;
+     vertical-align: middle;
+    }
   `}</style>
 );
 
@@ -351,6 +364,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
   const [hasBeenClicked, setHasBeenClicked] = useState(false); 
+  const [isFocused, setIsFocused] = useState(false);  
   
   // Clean Keyboard & Viewport Detectors
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -478,7 +492,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
             {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
             <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
-              <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
+              const [isFocused, setIsFocused] = useState(false);
                 <input
                   ref={inputRef}
                   type={show ? "text" : "password"}
@@ -491,15 +505,14 @@ const LoginScreen = ({onLogin, fastMode}) => {
                      setLoginAttempted(true);
                     }
                   }}
-                  onFocus={() => setHasBeenClicked(true)} 
-                  onBlur={(e) => {
-                    if (hasBeenClicked) {
-                     setTimeout(() => e.target.focus(), 0);
-                    }
-                 }}
+                  onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
+                  onBlur={() => setIsFocused(false)}
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: 0,margin: 0}}
                 />
+                {hasBeenClicked && !isFocused && pw.length === 0 && (
+                  <span className="fake-caret" />
+                )}
               </div>
               <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <Ic n={show?"eyeOff":"eye"} s={20} c={C.med}/>
