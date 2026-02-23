@@ -565,7 +565,16 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   const [voting,setVoting]=useState(false); 
   const [voted,setVoted]=useState(false);
   const [vInfo,setVInfo]=useState(null);
-  const hm=[{name:"Princess",bg:"#c62828"},{name:"Robi",bg:"#1565c0"},{name:"Yen",bg:"#b71c1c"}];
+  const hm=[
+    {name:"Ashley",bg:"#1565c0"},
+    {name:"Caprice",bg:"#1565c0"},
+    {name:"Heath",bg:"#1565c0"},
+    {name:"Joaquin",bg:"#c62828"},
+    {name:"Krystal",bg:"#c62828"},
+    {name:"Lella",bg:"#c62828"},
+    {name:"Miguel",bg:"#c62828"},
+    {name:"Princess",bg:"#1565c0"},
+  ];
   const cost=cnt;
   const noChances = chancesLeft <= 0;
 
@@ -594,16 +603,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
       <div style={{background:"#000",padding:"18px 20px 22px"}}>
-        <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}>
-          <div style={{background:"black",borderRadius:6,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <img src="/pbbceleb.png" style={{height:200,objectFit:"contain"}} />
-          </div>
-          <div style={{fontSize:14,fontWeight:800,color:"white"}}>Who will you <span style={{color:C.mint}}>#SAVEwith<em>maya</em>?</span></div>
-        </div>
         <div style={{display:"flex",gap:10}}>
           {[
-            {v:`${daysLeft} ${daysLeft===1?"day":"days"}`,s:"before voting ends"},
-            {v:`${chancesLeft}/${maxChances}`,s:"chances left to vote",s2:"resets every midnight"}
+            {v:"4 days",s:"before voting ends"},
+            {v:"unlimited",s:"chances left to vote",s2:"limited time only"}
           ].map((b,i)=>(
             <div key={i} style={{flex:1,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"12px 14px"}}>
               <div style={{fontSize:24,fontWeight:900,color:"white"}}>{b.v}</div>
@@ -619,16 +622,19 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         ))}
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
-        <div style={{display:"flex",gap:10,marginBottom:18}}>
+        <div style={{display:"flex",gap:10,marginBottom:18,flexWrap:"wrap"}}>
           {hm.map(h=>(
             <div key={h.name} onClick={()=>setSel(h.name)}
-              style={{flex:1,borderRadius:14,overflow:"hidden",cursor:"pointer",border:`3px solid ${sel===h.name?C.green:"transparent"}`,boxShadow:sel===h.name?`0 0 0 2px ${C.mint}55`:"none",transition:"all 0.2s"}}>
+              style={{width:"calc(33.33% - 8px)",flexShrink:0,borderRadius:14,overflow:"hidden",cursor:"pointer",border:`3px solid ${sel===h.name?C.green:"transparent"}`,boxShadow:sel===h.name?`0 0 0 2px ${C.mint}55`:"none",transition:"all 0.2s"}}>
               <div style={{background:h.bg,height:72,display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <div style={{width:42,height:42,borderRadius:"50%",background:"rgba(255,255,255,0.25)",display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="user" s={22} c="white"/></div>
               </div>
               <div style={{padding:"8px 4px",textAlign:"center",background:"#f8f8f8"}}><div style={{fontSize:12,fontWeight:900}}>{h.name}</div></div>
             </div>
           ))}
+        </div>
+        <div style={{textAlign:"center",marginBottom:16}}>
+          <span style={{color:C.green,fontSize:13,fontWeight:800,cursor:"pointer"}}>View terms and conditions for PBB voting</span>
         </div>
         {sel&&(
           <div style={{background:C.bg,borderRadius:16,padding:"16px",marginBottom:14}}>
