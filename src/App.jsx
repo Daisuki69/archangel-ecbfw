@@ -298,7 +298,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
 // ── TRANSACTIONS SCREEN ────────────────────────────────────────────────────────
 const TransactionsScreen = ({onBack, todayTxns}) => (
-  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'Jeko Light'"}}>
+  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
     <div style={{background:C.white,display:"flex",alignItems:"center",padding:"12px 20px",gap:8, position: "relative", zIndex: 30}}>
       <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="back" s={22}/></button>
       <span style={{fontSize:17,fontWeight:900,flex:1,textAlign:"center"}}>Transactions</span>
@@ -681,8 +681,8 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
     return `${txDate.getDate()} ${months[txDate.getMonth()]} ${txDate.getFullYear()}`;
   };
 
-  return (
-    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'Jeko', sans-serif", fontWeight: 400}}>
+return (
+    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'CerebriBook', sans-serif", fontWeight: 400}}>
       <div style={{background:C.white}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 18px"}}>
           <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center"}}>
