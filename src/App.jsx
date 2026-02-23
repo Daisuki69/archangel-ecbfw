@@ -407,7 +407,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   };
 
   const LoginBtn = (
-    <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
+    <button onClick={handleLogin} disabled={!pw||loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
       Log in
     </button>
   );
