@@ -494,7 +494,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
                   ref={inputRef}
-                  type={show ? "text" : "password"}
+                  type={show ? "password" : "text"}
                   value={pw}
                   onChange={(e) => {
                    const val = e.target.value;
