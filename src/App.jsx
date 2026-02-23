@@ -472,7 +472,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         {/* Top Block: Logo, Number, Name, Password Box, Forgot Password */}
         <div style={{
           display:"flex", flexDirection:"column", alignItems:"center", width: "100%", 
-          marginTop: isKeyboardOpen ? "127px" : "175px",
+          marginTop: isKeyboardOpen ? "100px" : "24vh",
           transition: "margin-top 0.3s ease"
         }}>
           
