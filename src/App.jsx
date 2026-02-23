@@ -595,7 +595,9 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       </div>
       <div style={{background:"#080808",backgroundImage:"radial-gradient(ellipse at 30% 60%,#0d2b1a,#000)",padding:"18px 20px 22px"}}>
         <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}>
-          <div style={{background:"white",borderRadius:6,padding:"2px 8px",fontSize:8,fontWeight:900,color:"#cc0000"}}>GMA ✕ ABS-CBN</div>
+          <div style={{background:"black",borderRadius:6,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <img src="/pbbceleb.png" style={{height:18,objectFit:"contain"}} />
+          </div>
           <div style={{fontSize:14,fontWeight:800,color:"white"}}>Who will you <span style={{color:C.mint}}>#SAVEwith<em>maya</em>?</span></div>
         </div>
         <div style={{display:"flex",gap:10}}>
