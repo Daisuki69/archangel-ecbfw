@@ -492,8 +492,13 @@ const LoginScreen = ({onLogin, fastMode}) => {
                     }
                   }}
                   onFocus={() => setHasBeenClicked(true)} 
+                  onBlur={(e) => {
+                    if (hasBeenClicked) {
+                     setTimeout(() => e.target.focus(), 0);
+                    }
+                 }}
                   placeholder="Enter password"
-                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
+                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: 0,margin: 0}}
                 />
               </div>
               <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
