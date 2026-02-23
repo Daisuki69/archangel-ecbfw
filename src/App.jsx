@@ -583,7 +583,17 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
     setVoting(true);
     setTimeout(()=>{
       setVoting(false);
-      setVInfo({name:sel,cnt});
+      
+      // Generate receipt data
+      const now = new Date();
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const dStr = `${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      const h = now.getHours(), m = String(now.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const tStr = `${String(h % 12 || 12).padStart(2, '0')}:${m} ${ampm}`;
+      const refId = "053" + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+      
+      setVInfo({name:sel, cnt, refId, date: dStr, time: tStr});
       setVoted(true);
       onVote(sel,cnt,cost);
     }, fastMode ? 0 : 3000);
@@ -605,7 +615,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       {/* Banner Image */}
       <div style={{ width: "100%", background: "#000", position: "relative" }}>
         {/* Replace with your exact filename if different */}
-        <img src="/pbbcelebpng.png" alt="PBB Banner" style={{ width: "100%", display: "block", objectFit: "cover", minHeight: "180px" }} />
+        <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", display: "block", objectFit: "cover", minHeight: "180px" }} />
       </div>
 
       {/* Floating Stats "Notch" */}
@@ -675,16 +685,37 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       )}
       {voted&&vInfo&&(
         <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",display:"flex",alignItems:"flex-end",zIndex:100}}>
-          <div style={{background:C.white,borderRadius:"24px 24px 0 0",padding:"36px 24px 28px",width:"100%",textAlign:"center"}}>
+          <div style={{background:C.white,borderRadius:"24px 24px 0 0",padding:"36px 24px 28px",width:"100%"}}>
             <div style={{width:68,height:68,borderRadius:"50%",background:C.green,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",boxShadow:"0 4px 24px rgba(0,180,100,0.4)"}}>
               <Ic n="check" s={32} c="white"/>
             </div>
-            <div style={{fontSize:26,fontWeight:900,marginBottom:20}}>Voting successful!</div>
-            <div style={{display:"flex",justifyContent:"space-between",padding:"14px 0",borderTop:`1px solid ${C.gray}`,borderBottom:`1px solid ${C.gray}`}}>
-              <span style={{color:C.med,fontSize:15}}>{vInfo.cnt} vote{vInfo.cnt>1?"s":""} to save {vInfo.name}</span>
-              <span style={{fontWeight:900,fontSize:15}}>₱{fmt(vInfo.cnt)}</span>
+            <div style={{fontSize:24,fontWeight:900,marginBottom:28,textAlign:"center",color:C.dark}}>Voting successful!</div>
+            
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Reference ID</span>
+              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.refId}</span>
             </div>
-            <button onClick={()=>setVoted(false)} style={{width:"100%",padding:"15px",borderRadius:30,background:C.green,border:"none",fontSize:16,fontWeight:800,color:C.white,cursor:"pointer",marginTop:20}}>Done</button>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Date</span>
+              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.date}</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:24}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Time</span>
+              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.time}</span>
+            </div>
+            
+            <div style={{borderTop:`2px dashed ${C.gray}`,margin:"0 0 24px 0"}}/>
+            
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Sent to</span>
+              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>PBB Save {vInfo.name}</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:36}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Total amount</span>
+              <span style={{fontWeight:900,fontSize:14,color:C.dark}}>₱{fmt(vInfo.cnt)}</span>
+            </div>
+            
+            <button onClick={()=>setVoted(false)} style={{width:"100%",padding:"16px",borderRadius:30,background:C.green,border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:"pointer"}}>Done</button>
           </div>
         </div>
       )}
