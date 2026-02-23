@@ -7,7 +7,7 @@ const SplashScreen = ({ message }) => (
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000,
-    paddingTop: '2vh'
+    paddingTop: '3vh'
     
   }}>
     {/* Image zoomed 50% more to 300px */}
