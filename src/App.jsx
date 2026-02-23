@@ -6,11 +6,12 @@ const SplashScreen = ({ message }) => (
   <div style={{
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
-    alignItems: 'center', zIndex: 10000
+    alignItems: 'center', zIndex: 10000,
+    paddingTop: '15vh'
   }}>
     {/* Image zoomed 50% more to 300px */}
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
-    {message && <p style={{ color: '#2ff29e', marginTop: '300px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
+    {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
 
