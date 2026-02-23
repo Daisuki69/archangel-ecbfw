@@ -687,15 +687,18 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
           </div>
         )}
       </div>
-      <div style={{padding:"10px 16px 16px"}}>
-        {noChances&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>No chances left to vote today</div>}
-        {!noChances&&sel&&balance<cost&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>Insufficient balance</div>}
-        <button onClick={doVote}
-          disabled={!sel||balance<cost||noChances||voting}
-          style={{width:"100%",padding:"16px",borderRadius:16,background:sel&&balance>=cost&&!noChances?C.green:"#c8f0de",border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:sel&&balance>=cost&&!noChances&&!voting?"pointer":"default",transition:"background 0.2s",opacity:voting?0.7:1}}>
-          {voting?"Processing...":"Save "+(sel||"...")}
-        </button>
-      </div>
+      {/* Wrapped in {sel && ...} so it only exists when a person is clicked! */}
+      {sel && (
+        <div style={{padding:"10px 16px 16px"}}>
+          {noChances&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>No chances left to vote today</div>}
+          {!noChances&&balance<cost&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>Insufficient balance</div>}
+          <button onClick={doVote}
+            disabled={balance<cost||noChances||voting}
+            style={{width:"100%",padding:"16px",borderRadius:16,background:balance>=cost&&!noChances?C.green:"#c8f0de",border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:balance>=cost&&!noChances&&!voting?"pointer":"default",transition:"background 0.2s",opacity:voting?0.7:1}}>
+            {voting ? "Processing..." : "Save " + sel}
+          </button>
+        </div>
+      )}
       {voting&&(
         <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50}}>
           <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
