@@ -503,7 +503,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
                   placeholder="Enter password"
-                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: '0 0 3px 0',margin: 0}}
+                  style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: '0 0 10px 0',margin: 0}}
                 />
                 {hasBeenClicked && !isFocused && pw.length === 0 && (
                   <span className="fake-caret" />
