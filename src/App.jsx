@@ -613,21 +613,21 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
       {/* Banner Area with Image + Text Overlay */}
-      <div style={{ position: "relative", width: "100%", background: "#000" }}>
-        <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", display: "block", objectFit: "cover", minHeight: "180px" }} />
+      <div style={{ position: "relative", width: "100%", background: "#000", height: "200px" }}>
+        <img src="/pbbcelebpng.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         
-        {/* Gradient Overlay so the text is readable over your image */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.85) 100%)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "20px 20px 45px" }}>
-          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
-            <div style={{background:"white",borderRadius:6,padding:"2px 8px",fontSize:9,fontWeight:900,color:"#cc0000"}}>GMA ✕ ABS-CBN</div>
+        {/* Gradient Overlay so text is readable over the picture */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.85) 100%)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "20px 20px 40px" }}>
+          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:6}}>
+            <div style={{background:"white",borderRadius:4,padding:"3px 6px",fontSize:9,fontWeight:900,color:"#cc0000"}}>GMA ✕ ABS-CBN</div>
           </div>
           <div style={{fontSize:16,fontWeight:800,color:"white"}}>Who will you <span style={{color:C.mint}}>#SAVEwith<em>maya</em>?</span></div>
         </div>
       </div>
 
-      {/* Floating Stats "Notch" */}
-      <div style={{ padding: "0 20px", marginTop: "-30px", position: "relative", zIndex: 5 }}>
-        <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "14px 0", boxShadow: "0 4px 15px rgba(0,0,0,0.1)", border: `1px solid ${C.gray}` }}>
+      {/* Floating Stats "Notch" overlapping the image */}
+      <div style={{ padding: "0 20px", marginTop: "-28px", position: "relative", zIndex: 5 }}>
+        <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "16px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
             <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
             <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>before voting ends</div>
@@ -639,11 +639,11 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
 
-      {/* Save / Evict Tabs (Left Aligned with correct bottom border) */}
-      <div style={{display:"flex", borderBottom:`1px solid ${C.gray}`, marginTop: 12, padding: "0 20px", gap: 24}}>
+      {/* Save / Evict Tabs (Correctly Left-Aligned) */}
+      <div style={{display:"flex", borderBottom:`1px solid ${C.gray}`, padding: "0 20px", gap: 32, marginTop: 8}}>
         {["Save","Evict"].map((t,i)=>(
           <div key={t} style={{
-            padding:"12px 0",
+            padding:"14px 0",
             fontWeight: i===0 ? 900 : 700,
             fontSize: 15,
             color: i===0 ? C.dark : C.light,
