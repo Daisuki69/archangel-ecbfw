@@ -356,10 +356,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [vpHeight, setVpHeight] = useState('100%');
   const inputRef = useRef(null);
 
-  // NEW: Interaction states for the password box
-  const [isFocused, setIsFocused] = useState(false);
-  const [hasClickedPw, setHasClickedPw] = useState(false);
-
   useEffect(() => {
     const updateLayout = () => {
       // visualViewport is highly accurate on Android Chrome for keyboard tracking
@@ -388,26 +384,9 @@ const LoginScreen = ({onLogin, fastMode}) => {
   }, []);
 
   const showRequired = loginAttempted && pw.length === 0;
-  
-  // NEW: Dynamic Styling Logic for the Password Box
-  let boxBorderColor = "transparent";
-  let boxBgColor = "#f9f9f9";
-  let labelColor = C.green;
-
-  if (showRequired) {
-    // Error State: Red border, white background
-    boxBorderColor = "#d08893";
-    boxBgColor = C.white;
-    labelColor = "#d08893";
-  } else if (isFocused) {
-    // Active State: Green border while actively typing
-    boxBorderColor = C.green;
-    boxBgColor = C.white;
-  } else if (hasClickedPw || pw.length > 0) {
-    // Interacted State: Has been clicked before, keep it white with a gray border
-    boxBorderColor = C.gray;
-    boxBgColor = C.white;
-  }
+  // Exact hex requested by you
+  const boxBorderColor = showRequired ? '#d08893' : C.gray;
+  const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
     if(!pw) {
@@ -495,21 +474,15 @@ const LoginScreen = ({onLogin, fastMode}) => {
           <div style={{fontSize:14,fontWeight:560,color:C.med,letterSpacing:-0.5, marginBottom: 39.5}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
-            <div style={{position:"relative", height: "66px", background:boxBgColor, borderRadius:14, border:`1.5px solid ${boxBorderColor}`, transition:"all 0.2s ease", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
-              <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s ease"}}>Password</div>
+            {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
+            <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: showRequired ? "1.5px solid #d08893" : "1.5px solid transparent", transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
+              <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
                   ref={inputRef}
                   type={show ? "text" : "password"}
                   value={pw}
                   onChange={(e) => setPw(e.target.value)}
-                  // Track when the user taps into the box
-                  onFocus={() => {
-                    setIsFocused(true);
-                    setHasClickedPw(true);
-                  }}
-                  // Track when they close keyboard or click away
-                  onBlur={() => setIsFocused(false)}
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green,padding: 0,margin: 0}}
                 />
