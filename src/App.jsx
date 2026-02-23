@@ -506,15 +506,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
                     }
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
-                  onBlur={(e) => {
-                    if (hasBeenClicked) {
-                      const pos = e.target.selectionStart;
-                      setTimeout(() => {
-                       e.target.focus();
-                       e.target.setSelectionRange(pos, pos);
-                     }, 0);
-                   }
-                  }}
+                  onBlur={() => setIsFocused(false)}
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: 0,margin: 0}}
                 />
