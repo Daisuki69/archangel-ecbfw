@@ -474,7 +474,8 @@ const LoginScreen = ({onLogin, fastMode}) => {
           <div style={{fontSize:14,fontWeight:560,color:C.med,letterSpacing:-0.5, marginBottom: 39.5}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
-            <div style={{position:"relative", height: "56px", background:C.white,borderRadius:14, border:`1.5px solid ${boxBorderColor}`,transition:"border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
+            {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
+            <div style={{position:"relative", height: "66px", background:"#f9f9f9", borderRadius:14, border: showRequired ? "1.5px solid #d08893" : "1.5px solid transparent", transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
