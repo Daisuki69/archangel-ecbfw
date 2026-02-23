@@ -498,23 +498,15 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   type={show ? "text" : "password"}
                   value={pw}
                   onChange={(e) => {
+                    const val = e.target.value;
                     setPw(e.target.value);
                     if (e.target.value.length > 0) {
                       setLoginAttempted(false);
-                    } else if (loginAttempted) {
-                     setLoginAttempted(true);
+                    } else if (hasBeenClicked) {
+                      setLoginAttempted(true);
                     }
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
-                 onBlur={(e) => {
-                   if (hasBeenClicked) {
-                    setTimeout(() => {
-                      if (document.activeElement !== e.target) {
-                        e.target.focus();
-                      }
-                    }, 150);
-                  }
-                }}
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: 0,margin: 0}}
                 />
