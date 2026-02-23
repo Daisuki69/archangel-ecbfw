@@ -707,7 +707,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:30,fontWeight:900,letterSpacing:-1}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••"}</div>
+              <div style={{fontSize:30,fontWeight:900,letterSpacing:-1}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -905,7 +905,6 @@ export default function MayaApp() {
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
-  if (isLoggingIn) return <SplashScreen message="Logging in..." />;
 
   // Clean, edge-to-edge mobile container without borders
   return (
