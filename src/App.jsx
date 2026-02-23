@@ -1,16 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import React from "react";
 
-// --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
   <div style={{
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000,
     paddingTop: '3vh'
-    
   }}>
-    {/* Image zoomed 50% more to 300px */}
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
     {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
@@ -18,69 +15,30 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
-    @font-face {
-      font-family: 'CerebriBook';
-      src: url('/CerebriSansPro-Book.otf') format('opentype'); 
-    }
-    @font-face {
-      font-family: 'CerebriBold';
-      src: url('/CerebriSansPro-Bold.otf') format('opentype'); 
-    }
+    @font-face { font-family: 'CerebriBook'; src: url('/CerebriSansPro-Book.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriBold'; src: url('/CerebriSansPro-Bold.otf') format('opentype'); }
+    @font-face { font-family: 'JekoLight'; src: url('/fonnts.com-Jeko_Light.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoRegular'; src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoMedium'; src: url('/Jeko-Medium.otf') format('opentype'); }
+    @font-face { font-family: 'JekoBold'; src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoBlack'; src: url('/fonnts.com-Jeko_Black.ttf') format('truetype'); }
 
-    /* ─── JEKO (Numbers, Balances, Login) ─── */
-    @font-face {
-      font-family: 'JekoLight';
-      src: url('/fonnts.com-Jeko_Light.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoRegular';
-      src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoMedium';
-      src: url('/Jeko-Medium.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'JekoBold';
-      src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoBlack';
-      src: url('/fonnts.com-Jeko_Black.ttf') format('truetype');
-    }
-
-    /* Default App Font */
-    body { 
-      font-family: 'CerebriBook', sans-serif; 
-    }
-    
+    body { font-family: 'CerebriBook', sans-serif; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     input, button, textarea { font-family: inherit; }
-    
     ::-webkit-scrollbar { width: 0; height: 0; }
     .txn-scroll::-webkit-scrollbar { width: 5px; }
     .txn-scroll::-webkit-scrollbar-track { background: transparent; }
     .txn-scroll::-webkit-scrollbar-thumb { background: #aaa; border-radius: 10px; }
     .txn-scroll::-webkit-scrollbar-thumb:hover { background: #888; }
-    
     input::-ms-reveal, input::-ms-clear { display: none; }
     input::-webkit-credentials-auto-fill-button { display: none !important; }
     input[type='password']::-webkit-textfield-decoration-container { display: none; }
     input::-webkit-contacts-auto-fill-button, input::-webkit-caps-lock-indicator { display: none !important; }
-    @keyframes blink {
-     0%, 100% { opacity: 1; }
-     50% { opacity: 0; }
-    }
-    .fake-caret {
-     display: inline-block;
-      width: 2px;
-     height: 18px;
-     background: #2ff29e;
-      animation: blink 1s step-start infinite;
-     margin-left: 1px;
-     vertical-align: middle;
-    }
+    
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fake-caret { display: inline-block; width: 2px; height: 18px; background: #2ff29e; animation: blink 1s step-start infinite; margin-left: 1px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg) } }
   `}</style>
 );
 
@@ -121,54 +79,23 @@ const Ic = ({n,s=22,c=C.dark}) => {
   return m[n] || <svg width={s} height={s}/>;
 };
 
-const PBBIcon = ({size=24}) => (
-  <img src="/pbbicon.svg" width={size} height={size} style={{objectFit:"contain"}} />
-);
+const PBBIcon = ({size=24}) => <img src="/pbbicon.svg" width={size} height={size} style={{objectFit:"contain"}} />;
 
-// FEB 21 transactions from screenshots
+// FEB 21 transactions
 const FEB21 = [
   {id:"h1", label:"+639053064476",           time:"11:30 PM", amount:2700,  positive:true,  sub:"Received money from"},
   {id:"h2", label:"PBB Save Princess x500",  time:"05:54 PM", amount:500,   positive:false, sub:"Purchased on"},
   {id:"h3", label:"PBB Save Princess x500",  time:"05:54 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h4", label:"PBB Save Princess x500",  time:"05:54 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h5", label:"PBB Save Princess x500",  time:"05:54 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h6", label:"PBB Save Princess x500",  time:"05:53 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h7", label:"PBB Save Princess x500",  time:"05:53 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h8", label:"PBB Save Princess x500",  time:"05:53 PM", amount:500,   positive:false, sub:"Purchased on"},
   {id:"h9", label:"PBB Save Princess x10",   time:"05:53 PM", amount:10,    positive:false, sub:"Purchased on"},
-  {id:"h10",label:"PBB Save Princess x500",  time:"05:53 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h11",label:"PBB Save Princess x500",  time:"05:52 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h12",label:"PBB Save Princess x500",  time:"05:52 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h13",label:"PBB Save Princess x500",  time:"05:52 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h14",label:"PBB Save Princess x500",  time:"05:52 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h15",label:"PBB Save Princess x500",  time:"05:51 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h16",label:"PBB Save Princess x500",  time:"05:51 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h17",label:"PBB Save Princess x500",  time:"05:51 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h18",label:"PBB Save Princess x500",  time:"05:51 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h19",label:"PBB Save Princess x500",  time:"05:51 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h20",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h21",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h22",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h23",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h24",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h25",label:"PBB Save Princess x500",  time:"05:49 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h26",label:"PBB Save Princess x500",  time:"05:48 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h27",label:"PBB Save Princess x500",  time:"05:48 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h28",label:"PBB Save Princess x500",  time:"05:48 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h29",label:"PBB Save Princess x500",  time:"05:48 PM", amount:500,   positive:false, sub:"Purchased on"},
-  {id:"h30",label:"PBB Save Princess x500",  time:"05:48 PM", amount:500,   positive:false, sub:"Purchased on"},
   {id:"h31",label:"Maya Savings",            time:"09:27 AM", amount:15000, positive:true,  sub:"Received money from"},
 ];
 
 const relativeTime = (ts) => {
   const now = Date.now();
-  const diffMs = now - ts;
-  const diffMins = Math.floor(diffMs / 60000);
+  const diffMins = Math.floor((now - ts) / 60000);
   const txDate = new Date(ts);
   const nowDate = new Date(now);
-  const sameDay = txDate.getFullYear()===nowDate.getFullYear() &&
-                  txDate.getMonth()===nowDate.getMonth() &&
-                  txDate.getDate()===nowDate.getDate();
+  const sameDay = txDate.getFullYear()===nowDate.getFullYear() && txDate.getMonth()===nowDate.getMonth() && txDate.getDate()===nowDate.getDate();
   if(!sameDay) {
     const h=txDate.getHours(), m=String(txDate.getMinutes()).padStart(2,"0");
     const ampm=h>=12?"PM":"AM"; const h12=((h%12)||12);
@@ -358,36 +285,23 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
-  const [hasTyped, setHasTyped] = useState(false);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  
-  // Clean Keyboard & Viewport Detectors
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [vpHeight, setVpHeight] = useState('100%');
   const inputRef = useRef(null);
 
   useEffect(() => {
     const updateLayout = () => {
-      // visualViewport is highly accurate on Android Chrome for keyboard tracking
       const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       setVpHeight(h + 'px');
-      
-      // Typical mobile screen is 700px+. When keyboard opens, it drops under 550px.
-      if (h < 550) {
-        setIsKeyboardOpen(true);
-      } else {
-        setIsKeyboardOpen(false);
-      }
+      if (h < 550) setIsKeyboardOpen(true);
+      else setIsKeyboardOpen(false);
     };
-
     const vp = window.visualViewport;
     if (vp) vp.addEventListener('resize', updateLayout);
     else window.addEventListener('resize', updateLayout);
-    
-    // Initial check
     updateLayout();
-
     return () => {
       if (vp) vp.removeEventListener('resize', updateLayout);
       else window.removeEventListener('resize', updateLayout);
@@ -395,24 +309,23 @@ const LoginScreen = ({onLogin, fastMode}) => {
   }, []);
 
   const showRequired = loginAttempted && pw.length === 0;
-  // Exact hex requested by you
   const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
   const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
-  if (!pw) return;
-  setLoginAttempted(true);
-  setLoading(true);
-  const delay = fastMode ? 0 : 500 + Math.random() * 1000;
-  setTimeout(() => {
-    setLoading(false);
-    if (pw === "Carl123__--") {
-      onLogin();
-    } else {
-      setError(true);
-    }
-  }, delay);
-};
+    if (!pw) return;
+    setLoginAttempted(true);
+    setLoading(true);
+    const delay = fastMode ? 0 : 500 + Math.random() * 1000;
+    setTimeout(() => {
+      setLoading(false);
+      if (pw === "Carl123__--") {
+        onLogin();
+      } else {
+        setError(true);
+      }
+    }, delay);
+  };
 
   const LoginBtn = (
     <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
@@ -420,16 +333,9 @@ const LoginScreen = ({onLogin, fastMode}) => {
     </button>
   );
 
-  // OUTER WRAPPER: Locks strictly to the Viewport Height so the bottom never gets hidden by the keyboard
   return (
-    <div style={{
-      display:"flex", flexDirection:"column", height: vpHeight, 
-      background:C.white, position:"relative", fontFamily: "'JekoMedium', sans-serif",
-      overflow: "hidden" 
-    }}>
-      
+    <div style={{ display:"flex", flexDirection:"column", height: vpHeight, background:C.white, position:"relative", fontFamily: "'JekoMedium', sans-serif", overflow: "hidden" }}>
       {loading && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.35)",zIndex:200,borderRadius:34}}/>}
-      
       {error && (
         <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"24px",borderRadius:34}}>
           <div style={{background:C.white,borderRadius:24,padding:"32px 24px 24px",width:"100%",textAlign:"center",boxShadow:"0 8px 32px rgba(0,0,0,0.2)"}}>
@@ -448,29 +354,14 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </div>
       )}
 
-      {/* Top Right Help Icon */}
       <div style={{position:"absolute", top: 24, right: 24, zIndex: 10}}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{cursor: "pointer"}}>
           <path fillRule="evenodd" clipRule="evenodd" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12.02 8.00391C11.0291 8.00391 10.2227 8.80898 10.2227 9.78009V9.98879H8.22266V9.78009C8.22266 7.68471 9.94438 6.00391 12.02 6.00391C14.0724 6.00391 15.775 7.66591 15.775 9.73809C15.775 11.0011 15.1366 12.1785 14.0782 12.8676L12.7911 13.7054V14.4868H10.7911V12.621L12.987 11.1914C13.4785 10.8714 13.775 10.3246 13.775 9.73809C13.775 8.79018 12.9877 8.00391 12.02 8.00391ZM12.7949 16.001V18.001H10.7949V16.001H12.7949Z" fill="black"/>
         </svg>
       </div>
 
-      {/* ─── MAIN SCROLLABLE AREA ─── */}
-      <div style={{
-        flex: 1, overflowY: "auto", overflowX: "hidden", 
-        display: "flex", flexDirection: "column", 
-        padding: "24px",
-        // Crucial: Gives enough room at the bottom so Switch Account isn't permanently blocked by the sticky Log In button
-        paddingBottom: isKeyboardOpen ? "100px" : "24px" 
-      }}>
-        
-        {/* Top Block: Logo, Number, Name, Password Box, Forgot Password */}
-        <div style={{
-          display:"flex", flexDirection:"column", alignItems:"center", width: "100%", 
-          marginTop: isKeyboardOpen ? "100px" : "22.5vh",
-          transition: "margin-top 0.3s ease"
-        }}>
-          
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column", padding: "24px", paddingBottom: isKeyboardOpen ? "100px" : "24px" }}>
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width: "100%", marginTop: isKeyboardOpen ? "100px" : "22.5vh", transition: "margin-top 0.3s ease" }}>
           <div style={{marginBottom: 19}}>
             <svg width="149.1" height="44.1" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15.9846 0.5C14.3885 0.499563 12.8556 1.13491 11.7139 2.27011L12.3328 3.46698L12.079 3.67486C11.5427 2.72918 10.774 1.94165 9.8484 1.38948C8.92281 0.837307 7.87211 0.53947 6.79931 0.525193C3.43217 0.525193 0.708736 3.52368 0.708736 7.0387V14.5979C0.706114 14.6623 0.716653 14.7266 0.739676 14.7866C0.7627 14.8467 0.797719 14.9012 0.842509 14.9468C0.887299 14.9924 0.940883 15.028 0.999893 15.0515C1.0589 15.0749 1.12206 15.0856 1.18535 15.0829H3.63024C3.68929 15.0829 3.74773 15.071 3.80221 15.0478C3.85669 15.0246 3.90608 14.9907 3.94754 14.9479C3.98901 14.9051 4.02174 14.8543 4.04377 14.7986C4.06579 14.7428 4.0767 14.6832 4.07588 14.6231V6.95681C4.07588 5.21189 5.11571 3.80715 6.88594 3.80715C8.53856 3.80715 9.72078 5.06701 9.72078 6.92531V13.2246C9.71657 13.2871 9.72492 13.3498 9.74534 13.4088C9.76576 13.4679 9.79783 13.5221 9.83956 13.5681C9.88128 13.6141 9.93178 13.6509 9.98799 13.6763C10.0442 13.7018 10.1049 13.7153 10.1665 13.716H12.4999C12.5614 13.7153 12.6222 13.7018 12.6784 13.6763C12.7346 13.6509 12.7851 13.6141 12.8268 13.5681C12.8685 13.5221 12.9006 13.4679 12.921 13.4088C12.9414 13.3498 12.9498 13.2871 12.9456 13.2246V6.92531C12.9182 6.52302 12.973 6.11931 13.1067 5.73969C13.2403 5.36006 13.4499 5.01277 13.7221 4.71975C13.9943 4.42672 14.3232 4.19434 14.6882 4.03726C15.0531 3.88018 15.4461 3.80182 15.8423 3.80715C17.6063 3.80715 18.5905 5.23709 18.5905 6.95681V14.6105C18.5953 14.7352 18.6478 14.8532 18.7369 14.9391C18.8259 15.025 18.9444 15.0721 19.0671 15.0703H21.481C21.5445 15.074 21.6081 15.0639 21.6676 15.0409C21.727 15.0178 21.781 14.9822 21.826 14.9364C21.871 14.8906 21.906 14.8356 21.9286 14.7751C21.9513 14.7146 21.9612 14.6499 21.9576 14.5853V7.0261C21.9329 3.49848 19.358 0.5 15.9846 0.5Z" fill="#00A651"/>
@@ -483,7 +374,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
           <div style={{fontSize:14,fontWeight:560,color:C.med,letterSpacing:-0.5, marginBottom: 39.5}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
-            {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
             <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
@@ -491,17 +381,12 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   ref={inputRef}
                   type={show ? "password" : "text"}
                   value={pw}
-                  onChange={(e) => {
-                   const val = e.target.value;
-                   setPw(val);
-                  }}
+                  onChange={(e) => setPw(e.target.value)}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
                   placeholder="Enter password"
                   style={{fontFamily: "'JekoMedium', sans-serif", width: "100%",border: "none",outline: "none",fontSize: 16,fontWeight: 700,color: C.dark,background: "transparent",letterSpacing: show ? 0 : 0,caretColor: C.green, caretShape: 'bar', padding: 0,margin: 0}}
                 />
-                {hasBeenClicked && !isFocused && pw.length === 0 && (
-                  <span className="fake-caret" />
-                )}
+                {hasBeenClicked && !isFocused && pw.length === 0 && <span className="fake-caret" />}
               </div>
               <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <Ic n={show?"eyeOff":"eye"} s={20} c={C.med}/>
@@ -509,51 +394,23 @@ const LoginScreen = ({onLogin, fastMode}) => {
             </div>
           </div>
           
-          {showRequired && (
-            <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:8,marginTop:4}}>Password is required</div>
-          )}
-          
+          {showRequired && <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:8,marginTop:4}}>Password is required</div>}
           <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer", marginBottom: 24}}>Forgot your password?</div>
         </div>
 
-        {/* The Spacer: Giant gap when closed, totally disappears when open so the list connects seamlessly */}
         <div style={{ flex: isKeyboardOpen ? 0 : 1 }} />
-
-        {/* Bottom Links: They sit at the bottom naturally, allowing them to slide up behind the overlay */}
         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width: "100%" }}>
           <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14.5,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: 24}}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-              <path d="M9 14l2 2 4-4"></path>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><path d="M9 14l2 2 4-4"></path></svg>
             Log in with screen lock
           </button>
-          
           <div style={{fontSize:14,color:C.med, marginBottom: isKeyboardOpen ? 0 : 24}}>Not you? <span style={{color:C.green,fontWeight:800,cursor:"pointer"}}>Switch account</span></div>
         </div>
-
       </div>
 
-      {/* ─── STICKY FOOTER OVERLAY ─── */}
-      {/* If open, this snaps to the bottom of the viewport directly above the keyboard.
-          Because it has a solid white background, the content in the scrollable area above slides cleanly behind it. */}
-      <div style={{
-        ...(isKeyboardOpen ? {
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          background: C.white,
-          padding: "16px 24px",
-          zIndex: 100
-        } : {
-          width: "100%",
-          padding: "0 24px 24px 24px"
-        })
-      }}>
+      <div style={{...(isKeyboardOpen ? {position: "absolute", bottom: 0, left: 0, width: "100%", background: C.white, padding: "16px 24px", zIndex: 100} : {width: "100%", padding: "0 24px 24px 24px"})}}>
         {LoginBtn}
       </div>
-
     </div>
   );
 };
@@ -561,7 +418,6 @@ const LoginScreen = ({onLogin, fastMode}) => {
 // ── PBB SCREEN ─────────────────────────────────────────────────────────────────
 const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode}) => {
   const [sel,setSel]=useState(null);
-  const [cnt,setCnt]=useState(10);
   const [voting,setVoting]=useState(false); 
   const [voted,setVoted]=useState(false);
   const [vInfo,setVInfo]=useState(null);
@@ -575,27 +431,17 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
     {name:"Miguel",bg:"#c62828"},
     {name:"Princess",bg:"#1565c0"},
   ];
-  const cost=cnt;
   const noChances = chancesLeft <= 0;
+  const options = [10, 50, 100, 300, 500];
 
-  const doVote=()=>{
-    if(!sel||balance<cost||noChances||voting) return;
+  const doVote = (opt) => {
+    if(!sel || balance < opt || noChances || voting) return;
     setVoting(true);
     setTimeout(()=>{
       setVoting(false);
-      
-      // Generate receipt data
-      const now = new Date();
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const dStr = `${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
-      const h = now.getHours(), m = String(now.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      const tStr = `${String(h % 12 || 12).padStart(2, '0')}:${m} ${ampm}`;
-      const refId = "053" + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
-      
-      setVInfo({name:sel, cnt, refId, date: dStr, time: tStr});
+      setVInfo({name:sel, cnt:opt});
       setVoted(true);
-      onVote(sel,cnt,cost);
+      onVote(sel, opt, opt);
     }, fastMode ? 0 : 3000);
   };
 
@@ -612,11 +458,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
           </button>
         </div>
       </div>
-      {/* Banner Area with Image + Text Overlay */}
+      
+      {/* Banner */}
       <div style={{ position: "relative", width: "100%", background: "#000", height: "200px" }}>
-        <img src="/pbbcelebpng.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        
-        {/* Gradient Overlay so text is readable over the picture */}
+        <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.85) 100%)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "20px 20px 40px" }}>
           <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:6}}>
             <div style={{background:"white",borderRadius:4,padding:"3px 6px",fontSize:9,fontWeight:900,color:"#cc0000"}}>GMA ✕ ABS-CBN</div>
@@ -625,119 +470,128 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
 
-      {/* Floating Stats "Notch" overlapping the image */}
+      {/* Stats Notch */}
       <div style={{ padding: "0 20px", marginTop: "-28px", position: "relative", zIndex: 5 }}>
         <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "16px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
-            <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>before voting ends</div>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#e74c3c"><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-7 2h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 16H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V6h2v2z"/></svg>
+              <span style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} <span style={{fontWeight:500,fontSize:14}}>days</span></span>
+            </div>
+            <div style={{ fontSize: 11, color: C.med, fontWeight: 600, marginTop: 2 }}>before voting ends</div>
           </div>
           <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{chancesLeft}/{maxChances}</div>
-            <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>chances left to vote</div>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#e74c3c"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4c1.1 0 2 .9 2 2s-.9 2-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-9 7.5h-2v-2h2v2zm0-4.5h-2v-2h2v2zm0-4.5h-2v-2h2v2z"/></svg>
+              <span style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>unlimited</span>
+            </div>
+            <div style={{ fontSize: 11, color: C.med, fontWeight: 600, marginTop: 2 }}>chances left to vote</div>
           </div>
         </div>
       </div>
 
-      {/* Save / Evict Tabs (Correctly Left-Aligned) */}
+      {/* Tabs */}
       <div style={{display:"flex", borderBottom:`1px solid ${C.gray}`, padding: "0 20px", gap: 32, marginTop: 8}}>
         {["Save","Evict"].map((t,i)=>(
-          <div key={t} style={{
-            padding:"14px 0",
-            fontWeight: i===0 ? 900 : 700,
-            fontSize: 15,
-            color: i===0 ? C.dark : C.light,
-            borderBottom: i===0 ? `3px solid ${C.dark}` : "3px solid transparent",
-            cursor: "pointer",
-            marginBottom: "-1px" /* Pulls the black border down to perfectly cover the gray line */
-          }}>
-            {t}
-          </div>
+          <div key={t} style={{padding:"14px 0",fontWeight: i===0 ? 900 : 700,fontSize: 15,color: i===0 ? C.dark : C.light,borderBottom: i===0 ? `3px solid ${C.dark}` : "3px solid transparent",cursor: "pointer",marginBottom: "-1px"}}>{t}</div>
         ))}
       </div>
-      <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
-        <div style={{display:"flex",gap:10,marginBottom:18,flexWrap:"wrap"}}>
+
+      {/* Housemate Grid */}
+      <div style={{flex:1,overflowY:"auto",padding:"16px 16px 100px"}}>
+        <div style={{display:"flex",gap:"12px 10px",flexWrap:"wrap"}}>
           {hm.map(h=>(
-            <div key={h.name} onClick={()=>setSel(h.name)}
-              style={{width:"calc(33.33% - 8px)",flexShrink:0,borderRadius:14,overflow:"hidden",cursor:"pointer",border:`3px solid ${sel===h.name?C.green:"transparent"}`,boxShadow:sel===h.name?`0 0 0 2px ${C.mint}55`:"none",transition:"all 0.2s"}}>
-              <div style={{background:h.bg,height:72,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <div style={{width:42,height:42,borderRadius:"50%",background:"rgba(255,255,255,0.25)",display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="user" s={22} c="white"/></div>
+            <div key={h.name} onClick={()=>setSel(h.name)} style={{width:"calc(33.33% - 7px)",flexShrink:0,cursor:"pointer"}}>
+              <div style={{background:h.bg,height:96,borderRadius:16,position:"relative",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",paddingBottom:10,overflow:"hidden",boxShadow:"0 4px 12px rgba(0,0,0,0.1)"}}>
+                <div style={{position:"absolute",top:15}}>
+                  <Ic n="user" s={48} c="rgba(255,255,255,0.3)"/>
+                </div>
+                <div style={{background: h.bg==="#c62828"?"#0a2e1e":"#00a651", color:"white", fontSize:10, fontWeight:900, padding:"4px 10px", borderRadius:12, zIndex:2, letterSpacing:0.5, boxShadow:"0 2px 4px rgba(0,0,0,0.2)"}}>
+                   {h.name.toUpperCase()}
+                </div>
               </div>
-              <div style={{padding:"8px 4px",textAlign:"center",background:"#f8f8f8"}}><div style={{fontSize:12,fontWeight:900}}>{h.name}</div></div>
+              <div style={{textAlign:"center", marginTop:8, fontSize:13, fontWeight:800, color:C.dark}}>
+                {h.name}
+              </div>
             </div>
           ))}
         </div>
-        <div style={{textAlign:"center",marginBottom:16}}>
+        <div style={{textAlign:"center",marginTop:20}}>
           <span style={{color:C.green,fontSize:13,fontWeight:800,cursor:"pointer"}}>View terms and conditions for PBB voting</span>
         </div>
-        {sel&&(
-          <div style={{background:C.bg,borderRadius:16,padding:"16px",marginBottom:14}}>
-            <div style={{fontWeight:900,marginBottom:10,fontSize:14}}>Votes for {sel}</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-              {[1,5,10,50,100,500].map(v=>(
-                <button key={v} onClick={()=>setCnt(v)}
-                  style={{padding:"8px 14px",borderRadius:20,border:`2px solid ${cnt===v?C.green:C.gray}`,background:cnt===v?C.green:C.white,color:cnt===v?"white":C.dark,fontWeight:800,fontSize:12,cursor:"pointer",transition:"all 0.15s"}}>
-                  {v}x · ₱{v}
-                </button>
-              ))}
-            </div>
-            <div style={{marginTop:12,fontSize:13,color:C.med}}>
-              Cost: <strong style={{color:C.dark}}>₱{fmt(cost)}</strong> &nbsp;|&nbsp; After: <strong style={{color:balance>=cost?C.green:"#e74c3c"}}>₱{fmt(Math.max(0,balance-cost))}</strong>
-            </div>
-          </div>
-        )}
       </div>
-      {/* Wrapped in {sel && ...} so it only exists when a person is clicked! */}
-      {sel && (
-        <div style={{padding:"10px 16px 16px"}}>
-          {noChances&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>No chances left to vote today</div>}
-          {!noChances&&balance<cost&&<div style={{textAlign:"center",color:"#e74c3c",fontSize:13,fontWeight:800,marginBottom:8}}>Insufficient balance</div>}
-          <button onClick={doVote}
-            disabled={balance<cost||noChances||voting}
-            style={{width:"100%",padding:"16px",borderRadius:16,background:balance>=cost&&!noChances?C.green:"#c8f0de",border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:balance>=cost&&!noChances&&!voting?"pointer":"default",transition:"background 0.2s",opacity:voting?0.7:1}}>
-            {voting ? "Processing..." : "Save " + sel}
-          </button>
+
+      {/* Voting Bottom Sheet */}
+      {sel && !voted && (
+        <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:40,display:"flex",alignItems:"flex-end"}}>
+          <div style={{background:C.white,borderRadius:"24px 24px 0 0",width:"100%",maxHeight:"85%",display:"flex",flexDirection:"column"}}>
+             <div style={{padding:"16px 20px",display:"flex",alignItems:"center",borderBottom:`1px solid ${C.gray}`}}>
+               <div style={{width:40,height:40,borderRadius:"50%",background:hm.find(x=>x.name===sel)?.bg,marginRight:12,display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="user" s={20} c="white"/></div>
+               <div style={{flex:1}}>
+                 <div style={{fontSize:16,fontWeight:900}}>Save {sel}</div>
+                 <div style={{fontSize:13,color:C.med}}>Add votes to save {sel}</div>
+               </div>
+               <button onClick={()=>!voting && setSel(null)} style={{background:"none",border:"none",padding:8,cursor:"pointer"}}><Ic n="close" s={24}/></button>
+             </div>
+             <div style={{flex:1,overflowY:"auto",padding:"0 20px 20px"}}>
+                {options.map(opt => (
+                  <div key={opt} style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 0', borderBottom:`1px solid ${C.gray}`}}>
+                    <div>
+                      <div style={{fontSize:16, fontWeight:900, color:C.dark}}>₱{fmt(opt)}</div>
+                      <div style={{fontSize:13, color:C.med, marginTop:2}}>{opt} votes to save {sel}</div>
+                    </div>
+                    <button
+                       disabled={balance < opt}
+                       onClick={() => doVote(opt)}
+                       style={{padding:'10px 24px', borderRadius:20, fontWeight:800, fontSize:14, border:'none', color: balance >= opt ? 'white' : '#888', background: balance >= opt ? C.green : '#e0e0e0', cursor: balance >= opt ? 'pointer' : 'default'}}>
+                       Vote
+                    </button>
+                  </div>
+                ))}
+             </div>
+             
+             {/* Processing Overlay inside Bottom Sheet */}
+             {voting && (
+               <div style={{position:"absolute",inset:0,borderRadius:"24px 24px 0 0",background:"rgba(255,255,255,0.85)",backdropFilter:"blur(5px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:50}}>
+                  <div style={{width:40,height:40,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite",marginBottom:24}}/>
+                  <div style={{textAlign:"center",fontSize:15,fontWeight:600,color:C.dark,lineHeight:1.5}}>Payment is processing.<br/>This may take some time.<br/>Please do not close the app.</div>
+               </div>
+             )}
+          </div>
         </div>
       )}
-      {voting&&(
-        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50}}>
-          <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
-          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-        </div>
-      )}
-      {voted&&vInfo&&(
-        <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",display:"flex",alignItems:"flex-end",zIndex:100}}>
-          <div style={{background:C.white,borderRadius:"24px 24px 0 0",padding:"36px 24px 28px",width:"100%"}}>
-            <div style={{width:68,height:68,borderRadius:"50%",background:C.green,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",boxShadow:"0 4px 24px rgba(0,180,100,0.4)"}}>
-              <Ic n="check" s={32} c="white"/>
-            </div>
-            <div style={{fontSize:24,fontWeight:900,marginBottom:28,textAlign:"center",color:C.dark}}>Voting successful!</div>
-            
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Reference ID</span>
-              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.refId}</span>
-            </div>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Date</span>
-              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.date}</span>
-            </div>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:24}}>
-              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Time</span>
-              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>{vInfo.time}</span>
+
+      {/* Success Modal */}
+      {voted && vInfo && (
+        <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:60,display:"flex",alignItems:"flex-end"}}>
+          <div style={{background:C.white,borderRadius:"24px 24px 0 0",width:"100%",padding:"40px 24px 24px",display:"flex",flexDirection:"column",alignItems:"center"}}>
+            <div style={{marginBottom:24}}>
+               <svg width="80" height="80" viewBox="0 0 100 100">
+                 <defs>
+                   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                     <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#00A651" floodOpacity="0.4"/>
+                   </filter>
+                   <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2ff29e"/>
+                      <stop offset="100%" stopColor="#00A651"/>
+                   </linearGradient>
+                 </defs>
+                 <path d="M50 5 C55 5, 58 10, 65 10 C70 10, 75 5, 80 10 C85 15, 80 20, 85 25 C90 30, 95 25, 95 35 C95 40, 90 45, 90 50 C90 55, 95 60, 95 65 C95 75, 90 70, 85 75 C80 80, 85 85, 80 90 C75 95, 70 90, 65 90 C58 90, 55 95, 50 95 C45 95, 42 90, 35 90 C30 90, 25 95, 20 90 C15 85, 20 80, 15 75 C10 70, 5 75, 5 65 C5 60, 10 55, 10 50 C10 45, 5 40, 5 35 C5 25, 10 30, 15 25 C20 20, 15 15, 20 10 C25 5, 30 10, 35 10 C42 10, 45 5, 50 5 Z" fill="url(#grad)" filter="url(#shadow)"/>
+                 <path d="M32 50 L45 62 L68 35" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
+                 <path d="M20 30 Q15 25 10 30" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                 <path d="M80 70 Q85 75 90 70" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                 <path d="M80 30 Q85 25 90 30" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+               </svg>
             </div>
             
-            <div style={{borderTop:`2px dashed ${C.gray}`,margin:"0 0 24px 0"}}/>
+            <div style={{fontSize:24,fontWeight:900,marginBottom:32,color:C.dark}}>Voting successful!</div>
             
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Sent to</span>
-              <span style={{fontWeight:800,fontSize:14,color:C.dark}}>PBB Save {vInfo.name}</span>
-            </div>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:36}}>
-              <span style={{color:C.med,fontSize:14,fontWeight:600}}>Total amount</span>
-              <span style={{fontWeight:900,fontSize:14,color:C.dark}}>₱{fmt(vInfo.cnt)}</span>
+            <div style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:40}}>
+              <span style={{color:C.med,fontSize:14,fontWeight:600}}>{vInfo.cnt} votes to save {vInfo.name}</span>
+              <span style={{fontWeight:800,fontSize:16,color:C.dark}}>₱{fmt(vInfo.cnt)}</span>
             </div>
             
-            <button onClick={()=>setVoted(false)} style={{width:"100%",padding:"16px",borderRadius:30,background:C.green,border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:"pointer"}}>Done</button>
+            <button onClick={()=>{setVoted(false);setSel(null);}} style={{width:"100%",padding:"16px",borderRadius:12,background:C.green,border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:"pointer"}}>Done</button>
           </div>
         </div>
       )}
@@ -790,7 +644,6 @@ return (
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            {/* The Settings Button is back! */}
             <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
             <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
@@ -963,7 +816,6 @@ export default function MayaApp() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    // Exactly 7 seconds (7000 ms) delay at the start
     const timer = setTimeout(() => setIsAppLoading(false), 7000);
     return () => clearTimeout(timer);
   }, []);
@@ -973,7 +825,7 @@ export default function MayaApp() {
   const [balance,setBalance]=useState(3190.75);
   const [todayTxns,setTodayTxns]=useState([]);
   const [showSettings,setShowSettings]=useState(false);
-  const [daysLeft,setDaysLeft]=useState(1);
+  const [daysLeft,setDaysLeft]=useState(4);
   const [chancesLeft,setChancesLeft]=useState(29);
   const [maxChances,setMaxChances]=useState(30);
   const [fastMode,setFastMode]=useState(false);
@@ -1006,11 +858,9 @@ export default function MayaApp() {
     else setBalance(p=>Math.max(0,p-tx.amount));
   };
 
-  // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
   if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
 
-  // Clean, edge-to-edge mobile container without borders
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
       <GlobalStyle/>
@@ -1024,14 +874,11 @@ export default function MayaApp() {
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
           
-          {/* Settings Modal (iPhone toggle successfully removed) */}
           {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => setBalance(b)} onAddTxn={handleAddTxn} onClearToday={() => setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => {setDaysLeft(days); setChancesLeft(chances); setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} />}
           
-          {/* Transition loading overlay */}
           {transitioning && (
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
-              <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
           )}
         </div>
