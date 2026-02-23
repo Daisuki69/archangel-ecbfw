@@ -405,21 +405,19 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
-   if (!pw) {
-    setLoginAttempted(true);
-    return;
-   }
-   setLoading(true);
-   const delay = fastMode ? 0 : 500 + Math.random() * 1000;
-   setTimeout(() => {
-      setLoading(false);
-      if (pw === "Carl123__--") {
-        onLogin();
-      } else {
-        setError(true);
-      }
-    }, delay);
-  };
+  if (!pw) return;
+  setLoginAttempted(true);
+  setLoading(true);
+  const delay = fastMode ? 0 : 500 + Math.random() * 1000;
+  setTimeout(() => {
+    setLoading(false);
+    if (pw === "Carl123__--") {
+      onLogin();
+    } else {
+      setError(true);
+    }
+  }, delay);
+};
 
   const LoginBtn = (
     <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
