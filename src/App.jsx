@@ -70,14 +70,14 @@ const GlobalStyle = () => (
     input::-webkit-contacts-auto-fill-button, input::-webkit-caps-lock-indicator { display: none !important; }
     @keyframes blink {
      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+     50% { opacity: 0; }
     }
     .fake-caret {
      display: inline-block;
-     width: 2px;
+      width: 2px;
      height: 18px;
      background: #2ff29e;
-     animation: blink 1s step-start infinite;
+      animation: blink 1s step-start infinite;
      margin-left: 1px;
      vertical-align: middle;
     }
@@ -363,8 +363,8 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
-  const [hasBeenClicked, setHasBeenClicked] = useState(false); 
-  const [isFocused, setIsFocused] = useState(false);  
+  const [hasBeenClicked, setHasBeenClicked] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   
   // Clean Keyboard & Viewport Detectors
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -492,7 +492,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
             {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
             <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
-              const [isFocused, setIsFocused] = useState(false);
+              <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
                   ref={inputRef}
                   type={show ? "text" : "password"}
