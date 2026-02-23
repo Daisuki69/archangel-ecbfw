@@ -621,9 +621,9 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
           </div>
         </div>
       </div>
-      <div style={{display:"flex",borderBottom:`1px solid ${C.gray}`}}>
+      <div style={{display:"flex",borderBottom:`1px solid ${C.gray}`, marginTop: 8}}>
         {["Save","Evict"].map((t,i)=>(
-          <div key={t} style={{padding:"12px 22px",fontWeight:i===0?900:600,fontSize:14,color:i===0?C.dark:C.light,borderBottom:i===0?`3px solid ${C.dark}`:"3px solid transparent",cursor:"pointer"}}>{t}</div>
+          <div key={t} style={{flex: 1, textAlign: "center", padding:"14px 0",fontWeight:i===0?900:600,fontSize:15,color:i===0?C.dark:C.light,borderBottom:i===0?`3px solid ${C.dark}`:"3px solid transparent",cursor:"pointer", transition:"all 0.2s"}}>{t}</div>
         ))}
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
