@@ -9,7 +9,7 @@ const SplashScreen = ({ message }) => (
     alignItems: 'center', zIndex: 10000
   }}>
     {/* Image zoomed 50% more to 300px */}
-    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '300px', height: 'auto' }} />
+    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '100vh', height: 'auto' }} />
     {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
@@ -438,7 +438,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         {/* Top Block: Logo, Number, Name, Password Box, Forgot Password */}
         <div style={{
           display:"flex", flexDirection:"column", alignItems:"center", width: "100%", 
-          marginTop: isKeyboardOpen ? "114px" : "23vh",
+          marginTop: isKeyboardOpen ? "16vh" : "23vh",
           transition: "margin-top 0.3s ease"
         }}>
           
