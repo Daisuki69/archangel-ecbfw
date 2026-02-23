@@ -122,12 +122,7 @@ const Ic = ({n,s=22,c=C.dark}) => {
 };
 
 const PBBIcon = ({size=24}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="11" fill="white" stroke="#ddd" strokeWidth="0.5"/>
-    <ellipse cx="8.5" cy="14" rx="4.5" ry="4.5" fill="#1a1a8c" opacity="0.85"/>
-    <ellipse cx="15.5" cy="14" rx="4.5" ry="4.5" fill="#cc0000" opacity="0.85"/>
-    <ellipse cx="12" cy="14" rx="4.5" ry="4.5" fill="#ffd700" opacity="0.72"/>
-  </svg>
+  <img src="/pbbicon.svg" width={size} height={size} style={{objectFit:"contain"}} />
 );
 
 // FEB 21 transactions from screenshots
