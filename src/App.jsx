@@ -9,8 +9,8 @@ const SplashScreen = ({ message }) => (
     alignItems: 'center', zIndex: 10000
   }}>
     {/* Image zoomed 50% more to 300px */}
-    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '50vh', height: 'auto' }} />
-    {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
+    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
+    {message && <p style={{ color: '#2ff29e', marginTop: '300px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
 
