@@ -905,6 +905,7 @@ export default function MayaApp() {
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
+  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
 
   // Clean, edge-to-edge mobile container without borders
   return (
