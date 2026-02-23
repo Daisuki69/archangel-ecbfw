@@ -316,7 +316,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
 // ── TRANSACTIONS SCREEN ────────────────────────────────────────────────────────
 const TransactionsScreen = ({onBack, todayTxns}) => (
-  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoLight', sans-serif"}}>
+  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
     <div style={{background:C.white,display:"flex",alignItems:"center",padding:"12px 20px",gap:8, position: "relative", zIndex: 30}}>
       <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="back" s={22}/></button>
       <span style={{fontSize:17,fontWeight:900,flex:1,textAlign:"center"}}>Transactions</span>
