@@ -363,6 +363,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(false);
   const [loginAttempted,setLoginAttempted]=useState(false);
+  const [hasTyped, setHasTyped] = useState(false);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   
@@ -398,21 +399,18 @@ const LoginScreen = ({onLogin, fastMode}) => {
     };
   }, []);
 
-  const showRequired = loginAttempted && pw.length === 0;
+  const showRequired = hasTyped && pw.length === 0;
   // Exact hex requested by you
   const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
   const labelColor = showRequired ? '#d08893' : C.green;
 
   const handleLogin = () => {
-    if(!pw) {
-      setLoginAttempted(true);
-      return;
-    }
-    setLoading(true);
-    const delay = fastMode ? 0 : 500 + Math.random() * 1000;
-    setTimeout(() => {
+   if (!pw) return;
+   setLoading(true);
+   const delay = fastMode ? 0 : 500 + Math.random() * 1000;
+   setTimeout(() => {
       setLoading(false);
-      if(pw === "Carl123__--") {
+      if (pw === "Carl123__--") {
         onLogin();
       } else {
         setError(true);
@@ -498,13 +496,11 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   type={show ? "text" : "password"}
                   value={pw}
                   onChange={(e) => {
-                    const val = e.target.value;
-                    setPw(e.target.value);
-                    if (e.target.value.length > 0) {
-                      setLoginAttempted(false);
-                    } else if (hasBeenClicked) {
-                      setLoginAttempted(true);
-                    }
+                   const val = e.target.value;
+                   setPw(val);
+                    if (val.length > 0) {
+                      setHasTyped(true);
+                   }
                   }}
                   onFocus={() => { setHasBeenClicked(true); setIsFocused(true); }}
                   placeholder="Enter password"
