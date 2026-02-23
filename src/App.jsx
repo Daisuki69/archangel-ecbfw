@@ -602,18 +602,23 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
           </button>
         </div>
       </div>
-      <div style={{background:"#000",padding:"18px 20px 22px"}}>
-        <div style={{display:"flex",gap:10}}>
-          {[
-            {v:"4 days",s:"before voting ends"},
-            {v:"unlimited",s:"chances left to vote",s2:"limited time only"}
-          ].map((b,i)=>(
-            <div key={i} style={{flex:1,background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"12px 14px"}}>
-              <div style={{fontSize:24,fontWeight:900,color:"white"}}>{b.v}</div>
-              <div style={{fontSize:11,color:"#888"}}>{b.s}</div>
-              {b.s2&&<div style={{fontSize:10,color:"#666"}}>{b.s2}</div>}
-            </div>
-          ))}
+      {/* Banner Image */}
+      <div style={{ width: "100%", background: "#000", position: "relative" }}>
+        {/* Replace with your exact filename if different */}
+        <img src="/pbbcelebpng.png" alt="PBB Banner" style={{ width: "100%", display: "block", objectFit: "cover", minHeight: "180px" }} />
+      </div>
+
+      {/* Floating Stats "Notch" */}
+      <div style={{ padding: "0 16px", marginTop: "-24px", position: "relative", zIndex: 5 }}>
+        <div style={{ background: C.white, borderRadius: 16, display: "flex", padding: "16px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
+          <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
+            <div style={{ fontSize: 11, color: C.med, fontWeight: 600, marginTop: 2 }}>before voting ends</div>
+          </div>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{chancesLeft}/{maxChances}</div>
+            <div style={{ fontSize: 11, color: C.med, fontWeight: 600, marginTop: 2 }}>chances left to vote</div>
+          </div>
         </div>
       </div>
       <div style={{display:"flex",borderBottom:`1px solid ${C.gray}`}}>
