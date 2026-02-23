@@ -596,7 +596,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       <div style={{background:"#000",padding:"18px 20px 22px"}}>
         <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}>
           <div style={{background:"black",borderRadius:6,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <img src="/pbbceleb.png" style={{height:40,objectFit:"contain"}} />
+            <img src="/pbbceleb.png" style={{height:200,objectFit:"contain"}} />
           </div>
           <div style={{fontSize:14,fontWeight:800,color:"white"}}>Who will you <span style={{color:C.mint}}>#SAVEwith<em>maya</em>?</span></div>
         </div>
