@@ -867,7 +867,7 @@ export default function MayaApp() {
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
-  const [balance,setBalance]=useState(3199990.75);
+  const [balance,setBalance]=useState(3190.75);
   const [todayTxns,setTodayTxns]=useState([]);
   const [showSettings,setShowSettings]=useState(false);
   const [daysLeft,setDaysLeft]=useState(1);
