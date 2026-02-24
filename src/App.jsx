@@ -1047,7 +1047,22 @@ export default function MayaApp() {
     });
     return () => unsub();
   }, []);
-  
+  useEffect(() => {
+  const checkMidnight = () => {
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0, 0, 0) - now;
+    setTimeout(() => {
+      runTransaction(db, async (t) => {
+        const snap = await t.get(doc(db,"ecbfw","shared"));
+        const d = snap.data();
+        const newDays = Math.max(0, d.daysLeft - 1);
+        t.update(doc(db,"ecbfw","shared"), { daysLeft: newDays });
+      });
+      checkMidnight(); // schedule next midnight
+    }, msUntilMidnight);
+  };
+  checkMidnight();
+}, []);
 
   const navigate=(dest)=>{
     if(transitioning) return;
