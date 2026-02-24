@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
@@ -1066,19 +1066,25 @@ export default function MayaApp() {
   const h=now.getHours(), m=String(now.getMinutes()).padStart(2,"0");
   const ampm=h>=12?"PM":"AM"; const h12=((h%12)||12);
   const tx={id:"v"+Date.now(),label:`PBB Save ${name} x${cnt}`,time:`${String(h12).padStart(2,"0")}:${m} ${ampm}`,timestamp:Date.now(),amount:cost,positive:false,sub:"Purchased on"};
-  const newTxns=[...todayTxns,tx];
-  const newBal=Math.max(0,balance-cost);
-  const newChances=Math.max(0,chancesLeft-1);
-  setTodayTxns(newTxns); setBalance(newBal); setChancesLeft(newChances);
-  updateDoc(doc(db,"ecbfw","shared"),{balance:newBal,transactions:newTxns,chancesLeft:newChances});
+  runTransaction(db, async (t) => {
+    const snap = await t.get(doc(db,"ecbfw","shared"));
+    const d = snap.data();
+    const newBal = Math.max(0, d.balance - cost);
+    const newTxns = [...(d.transactions ?? []), tx];
+    const newChances = Math.max(0, d.chancesLeft - 1);
+    t.update(doc(db,"ecbfw","shared"), {balance:newBal, transactions:newTxns, chancesLeft:newChances});
+  });
 };
 
 const handleAddTxn=(tx)=>{
   const stamped={...tx,timestamp:Date.now()};
-  const newTxns=[...todayTxns,stamped];
-  const newBal=tx.positive ? balance+tx.amount : Math.max(0,balance-tx.amount);
-  setTodayTxns(newTxns); setBalance(newBal);
-  updateDoc(doc(db,"ecbfw","shared"),{balance:newBal,transactions:newTxns});
+  runTransaction(db, async (t) => {
+    const snap = await t.get(doc(db,"ecbfw","shared"));
+    const d = snap.data();
+    const newBal = tx.positive ? d.balance+tx.amount : Math.max(0,d.balance-tx.amount);
+    const newTxns = [...(d.transactions ?? []), stamped];
+    t.update(doc(db,"ecbfw","shared"), {balance:newBal, transactions:newTxns});
+  });
 };
 
   // --- STEP 4: The Gatekeeper ---
