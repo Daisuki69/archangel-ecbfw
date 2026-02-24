@@ -190,7 +190,7 @@ const TxRow = ({tx, isToday}) => {
   },[isToday,tx.timestamp]);
   const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
   return (
-    <div style={{padding:"6px 20px"}}>
+    <div style={{padding:"10px 20px"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
           <div style={{fontSize:12,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
