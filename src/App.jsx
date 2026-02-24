@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
@@ -1025,13 +1024,26 @@ export default function MayaApp() {
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
-  const [balance,setBalance]=useState(3190.75);
+  const [balance, setBalance] = useState(() => {
+    const savedBal = localStorage.getItem("mayaBalance");
+    return savedBal ? parseFloat(savedBal) : 12345.67; // <-- Put your original default balance here!
+  });
   const [todayTxns,setTodayTxns]=useState([]);
   const [showSettings,setShowSettings]=useState(false);
   const [daysLeft,setDaysLeft]=useState(1);
   const [chancesLeft,setChancesLeft]=useState(29);
   const [maxChances,setMaxChances]=useState(30);
   const [fastMode,setFastMode]=useState(false);
+  // Auto-save balance whenever it changes
+  useEffect(() => {
+    localStorage.setItem("mayaBalance", balance.toString());
+  }, [balance]);
+
+  // Auto-save transactions whenever a new one is added
+  useEffect(() => {
+    localStorage.setItem("mayaTxns", JSON.stringify(todayTxns));
+  }, [todayTxns]);
+  
 
   const navigate=(dest)=>{
     if(transitioning) return;
