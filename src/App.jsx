@@ -323,34 +323,44 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
   );
 };
 
-// ── TRANSACTIONS SCREEN ────────────────────────────────────────────────────────
-const TransactionsScreen = ({onBack, todayTxns}) => (
-  <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
-    <div style={{background:C.white,display:"flex",alignItems:"center",padding:"12px 20px",gap:8, position: "relative", zIndex: 30}}>
-      <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="back" s={22}/></button>
-      <span style={{fontSize:17,fontWeight:900,flex:1,textAlign:"center"}}>Transactions</span>
-      <div style={{width:30}}/>
-    </div>
-    <div className="txn-scroll" style={{flex:1,overflowY:"auto",background:C.white}}>
-      {todayTxns.length > 0 && (
-        <div>
-          <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
-            <div style={{height:8,background:C.white}}/>
-            <DateChip label="Today"/>
+const TransactionsScreen = ({onBack, todayTxns}) => {
+  const now = new Date();
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  // group all transactions by date
+  const groups = {};
+  [...todayTxns].reverse().forEach(tx => {
+    const d = tx.timestamp ? new Date(tx.timestamp) : new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const key = isToday ? "Today" : `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    if (!groups[key]) groups[key] = { label: key, txns: [], isToday };
+    groups[key].txns.push(tx);
+  });
+
+  // append hardcoded FEB21 group at the end
+  groups["February 21, 2026"] = { label: "February 21, 2026", txns: FEB21, isToday: false };
+
+  return (
+    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
+      <div style={{background:C.white,display:"flex",alignItems:"center",padding:"12px 20px",gap:8, position: "relative", zIndex: 30}}>
+        <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="back" s={22}/></button>
+        <span style={{fontSize:17,fontWeight:900,flex:1,textAlign:"center"}}>Transactions</span>
+        <div style={{width:30}}/>
+      </div>
+      <div className="txn-scroll" style={{flex:1,overflowY:"auto",background:C.white}}>
+        {Object.values(groups).map(group => (
+          <div key={group.label}>
+            <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
+              <div style={{height:8,background:C.white}}/>
+              <DateChip label={group.label}/>
+            </div>
+            {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday}/>)}
           </div>
-          {[...todayTxns].reverse().map(tx=><TxRow key={tx.id} tx={tx} isToday={true}/>)}
-        </div>
-      )}
-      <div>
-        <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
-          <div style={{height:8,background:C.white}}/>
-          <DateChip label="February 21, 2026"/>
-        </div>
-        {FEB21.map(tx=><TxRow key={tx.id} tx={tx}/>)}
+        ))}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── LOGIN ──────────────────────────────────────────────────────────────────────
 const LoginScreen = ({onLogin, fastMode}) => {
