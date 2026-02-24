@@ -1034,7 +1034,7 @@ export default function MayaApp() {
   const [fastMode,setFastMode]=useState(false);
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
-    cdoc(db, "ecbfw", "shared")
+    const ref = doc(db, "ecbfw", "shared")
     const unsub = onSnapshot(ref, (snap) => {
       if (snap.exists()) {
         const d = snap.data();
@@ -1069,7 +1069,7 @@ export default function MayaApp() {
   const newBal=Math.max(0,balance-cost);
   const newChances=Math.max(0,chancesLeft-1);
   setTodayTxns(newTxns); setBalance(newBal); setChancesLeft(newChances);
-  updateDoc(doc(db,"maya","shared"),{balance:newBal,transactions:newTxns,chancesLeft:newChances});
+  updateDoc(doc(db,"ecbfw","shared"),{balance:newBal,transactions:newTxns,chancesLeft:newChances});
 };
 
 const handleAddTxn=(tx)=>{
@@ -1077,7 +1077,7 @@ const handleAddTxn=(tx)=>{
   const newTxns=[...todayTxns,stamped];
   const newBal=tx.positive ? balance+tx.amount : Math.max(0,balance-tx.amount);
   setTodayTxns(newTxns); setBalance(newBal);
-  updateDoc(doc(db,"maya","shared"),{balance:newBal,transactions:newTxns});
+  updateDoc(doc(db,"ecbfw","shared"),{balance:newBal,transactions:newTxns});
 };
 
   // --- STEP 4: The Gatekeeper ---
