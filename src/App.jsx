@@ -18,7 +18,7 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
+    /* ─── CEREBRI SANS PRO (Stsandard App Font) ─── */
     @font-face {
       font-family: 'CerebriBook';
       src: url('/CerebriSansPro-Book.otf') format('opentype'); 
