@@ -1037,8 +1037,17 @@ export default function MayaApp() {
     }
   });
   const [showSettings,setShowSettings]=useState(false);
-  const [daysLeft,setDaysLeft]=useState(1);
-  const [chancesLeft,setChancesLeft]=useState(29);
+  // Save Days Left
+  const [daysLeft, setDaysLeft] = useState(() => {
+    const saved = localStorage.getItem("mayaDays");
+    return saved ? parseInt(saved) : 1;
+  });
+
+  // Save Chances Left
+  const [chancesLeft, setChancesLeft] = useState(() => {
+    const saved = localStorage.getItem("mayaChances");
+    return saved ? parseInt(saved) : 29;
+  });
   const [maxChances,setMaxChances]=useState(30);
   const [fastMode,setFastMode]=useState(false);
   // Auto-save balance whenever it changes
@@ -1050,6 +1059,15 @@ export default function MayaApp() {
   useEffect(() => {
     localStorage.setItem("mayaTxns", JSON.stringify(todayTxns));
   }, [todayTxns]);
+  
+  // Add these effects right below your other useEffects
+  useEffect(() => {
+    localStorage.setItem("mayaDays", daysLeft.toString());
+  }, [daysLeft]);
+
+  useEffect(() => {
+    localStorage.setItem("mayaChances", chancesLeft.toString());
+  }, [chancesLeft]);
   
 
   const navigate=(dest)=>{
