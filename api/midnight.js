@@ -1,6 +1,6 @@
-import { initializeApp, getApps } from "firebase-admin/app";
+import pkg from "firebase-admin";
+const { initializeApp, getApps, credential } = pkg;
 import { getFirestore } from "firebase-admin/firestore";
-import { credential } from "firebase-admin";
 
 if (!getApps().length) {
   initializeApp({
