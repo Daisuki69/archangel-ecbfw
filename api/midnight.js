@@ -1,10 +1,8 @@
 import pkg from "firebase-admin";
-const { initializeApp, getApps, credential } = pkg;
-import { getFirestore } from "firebase-admin/firestore";
 
-if (!getApps().length) {
-  initializeApp({
-    credential: credential.cert({
+if (!pkg.apps.length) {
+  pkg.initializeApp({
+    credential: pkg.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
@@ -13,7 +11,7 @@ if (!getApps().length) {
 }
 
 export default async function handler(req, res) {
-  const db = getFirestore();
+  const db = pkg.firestore();
   const ref = db.collection("ecbfw").doc("shared");
   const snap = await ref.get();
   const d = snap.data();
