@@ -832,7 +832,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
     {icon:"load",label:"Load"},
     {icon:"bills",label:"Bills"},
     {icon:"pbb",label:"PBB",badge:true,action:onPBB},
-    {icon:"more",label:"More"},
   ];
   
   const combinedTxns = [...[...todayTxns].reverse(), ...FEB21].slice(0, 3);
