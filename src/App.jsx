@@ -1037,12 +1037,12 @@ export default function MayaApp() {
   useEffect(() => {
     const ref = doc(db, "ecbfw", "shared")
     const unsub = onSnapshot(ref, (snap) => {
-      if (snap.exists()) {
+     if (snap.exists()) {
         const d = snap.data();
-        if (d.balance !== undefined) setBalance(d.balance);
-        if (d.transactions !== undefined) setTodayTxns(d.transactions);
-        if (d.daysLeft !== undefined) setDaysLeft(d.daysLeft);
-        if (d.chancesLeft !== undefined) setChancesLeft(d.chancesLeft);
+        setBalance(d.balance ?? 3190.75);
+        setTodayTxns(d.transactions ?? []);
+        setDaysLeft(d.daysLeft ?? 1);
+        setChancesLeft(d.chancesLeft ?? 29);
       }
     });
     return () => unsub();
@@ -1100,7 +1100,7 @@ const handleAddTxn=(tx)=>{
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
-          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => setBalance(b)} onAddTxn={handleAddTxn} onClearToday={() => setTodayTxns([])} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => {setDaysLeft(days); setChancesLeft(chances); setMaxChances(max);}} fastMode={fastMode} onSetFastMode={setFastMode} />}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} />}
           
           {/* Transition loading overlay */}
           {transitioning && (
