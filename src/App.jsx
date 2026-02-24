@@ -1112,26 +1112,19 @@ const handleAddTxn=(tx)=>{
   });
 };
 
-  // --- STEP 4: The Gatekeeper ---
-  if (isAppLoading) return <SplashScreen />;
-  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
-
-  // Clean, edge-to-edge mobile container without borders
   useEffect(() => {
   let backPressedOnce = false;
   let timer = null;
 
   const handleBack = (e) => {
-    if (screen !== "login") return; // only trigger on login/home base screens
+    if (screen !== "login") return;
     if (backPressedOnce) {
-      // second tap — exit
       if (window.navigator && window.navigator.app) {
-        window.navigator.app.exitApp(); // Capacitor/Cordova
+        window.navigator.app.exitApp();
       }
       return;
     }
     backPressedOnce = true;
-    // show toast
     const toast = document.createElement("div");
     toast.innerText = "Press back again to exit";
     toast.style.cssText = `
@@ -1154,6 +1147,11 @@ const handleAddTxn=(tx)=>{
     if (timer) clearTimeout(timer);
   };
 }, []);
+
+  // --- STEP 4: The Gatekeeper ---
+  if (isAppLoading) return <SplashScreen />;
+  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
+
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
       <GlobalStyle/>
