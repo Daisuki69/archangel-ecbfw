@@ -1113,40 +1113,50 @@ const handleAddTxn=(tx)=>{
 };
 
   useEffect(() => {
-  let backPressedOnce = false;
-  let timer = null;
+    let backPressedOnce = false;
+    let timer = null;
 
-  const handleBack = (e) => {
-    if (screen !== "login") return;
-    if (backPressedOnce) {
-      if (window.navigator && window.navigator.app) {
-        window.navigator.app.exitApp();
+    const showToast = () => {
+      const toast = document.createElement("div");
+      toast.id = "exit-toast";
+      toast.innerText = "Press back again to exit";
+      toast.style.cssText = `
+        position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+        background:#333; color:#fff; padding:10px 22px; border-radius:20px;
+        font-size:14px; font-weight:700; z-index:99999; opacity:1;
+        transition: opacity 0.5s; white-space:nowrap;
+      `;
+      document.body.appendChild(toast);
+      timer = setTimeout(() => {
+        backPressedOnce = false;
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 500);
+      }, 2000);
+    };
+
+    const handleBack = () => {
+      if (backPressedOnce) {
+        // @ts-ignore
+        if (window.App) window.App.exitApp();
+        else if (window.navigator?.app) window.navigator.app.exitApp();
+        else history.go(-history.length);
+        return;
       }
-      return;
-    }
-    backPressedOnce = true;
-    const toast = document.createElement("div");
-    toast.innerText = "Press back again to exit";
-    toast.style.cssText = `
-      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
-      background:#333; color:#fff; padding:10px 22px; border-radius:20px;
-      font-size:14px; font-weight:700; z-index:99999; opacity:1;
-      transition: opacity 0.5s;
-    `;
-    document.body.appendChild(toast);
-    timer = setTimeout(() => {
-      backPressedOnce = false;
-      toast.style.opacity = "0";
-      setTimeout(() => toast.remove(), 500);
-    }, 2000);
-  };
+      backPressedOnce = true;
+      showToast();
+    };
 
-  window.addEventListener("popstate", handleBack);
-  return () => {
-    window.removeEventListener("popstate", handleBack);
-    if (timer) clearTimeout(timer);
-  };
-}, []);
+    // Capacitor back button
+    let capListener = null;
+    if (window.Capacitor?.Plugins?.App) {
+      window.Capacitor.Plugins.App.addListener("backButton", handleBack).then(l => capListener = l);
+    }
+
+    return () => {
+      if (capListener) capListener.remove();
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
