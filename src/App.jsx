@@ -665,19 +665,19 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         {/* The gap and layout are reverted back to the original spacing! */}
         <div style={{display:"flex",gap:"12px 10px",flexWrap:"wrap"}}>
           {hm.map(h=>(
-            <div key={h.name} onClick={()=>setSel(h.name)} style={{
-              width:"calc(33.33% - 7px)", /* The invisible "walls" stay exactly the same! */
+            <div key={h.name} style={{
+              width:"calc(33.33% - 7px)",
               flexShrink:0,
-              cursor:"pointer",
               display: "flex", 
               flexDirection: "column", 
-              alignItems: "center" /* This perfectly centers the shrunken picture inside its original grid slot */
+              alignItems: "center"
             }}>
-              
+  
               {/* This picture box is now shrunk to 50% size! */}
-              <div style={{
+              <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
-                width: "75%", /* Shrinks the photo width by 50% */
+                width: "75%",
+                cursor:"pointer",
                 aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
                 borderRadius: 12, /* Slightly smaller corners to match the smaller box */
                 position:"relative",
@@ -832,6 +832,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
     {icon:"load",label:"Load"},
     {icon:"bills",label:"Bills"},
     {icon:"pbb",label:"PBB",badge:true,action:onPBB},
+    {icon:"more",label:"More"},
   ];
   
   const combinedTxns = [...[...todayTxns].reverse(), ...FEB21].slice(0, 3);
