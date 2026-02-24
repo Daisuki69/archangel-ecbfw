@@ -18,7 +18,7 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* ─── CEREBRI SANS PRO (Stsandard App Font) ─── */
+    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
     @font-face {
       font-family: 'CerebriBook';
       src: url('/CerebriSansPro-Book.otf') format('opentype'); 
@@ -428,7 +428,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
       overflow: "hidden" 
     }}>
       
-      {loading && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.35)",zIndex:200,borderRadius:34}}/>}
+      {loading && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.35)",zIndex:200}}/>}
       
       {error && (
         <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"24px",borderRadius:34}}>
@@ -565,14 +565,14 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   const [voted,setVoted]=useState(false);
   const [vInfo,setVInfo]=useState(null);
   const hm=[
-    {name:"Ashley",bg:"#1565c0"},
-    {name:"Caprice",bg:"#1565c0"},
+    {name:"Ashley",bg:"#1565c0", img:"/ashley.jpg"},
+    {name:"Caprice",bg:"#1565c0", img:"/caprice.jpg"},
     {name:"Heath",bg:"#1565c0"},
-    {name:"Joaquin",bg:"#c62828"},
-    {name:"Krystal",bg:"#c62828"},
+    {name:"Joaquin",bg:"#c62828", img:"/joaquin.jpg"},
+    {name:"Krystal",bg:"#c62828", img:"/krystal.jpg"},
     {name:"Lella",bg:"#c62828"},
     {name:"Miguel",bg:"#c62828"},
-    {name:"Princess",bg:"#1565c0"},
+    {name:"Princess",bg:"#1565c0", img:"/princess.jpg"},
   ];
   const noChances = chancesLeft <= 0;
 
@@ -589,7 +589,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
 
   return (
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white,position:"relative"}}>
-      <div style={{display:"flex",alignItems:"center",padding:"12px 20px"}}>
+      <div style={{display:"flex",alignItems:"center",padding:"12px 20px", position: "relative", zIndex: 100, background: C.white}}>
         <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.2098 12.0377L3.25403 18.9935L5.0218 20.7613L11.9775 13.8055L18.9993 20.8273L20.7671 19.0595L13.7453 12.0377L20.7672 5.01581L18.9995 3.24805L11.9775 10.27L5.02167 3.3141L3.25391 5.08187L10.2098 12.0377Z" fill="black"/></svg>
         </button>
@@ -601,20 +601,23 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
       
-      {/* Banner Area */}
+     {/* Banner Area */}
       <div style={{ position: "relative", width: "100%", background: "#000", height: "200px" }}>
-        <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.85) 100%)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "20px 20px 40px" }}>
-          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:6}}>
-            <div style={{background:"white",borderRadius:4,padding:"3px 6px",fontSize:9,fontWeight:900,color:"#cc0000"}}>GMA ✕ ABS-CBN</div>
-          </div>
-          <div style={{fontSize:16,fontWeight:800,color:"white"}}>Who will you <span style={{color:C.mint}}>#SAVEwith<em>maya</em>?</span></div>
-        </div>
+        
+        {/* Changed back to "cover" to touch sides, and added "top" so it only crops the bottom black space! */}
+        <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+        
+        {/* Maya logo: Brightened up + 1 soft layer of neon green glow */}
+        <img src="/maya_logo_full.svg" alt="maya" style={{ position: "absolute", right: "8.2%", top: "35.5%", width: "92px", filter: "brightness(2) drop-shadow(0px 0px 1.3px #00ff99)" }} />
+        
+        {/* Keeping a slight gradient just so the white stats notch pops out clearly */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
       </div>
 
       {/* Floating Stats Notch */}
-      <div style={{ padding: "0 20px", marginTop: "-28px", position: "relative", zIndex: 5 }}>
-        <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "16px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
+      <div style={{ padding: "0 20px", marginTop: "-58px", position: "relative", zIndex: 5 }}>
+        {/* Changed borderRadius to 8 for a boxier look, and padding to 24px for more height */}
+        <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "18px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
             <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
             <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>before voting ends</div>
@@ -647,24 +650,55 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
 
       {/* Grid Area */}
       <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
+        {/* The gap and layout are reverted back to the original spacing! */}
         <div style={{display:"flex",gap:"12px 10px",flexWrap:"wrap"}}>
           {hm.map(h=>(
-            <div key={h.name} onClick={()=>setSel(h.name)} style={{width:"calc(33.33% - 7px)",flexShrink:0,cursor:"pointer"}}>
-              <div style={{background:h.bg,height:96,borderRadius:16,position:"relative",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",paddingBottom:10,overflow:"hidden",boxShadow:"0 4px 12px rgba(0,0,0,0.1)"}}>
-                <div style={{position:"absolute",top:15}}>
-                  <Ic n="user" s={48} c="rgba(255,255,255,0.3)"/>
-                </div>
-                <div style={{background: h.bg==="#c62828"?"#0a2e1e":"#00a651", color:"white", fontSize:10, fontWeight:900, padding:"4px 10px", borderRadius:12, zIndex:2, letterSpacing:0.5, boxShadow:"0 2px 4px rgba(0,0,0,0.2)"}}>
-                   {h.name.toUpperCase()}
-                </div>
+            <div key={h.name} onClick={()=>setSel(h.name)} style={{
+              width:"calc(33.33% - 7px)", /* The invisible "walls" stay exactly the same! */
+              flexShrink:0,
+              cursor:"pointer",
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center" /* This perfectly centers the shrunken picture inside its original grid slot */
+            }}>
+              
+              {/* This picture box is now shrunk to 50% size! */}
+              <div style={{
+                background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
+                width: "75%", /* Shrinks the photo width by 50% */
+                aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
+                borderRadius: 12, /* Slightly smaller corners to match the smaller box */
+                position:"relative",
+                display:"flex",
+                flexDirection:"column",
+                alignItems:"center",
+                justifyContent:"flex-end",
+                paddingBottom: 6,
+                overflow:"hidden",
+                boxShadow:"0 2px 8px rgba(0,0,0,0.1)"
+              }}>
+                {/* Only show HTML icon and pill if there is NO image */}
+                {!h.img && (
+                  <>
+                    <div style={{position:"absolute",top:8}}>
+                      <Ic n="user" s={32} c="rgba(255,255,255,0.3)"/>
+                    </div>
+                    <div style={{background: h.bg==="#c62828"?"#0a2e1e":"#00a651", color:"white", fontSize:7, fontWeight:900, padding:"3px 8px", borderRadius:8, zIndex:2, letterSpacing:0.5, boxShadow:"0 2px 4px rgba(0,0,0,0.2)"}}>
+                       {h.name.toUpperCase()}
+                    </div>
+                  </>
+                )}
               </div>
-              <div style={{textAlign:"center", marginTop:8, fontSize:13, fontWeight:800, color:C.dark}}>
+
+              {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
+              <div style={{textAlign:"center", marginTop:8, fontSize:11, fontWeight:800, color:C.dark}}>
                 {h.name}
               </div>
+
             </div>
           ))}
         </div>
-        <div style={{textAlign:"center",marginTop:20}}>
+        <div style={{textAlign:"center",marginTop:24}}>
           <span style={{color:C.green,fontSize:13,fontWeight:800,cursor:"pointer"}}>View terms and conditions for PBB voting</span>
         </div>
       </div>
@@ -674,8 +708,26 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:40,display:"flex",alignItems:"flex-end"}}>
           <div style={{background:C.white,borderRadius:"24px 24px 0 0",width:"100%",maxHeight:"85%",display:"flex",flexDirection:"column"}}>
              <div style={{padding:"16px 20px",display:"flex",alignItems:"center",borderBottom:`1px solid ${C.gray}`}}>
-               <div style={{width:40,height:40,borderRadius:"50%",background:hm.find(x=>x.name===sel)?.bg,marginRight:12,display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="user" s={20} c="white"/></div>
-               <div style={{flex:1}}>
+                   {(() => {
+                     const selectedHm = hm.find(x=>x.name===sel);
+                     return (
+                       <div style={{
+                         width: 48, height: 48, borderRadius: 12, marginRight: 12,
+                         background: selectedHm?.img ? `url(${selectedHm.img}) center/cover no-repeat` : selectedHm?.bg,
+                         position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", paddingBottom: 4, overflow: "hidden"
+                       }}>
+                         {!selectedHm?.img && (
+                           <>
+                             <div style={{position:"absolute",top:4}}><Ic n="user" s={24} c="rgba(255,255,255,0.3)"/></div>
+                             <div style={{background: selectedHm?.bg==="#c62828"?"#0a2e1e":"#00a651", color:"white", fontSize:5, fontWeight:900, padding:"2px 5px", borderRadius:6, zIndex:2}}>
+                               {sel.toUpperCase()}
+                             </div>
+                           </>
+                         )}
+                       </div>
+                     );
+                   })()}
+                   <div style={{flex:1}}>
                  <div style={{fontSize:16,fontWeight:900}}>Save {sel}</div>
                  <div style={{fontSize:13,color:C.med}}>Add votes to save {sel}</div>
                </div>
@@ -692,7 +744,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
                     <button
                        disabled={balance < opt}
                        onClick={() => doVote(opt)}
-                       style={{padding:'10px 24px', borderRadius:20, fontWeight:800, fontSize:14, border:'none', color: balance >= opt ? 'white' : '#888', background: balance >= opt ? C.green : '#e0e0e0', cursor: balance >= opt ? 'pointer' : 'default'}}>
+                       style={{padding:'10px 24px', borderRadius:12, fontWeight:800, fontSize:14, border:'none', color: balance >= opt ? 'white' : '#888', background: balance >= opt ? C.green : '#e0e0e0', cursor: balance >= opt ? 'pointer' : 'default'}}>
                        Vote
                     </button>
                   </div>
