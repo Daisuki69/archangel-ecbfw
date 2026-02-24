@@ -1153,7 +1153,7 @@ const handleAddTxn=(tx)=>{
     window.removeEventListener("popstate", handleBack);
     if (timer) clearTimeout(timer);
   };
-}, [screen]);
+}, []);
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
       <GlobalStyle/>
