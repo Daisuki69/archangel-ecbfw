@@ -1117,6 +1117,43 @@ const handleAddTxn=(tx)=>{
   if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
 
   // Clean, edge-to-edge mobile container without borders
+  useEffect(() => {
+  let backPressedOnce = false;
+  let timer = null;
+
+  const handleBack = (e) => {
+    if (screen !== "login") return; // only trigger on login/home base screens
+    if (backPressedOnce) {
+      // second tap — exit
+      if (window.navigator && window.navigator.app) {
+        window.navigator.app.exitApp(); // Capacitor/Cordova
+      }
+      return;
+    }
+    backPressedOnce = true;
+    // show toast
+    const toast = document.createElement("div");
+    toast.innerText = "Press back again to exit";
+    toast.style.cssText = `
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+      background:#333; color:#fff; padding:10px 22px; border-radius:20px;
+      font-size:14px; font-weight:700; z-index:99999; opacity:1;
+      transition: opacity 0.5s;
+    `;
+    document.body.appendChild(toast);
+    timer = setTimeout(() => {
+      backPressedOnce = false;
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 500);
+    }, 2000);
+  };
+
+  window.addEventListener("popstate", handleBack);
+  return () => {
+    window.removeEventListener("popstate", handleBack);
+    if (timer) clearTimeout(timer);
+  };
+}, [screen]);
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
       <GlobalStyle/>
