@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
+import { App as CapApp } from '@capacitor/app';
 
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
@@ -1112,13 +1113,17 @@ const handleAddTxn=(tx)=>{
   });
 };
 
-  useEffect(() => {
+ useEffect(() => {
     let backPressedOnce = false;
     let timer = null;
 
-    const showToast = () => {
+    const handleBack = () => {
+      if (backPressedOnce) {
+        CapApp.exitApp();
+        return;
+      }
+      backPressedOnce = true;
       const toast = document.createElement("div");
-      toast.id = "exit-toast";
       toast.innerText = "Press back again to exit";
       toast.style.cssText = `
         position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
@@ -1134,26 +1139,9 @@ const handleAddTxn=(tx)=>{
       }, 2000);
     };
 
-    const handleBack = () => {
-      if (backPressedOnce) {
-        // @ts-ignore
-        if (window.App) window.App.exitApp();
-        else if (window.navigator?.app) window.navigator.app.exitApp();
-        else history.go(-history.length);
-        return;
-      }
-      backPressedOnce = true;
-      showToast();
-    };
-
-    // Capacitor back button
-    let capListener = null;
-    if (window.Capacitor?.Plugins?.App) {
-      window.Capacitor.Plugins.App.addListener("backButton", handleBack).then(l => capListener = l);
-    }
-
+    const sub = CapApp.addListener("backButton", handleBack);
     return () => {
-      if (capListener) capListener.remove();
+      sub.then(l => l.remove());
       if (timer) clearTimeout(timer);
     };
   }, []);
