@@ -1028,7 +1028,14 @@ export default function MayaApp() {
     const savedBal = localStorage.getItem("mayaBalance");
     return savedBal ? parseFloat(savedBal) : 12345.67; // <-- Put your original default balance here!
   });
-  const [todayTxns,setTodayTxns]=useState([]);
+ const [todayTxns, setTodayTxns] = useState(() => {
+    try {
+      const saved = localStorage.getItem("mayaTxns");
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [showSettings,setShowSettings]=useState(false);
   const [daysLeft,setDaysLeft]=useState(1);
   const [chancesLeft,setChancesLeft]=useState(29);
