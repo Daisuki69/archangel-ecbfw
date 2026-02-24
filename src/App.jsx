@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { db } from "./firebase";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
@@ -1024,50 +1026,26 @@ export default function MayaApp() {
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
-  const [balance, setBalance] = useState(() => {
-    const savedBal = localStorage.getItem("mayaBalance");
-    return savedBal ? parseFloat(savedBal) : 12345.67; // <-- Put your original default balance here!
-  });
- const [todayTxns, setTodayTxns] = useState(() => {
-    try {
-      const saved = localStorage.getItem("mayaTxns");
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
-  const [showSettings,setShowSettings]=useState(false);
-  // Save Days Left
-  const [daysLeft, setDaysLeft] = useState(() => {
-    const saved = localStorage.getItem("mayaDays");
-    return saved ? parseInt(saved) : 1;
-  });
-
-  // Save Chances Left
-  const [chancesLeft, setChancesLeft] = useState(() => {
-    const saved = localStorage.getItem("mayaChances");
-    return saved ? parseInt(saved) : 29;
-  });
+  const [balance, setBalance] = useState(3190.75);
+  const [todayTxns, setTodayTxns] = useState([]);
+  const [daysLeft, setDaysLeft] = useState(1);
+  const [chancesLeft, setChancesLeft] = useState(29);
   const [maxChances,setMaxChances]=useState(30);
   const [fastMode,setFastMode]=useState(false);
-  // Auto-save balance whenever it changes
+  // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
-    localStorage.setItem("mayaBalance", balance.toString());
-  }, [balance]);
-
-  // Auto-save transactions whenever a new one is added
-  useEffect(() => {
-    localStorage.setItem("mayaTxns", JSON.stringify(todayTxns));
-  }, [todayTxns]);
-  
-  // Add these effects right below your other useEffects
-  useEffect(() => {
-    localStorage.setItem("mayaDays", daysLeft.toString());
-  }, [daysLeft]);
-
-  useEffect(() => {
-    localStorage.setItem("mayaChances", chancesLeft.toString());
-  }, [chancesLeft]);
+    const ref = doc(db, "maya", "shared");
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.balance !== undefined) setBalance(d.balance);
+        if (d.transactions !== undefined) setTodayTxns(d.transactions);
+        if (d.daysLeft !== undefined) setDaysLeft(d.daysLeft);
+        if (d.chancesLeft !== undefined) setChancesLeft(d.chancesLeft);
+      }
+    });
+    return () => unsub();
+  }, []);
   
 
   const navigate=(dest)=>{
@@ -1083,20 +1061,24 @@ export default function MayaApp() {
   };
 
   const handleVote=(name,cnt,cost)=>{
-    const now=new Date();
-    const h=now.getHours(), m=String(now.getMinutes()).padStart(2,"0");
-    const ampm=h>=12?"PM":"AM"; const h12=((h%12)||12);
-    const tx={id:"v"+Date.now(),label:`PBB Save ${name} x${cnt}`,time:`${String(h12).padStart(2,"0")}:${m} ${ampm}`,timestamp:Date.now(),amount:cost,positive:false,sub:"Purchased on"};
-    setTodayTxns(p=>[...p,tx]);
-    setBalance(p=>Math.max(0,p-cost));
-    setChancesLeft(p=>Math.max(0,p-1));
-  };
+  const now=new Date();
+  const h=now.getHours(), m=String(now.getMinutes()).padStart(2,"0");
+  const ampm=h>=12?"PM":"AM"; const h12=((h%12)||12);
+  const tx={id:"v"+Date.now(),label:`PBB Save ${name} x${cnt}`,time:`${String(h12).padStart(2,"0")}:${m} ${ampm}`,timestamp:Date.now(),amount:cost,positive:false,sub:"Purchased on"};
+  const newTxns=[...todayTxns,tx];
+  const newBal=Math.max(0,balance-cost);
+  const newChances=Math.max(0,chancesLeft-1);
+  setTodayTxns(newTxns); setBalance(newBal); setChancesLeft(newChances);
+  updateDoc(doc(db,"maya","shared"),{balance:newBal,transactions:newTxns,chancesLeft:newChances});
+};
 
-  const handleAddTxn=(tx)=>{
-    setTodayTxns(p=>[...p,{...tx,timestamp:Date.now()}]);
-    if(tx.positive) setBalance(p=>p+tx.amount);
-    else setBalance(p=>Math.max(0,p-tx.amount));
-  };
+const handleAddTxn=(tx)=>{
+  const stamped={...tx,timestamp:Date.now()};
+  const newTxns=[...todayTxns,stamped];
+  const newBal=tx.positive ? balance+tx.amount : Math.max(0,balance-tx.amount);
+  setTodayTxns(newTxns); setBalance(newBal);
+  updateDoc(doc(db,"maya","shared"),{balance:newBal,transactions:newTxns});
+};
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
