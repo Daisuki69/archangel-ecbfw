@@ -1028,17 +1028,7 @@ export default function MayaApp() {
     const savedBal = localStorage.getItem("mayaBalance");
     return savedBal ? parseFloat(savedBal) : 12345.67; // <-- Put your original default balance here!
   });
-  // CORRECT WAY (Forces React to notice the change and auto-save!)
-  setTodayTxns(prevTxns => [
-    {
-      id: Date.now(), // Gives it a unique ID
-      title: "PBB Voting",
-      amount: -opt, // The amount they voted for
-      type: "vote",
-      date: new Date().toLocaleDateString() // Or however you format your dates
-    },
-    ...prevTxns // This spreads all the old transactions underneath the new one!
-  ]);
+  const [todayTxns,setTodayTxns]=useState([]);
   const [showSettings,setShowSettings]=useState(false);
   const [daysLeft,setDaysLeft]=useState(1);
   const [chancesLeft,setChancesLeft]=useState(29);
