@@ -1031,6 +1031,7 @@ export default function MayaApp() {
   const [daysLeft, setDaysLeft] = useState(1);
   const [chancesLeft, setChancesLeft] = useState(29);
   const [maxChances,setMaxChances]=useState(30);
+  const [showSettings,setShowSettings]=useState(false);
   const [fastMode,setFastMode]=useState(false);
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
