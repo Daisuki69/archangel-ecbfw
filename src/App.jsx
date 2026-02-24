@@ -1034,7 +1034,7 @@ export default function MayaApp() {
   const [fastMode,setFastMode]=useState(false);
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
-    const ref = doc(db, "maya", "shared");
+    cdoc(db, "ecbfw", "shared")
     const unsub = onSnapshot(ref, (snap) => {
       if (snap.exists()) {
         const d = snap.data();
