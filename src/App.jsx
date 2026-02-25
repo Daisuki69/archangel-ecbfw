@@ -438,7 +438,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
 };
 
 // ── LOGIN ──────────────────────────────────────────────────────────────────────
-const LoginScreen = ({onLogin, fastMode, onShowSettings}) => {
+const LoginScreen = ({onLogin, fastMode}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(true);
   const [loading,setLoading]=useState(false);
@@ -479,17 +479,7 @@ const LoginScreen = ({onLogin, fastMode, onShowSettings}) => {
       else window.removeEventListener('resize', updateLayout);
     };
   }, []);
-  const [secretTaps, setSecretTaps] = useState(0);
-  const [showSettingsBtn, setShowSettingsBtn] = useState(false);
-  const handleSecretTap = () => {
-    if (pw) return; // only when button is grayed (no password typed)
-    const next = secretTaps + 1;
-    setSecretTaps(next);
-    if (next >= 5) {
-      setSecretTaps(0);
-      setShowSettingsBtn(p => !p); // toggle on/off
-    }
-  };
+
   const showRequired = loginAttempted && pw.length === 0;
   // Exact hex requested by you
   const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
@@ -511,19 +501,9 @@ const LoginScreen = ({onLogin, fastMode, onShowSettings}) => {
 };
 
   const LoginBtn = (
-    <div style={{position:"relative"}}>
-      <button onClick={pw ? handleLogin : handleSecretTap} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
-        Log in
-      </button>
-      {showSettingsBtn && (
-        <button onClick={onShowSettings} style={{
-          position:"absolute", top:"50%", right:"-48px", transform:"translateY(-50%)",
-          background:"none", border:"none", cursor:"pointer", padding:8, opacity:0.5
-        }}>
-          <Ic n="settings" s={20} c={C.dark}/>
-        </button>
-      )}
-    </div>
+    <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
+      Log in
+    </button>
   );
 
   // OUTER WRAPPER: Locks strictly to the Viewport Height so the bottom never gets hidden by the keyboard
@@ -951,6 +931,8 @@ return (
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
+            {/* The Settings Button is back! */}
+            <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
             <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
               <Ic n="bell" s={22}/>
@@ -1429,7 +1411,7 @@ const handleAddTxn=(tx)=>{
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} onShowSettings={() => setShowSettings(true)} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
