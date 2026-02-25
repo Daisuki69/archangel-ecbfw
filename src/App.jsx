@@ -25,7 +25,7 @@ const DEFAULT_STYLES = {
   datePillPadding: "6px 18px",
   datePillRadius: 30,
   datePillBg: "#111111",
-  datePillTopPad: 8,
+  datePillTopPad: 0,
 
   // Balance
   balanceFontSize: 30,
