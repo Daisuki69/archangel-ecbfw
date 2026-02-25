@@ -739,7 +739,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
-                width: syles.pbbPhotoSize,
+                width: styles.pbbPhotoSize,
                 cursor:"pointer",
                 aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
                 borderRadius: styles.pbbPhotoRadius,
@@ -766,7 +766,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               </div>
 
               {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
-              <div style={{textAlign:"center", marginTop:8, fontSize:syles.pbbNameSize, fontWeight:800, color:C.dark}}>
+              <div style={{textAlign:"center", marginTop:8, fontSize:styles.pbbNameSize, fontWeight:800, color:C.dark}}>
                 {h.name}
               </div>
 
@@ -1099,6 +1099,83 @@ return (
 };
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
+const FloatingDevButton = ({pendingCount, onOpen}) => {
+  const [pos, setPos] = useState({side:"right", y:50}); // y = percentage
+  const dragging = useRef(false);
+  const startY = useRef(0);
+  const startPos = useRef(0);
+
+  const handlePointerDown = (e) => {
+    dragging.current = true;
+    startY.current = e.clientY;
+    startPos.current = pos.y;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.stopPropagation();
+  };
+
+  const handlePointerMove = (e) => {
+    if (!dragging.current) return;
+    const deltaY = e.clientY - startY.current;
+    const deltaPercent = (deltaY / window.innerHeight) * 100;
+    const newY = Math.min(90, Math.max(10, startPos.current + deltaPercent));
+    setPos(p => ({...p, y: newY}));
+  };
+
+  const handlePointerUp = (e) => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    // snap to nearest side based on x position
+    const x = e.clientX;
+    const side = x < window.innerWidth / 2 ? "left" : "right";
+    setPos(p => ({...p, side}));
+  };
+
+  const handleClick = (e) => {
+    // only open if not dragging
+    if (Math.abs(e.clientY - startY.current) < 5) onOpen();
+  };
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onClick={handleClick}
+      style={{
+        position:"fixed",
+        [pos.side]: 0,
+        top:`${pos.y}%`,
+        transform:"translateY(-50%)",
+        background:C.green,
+        color:"white",
+        writingMode:"vertical-rl",
+        padding:"12px 6px",
+        borderRadius: pos.side==="right" ? "12px 0 0 12px" : "0 12px 12px 0",
+        fontSize:11,
+        fontWeight:900,
+        cursor:"grab",
+        zIndex:8999,
+        boxShadow: pos.side==="right" ? "-2px 0 12px rgba(0,0,0,0.15)" : "2px 0 12px rgba(0,0,0,0.15)",
+        display:"flex",
+        flexDirection:"column",
+        alignItems:"center",
+        gap:6,
+        letterSpacing:1,
+        userSelect:"none",
+        touchAction:"none",
+      }}>
+      {pendingCount > 0 && (
+        <div style={{
+          background:"#e74c3c", color:"white", borderRadius:"50%",
+          width:16, height:16, fontSize:9, fontWeight:900,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          writingMode:"horizontal-tb", marginBottom:4
+        }}>{pendingCount}</div>
+      )}
+      🛠️ DEV
+    </div>
+  );
+};
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
 
@@ -1106,25 +1183,10 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
     <>
       {/* Floating side button */}
       {!open && (
-        <div onClick={()=>setOpen(true)} style={{
-          position:"fixed", right:0, top:"50%", transform:"translateY(-50%)",
-          background:C.green, color:"white", writingMode:"vertical-rl",
-          padding:"12px 6px", borderRadius:"12px 0 0 12px",
-          fontSize:11, fontWeight:900, cursor:"pointer", zIndex:8999,
-          boxShadow:"-2px 0 12px rgba(0,0,0,0.15)",
-          display:"flex", flexDirection:"column", alignItems:"center", gap:6,
-          letterSpacing:1
-        }}>
-          {pendingChanges.length > 0 && (
-            <div style={{
-              background:"#e74c3c", color:"white", borderRadius:"50%",
-              width:16, height:16, fontSize:9, fontWeight:900,
-              display:"flex", alignItems:"center", justifyContent:"center",
-              writingMode:"horizontal-tb", marginBottom:4
-            }}>{pendingChanges.length}</div>
-          )}
-          🛠️ DEV
-        </div>
+        <FloatingDevButton
+          pendingCount={pendingChanges.length}
+          onOpen={()=>setOpen(true)}
+        />
       )}
 
       {/* Panel */}
