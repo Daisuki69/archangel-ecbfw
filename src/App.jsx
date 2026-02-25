@@ -929,9 +929,6 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
         StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
         StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
       }
-      // Switch to white bars with dark icons once splash is gone
-      StatusBar.setStyle({ style: Style.Light });
-      StatusBar.setBackgroundColor({ color: '#ffffff' });
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
