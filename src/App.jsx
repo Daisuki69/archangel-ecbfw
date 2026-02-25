@@ -71,7 +71,8 @@ const GlobalStyle = () => (
     input[type='password']::-webkit-textfield-decoration-container { display: none; }
     input::-webkit-contacts-auto-fill-button, input::-webkit-caps-lock-indicator { display: none !important; }
     @keyframes ripple {
-      to { transform: scale(1); opacity: 0; }
+      0% { transform: scale(0); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 0.4; }
     }
      0%, 100% { opacity: 1; }
      50% { opacity: 0; }
@@ -679,7 +680,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               flexDirection: "column", 
               alignItems: "center"
               }}>
-                
+
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
@@ -908,25 +909,26 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"14px 8px",marginBottom:12}}>
           <div className="no-select" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
             {shortcuts.map((s,i)=>(
-              <div key={i} onClick={s.action}
-                style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",cursor:s.action?"pointer":"default",position:"relative",borderRadius:12,overflow:"hidden"}}
-                onPointerDown={e=>{
-                  const el=e.currentTarget;
-                  const ripple=document.createElement("span");
-                  const rect=el.getBoundingClientRect();
-                  const size=Math.max(rect.width,rect.height)*2;
-                  const x=e.clientX-rect.left-size/2;
-                  const y=e.clientY-rect.top-size/2;
-                  ripple.style.cssText=`position:absolute;width:${size}px;height:${size}px;left:${x}px;top:${y}px;border-radius:50%;background:#d4d4d6;opacity:0.6;transform:scale(0);animation:ripple 0.5s linear;pointer-events:none;z-index:0;`;
-                  el.appendChild(ripple);
-                  ripple.addEventListener("animationend",()=>ripple.remove());
-                }}>
-                {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5}}>VOTE</div>}
-                <div style={{width:48,height:48,borderRadius:14,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5}}>
-                  {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c="#333"/>}
-                </div>
-                <div style={{fontSize:10.5,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
+              <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",position:"relative",borderRadius:12}}>
+                {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5,zIndex:2}}>VOTE</div>}
+                <div onClick={s.action} style={{width:56,height:56,borderRadius:14,background:"#f4f6f5",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
+                  onPointerDown={s.action ? e=>{
+                    const el=e.currentTarget;
+                    const ripple=document.createElement("span");
+                    const rect=el.getBoundingClientRect();
+                    const size=Math.max(rect.width,rect.height)*2;
+                    const x=e.clientX-rect.left-size/2;
+                    const y=e.clientY-rect.top-size/2;
+                    ripple.style.cssText=`position:absolute;width:${size}px;height:${size}px;left:${x}px;top:${y}px;border-radius:50%;background:#c8c8c8;opacity:0.4;transform:scale(0);animation:ripple 0.5s linear;pointer-events:none;z-index:0;`;
+                    el.appendChild(ripple);
+                    ripple.addEventListener("animationend",()=>{ ripple.style.transform="scale(1)"; ripple.style.animation="none"; });
+                      } : undefined}
+                      onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
+                      onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
+                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c="#333"/>}
               </div>
+              <div style={{fontSize:10.5,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
+            </div>
             ))}
           </div>
         </div>
