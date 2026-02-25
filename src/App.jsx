@@ -5,6 +5,12 @@ import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 
+const C = {
+  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f",
+  white:"#fff", bg:"#f2f2f2", gray:"#e8e8e8", dark:"#111",
+  med:"#555", light:"#999",
+};
+
 // ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
   // Shortcut grid
@@ -165,11 +171,18 @@ const GlobalStyle = () => (
   `}</style>
 );
 
-const C = {
-  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f",
-  white:"#fff", bg:"#f2f2f2", gray:"#e8e8e8", dark:"#111",
-  med:"#555", light:"#999",
-};
+  const [nextScreen,setNextScreen]=useState(null);
+  const [transitioning,setTransitioning]=useState(false);
+  const [balance, setBalance] = useState(3190.75);
+  const [todayTxns, setTodayTxns] = useState([]);
+  const [daysLeft, setDaysLeft] = useState(1);
+  const [chancesLeft, setChancesLeft] = useState(29);
+  const [maxChances,setMaxChances]=useState(30);
+  const [showSettings,setShowSettings]=useState(false);
+  const [fastMode,setFastMode]=useState(false);
+  const [devToolsEnabled, setDevToolsEnabled] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState([]);
+  const [styles, setStyles] = useState({...DEFAULT_STYLES});
 
 const fmt = (n) => Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
@@ -1345,18 +1358,6 @@ export default function MayaApp() {
     }
   }, [transitioning, isAppLoading]);
 
-  const [nextScreen,setNextScreen]=useState(null);
-  const [transitioning,setTransitioning]=useState(false);
-  const [balance, setBalance] = useState(3190.75);
-  const [todayTxns, setTodayTxns] = useState([]);
-  const [daysLeft, setDaysLeft] = useState(1);
-  const [chancesLeft, setChancesLeft] = useState(29);
-  const [maxChances,setMaxChances]=useState(30);
-  const [showSettings,setShowSettings]=useState(false);
-  const [fastMode,setFastMode]=useState(false);
-  const [devToolsEnabled, setDevToolsEnabled] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState([]);
-  const [styles, setStyles] = useState({...DEFAULT_STYLES});
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
     const ref = doc(db, "ecbfw", "shared")
