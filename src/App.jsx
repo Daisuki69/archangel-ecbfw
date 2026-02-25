@@ -1214,6 +1214,14 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
 };
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
+  const scrollPos = useRef(0);
+  const listRef = useRef(null);
+
+  useEffect(() => {
+    if (open && listRef.current) {
+      listRef.current.scrollTop = scrollPos.current;
+    }
+  }, [open]);
 
   return (
     <>
@@ -1250,7 +1258,10 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
           </div>
 
           {/* All STYLES variables auto-listed */}
-          <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
+          <div
+            ref={listRef}
+            onScroll={(e) => (scrollPos.current = e.target.scrollTop)}
+            style={{overflowY:"auto",padding:"12px 18px 32px"}}>
             {Object.entries(styles).map(([key, val]) => {
               const isPending = pendingChanges.some(c => c.key === key);
               const isColor = typeof val === "string" && val.startsWith("#");
