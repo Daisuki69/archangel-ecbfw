@@ -6,7 +6,7 @@ import { App as CapApp } from '@capacitor/app';
 // ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
   // Shortcut grid
-  headerPadding: "12px 18px",
+  headerPadding: "20px 25px",
   shortcutIconSize: 56,
   shortcutIconRadius: 14,
   shortcutIconBg: "#f4f6f5",
