@@ -3,6 +3,37 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 
+// ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
+const DEFAULT_STYLES = {
+  // Shortcut grid
+  shortcutIconSize: 56,
+  shortcutIconRadius: 14,
+  shortcutIconBg: "#f4f6f5",
+  shortcutIconColor: "#333333",
+  shortcutLabelSize: 10.5,
+
+  // Transaction rows
+  txnRowPadding: "10px 20px",
+  txnLabelSize: 15,
+  txnSubSize: 12,
+  txnAmountSize: 15,
+
+  // Date pill
+  datePillSize: 14,
+  datePillPadding: "6px 18px",
+  datePillRadius: 30,
+  datePillBg: "#111111",
+
+  // Balance
+  balanceFontSize: 30,
+
+  // PBB candidate photo
+  pbbPhotoSize: "75%",
+  pbbPhotoRadius: 12,
+  pbbNameSize: 11,
+};
+let STYLES = { ...DEFAULT_STYLES };
+
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
   <div style={{
@@ -199,15 +230,15 @@ const TxRow = ({tx, isToday}) => {
   },[isToday,tx.timestamp]);
   const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
   return (
-    <div style={{padding:"10px 20px"}}>
+    <div style={{padding:STYLES.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
-          <div style={{fontSize:12,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
-          <div style={{fontSize:15,fontWeight:800,color:C.dark}}>{tx.label}</div>
+          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
+          <div style={{fontSize:STYLES.txnLabelSize,fontWeight:800,color:C.dark}}>{tx.label}</div>
         </div>
         <div style={{textAlign:"right"}}>
-          <div style={{fontSize:12,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:15,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
+          <div style={{fontSize:STYLES.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
         </div>
       </div>
     </div>
@@ -217,7 +248,7 @@ const TxRow = ({tx, isToday}) => {
 const DateChip = ({label}) => (
   <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
-    <div style={{background:C.dark,color:C.white,borderRadius:30,padding:"6px 18px",fontSize:14,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
+    <div style={{background:STYLES.datePillBg,color:C.white,borderRadius:STYLES.datePillRadius,padding:STYLES.datePillPadding,fontSize:STYLES.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
   </div>
 );
@@ -684,10 +715,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
-                width: "75%",
+                width: STYLES.pbbPhotoSize,
                 cursor:"pointer",
                 aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
-                borderRadius: 12, /* Slightly smaller corners to match the smaller box */
+                borderRadius: STYLES.pbbPhotoRadius,
                 position:"relative",
                 display:"flex",
                 flexDirection:"column",
@@ -711,7 +742,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               </div>
 
               {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
-              <div style={{textAlign:"center", marginTop:8, fontSize:11, fontWeight:800, color:C.dark}}>
+              <div style={{textAlign:"center", marginTop:8, fontSize:STYLES.pbbNameSize, fontWeight:800, color:C.dark}}>
                 {h.name}
               </div>
 
@@ -885,7 +916,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:30,fontWeight:500,letterSpacing:-1}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
+              <div style={{fontSize:STYLES.balanceFontSize,fontWeight:500,letterSpacing:-1}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -911,7 +942,7 @@ return (
             {shortcuts.map((s,i)=>(
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",position:"relative",borderRadius:12}}>
                 {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5,zIndex:2}}>VOTE</div>}
-                <div onClick={s.action} style={{width:56,height:56,borderRadius:14,background:"#f4f6f5",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
+                <div onClick={s.action} style={{width:STYLES.shortcutIconSize,height:STYLES.shortcutIconSize,borderRadius:STYLES.shortcutIconRadius,background:STYLES.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
                   onPointerDown={s.action ? e=>{
                     const el=e.currentTarget;
                     const ripple=document.createElement("span");
@@ -925,9 +956,9 @@ return (
                       } : undefined}
                       onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
                       onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
-                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c="#333"/>}
+                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={STYLES.shortcutIconColor}/>}
               </div>
-              <div style={{fontSize:10.5,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
+              <div style={{fontSize:STYLES.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
             </div>
             ))}
           </div>
