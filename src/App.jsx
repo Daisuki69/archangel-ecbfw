@@ -36,6 +36,8 @@ const DEFAULT_STYLES = {
   pbbTopStripHeight: 0,
   pbbBottomStripHeight: 77,
   // PBB Stats Notch
+  pbbStatsOverlap: 58,
+  pbbStatsRadius: 12,
   pbbNotchPadding: "18px 0",
   pbbNotchRadius: 12,
   pbbNotchMarginX: 20,
