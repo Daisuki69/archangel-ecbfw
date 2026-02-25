@@ -35,6 +35,9 @@ const DEFAULT_STYLES = {
   pbbNameSize: 11,
   pbbTopStripHeight: 0,
   pbbBannerHeight: 250,
+  pbbMayaLogoTop: 35.5,
+  pbbMayaLogoRight: 8.2,
+  pbbMayaLogoWidth: 92,
   pbbBottomStripHeight: 77,
   // PBB Stats Notch
   pbbStatsOverlap: 58,
@@ -713,7 +716,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
         
         {/* Maya logo: Brightened up + 1 soft layer of neon green glow */}
-        <img src="/maya_logo_full.svg" alt="maya" style={{ position: "absolute", right: "8.2%", top: "35.5%", width: "92px", filter: "brightness(2) drop-shadow(0px 0px 1.3px #00ff99)" }} />
+        <img src="/maya_logo_full.svg" alt="maya" style={{ position: "absolute", right: `${styles.pbbMayaLogoRight}%`, top: `${styles.pbbMayaLogoTop}%`, width: styles.pbbMayaLogoWidth, filter: "brightness(2) drop-shadow(0px 0px 1.3px #00ff99)" }} />
         
         {/* Keeping a slight gradient just so the white stats notch pops out clearly */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
