@@ -25,7 +25,7 @@ const DEFAULT_STYLES = {
   datePillPadding: "6px 18px",
   datePillRadius: 30,
   datePillBg: "#111111",
-  datePillTopPad: 8,
+  datePillTopPad: 0,
 
   // Balance
   balanceFontSize: 30,
@@ -282,7 +282,7 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
 };
 
 const DateChip = ({label, styles=STYLES}) => (
-  <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
+  <div style={{display:"flex",alignItems:"center",gap:10,padding:`${Math.max(0, styles.datePillTopPad)}px 20px 14px`,marginTop:Math.min(0, styles.datePillTopPad),background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
     <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:styles.datePillWeight,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
@@ -445,7 +445,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
       <div className="txn-scroll" style={{flex:1,overflowY:"auto",background:C.white}}>
         {Object.values(groups).map(group => (
           <div key={group.label}>
-            <div style={{position:"sticky", top: styles.datePillTopPad, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
+            <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
               <DateChip label={group.label} styles={styles}/>
             </div>
             {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday} styles={styles}/>)}
