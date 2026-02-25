@@ -34,6 +34,7 @@ const DEFAULT_STYLES = {
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
   pbbTopStripHeight: 20,
+  pbbBottomStripHeight: 20,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -693,8 +694,8 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
      {/* Top Strip */}
       <div style={{ width: "100%", background: "#000", height: styles.pbbTopStripHeight }} />
 
-     {/* Banner Area */}
-      <div style={{ position: "relative", width: "100%", background: "#000", height: styles.pbbBannerHeight }}>
+      {/* Banner Area */}
+    <div style={{ position: "relative", width: "100%", background: "#000", height: styles.pbbBannerHeight }}>
         
         {/* Changed back to "cover" to touch sides, and added "top" so it only crops the bottom black space! */}
         <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
@@ -705,6 +706,8 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         {/* Keeping a slight gradient just so the white stats notch pops out clearly */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
       </div>
+      {/* Bottom Strip */}
+      <div style={{ width: "100%", background: "#000", height: styles.pbbBottomStripHeight }} />
 
       {/* Floating Stats Notch */}
       <div style={{ padding: "0 20px", marginTop: "-58px", position: "relative", zIndex: 5 }}>
