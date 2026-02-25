@@ -12,7 +12,7 @@ const SplashScreen = ({ message }) => (
     paddingTop: '3vh'
     
   }}>
-    {/* Image zoomed 50% more to 300px */}
+    {/* Image zoomed 53% more to 300px */}
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
     {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
@@ -74,10 +74,10 @@ const GlobalStyle = () => (
       0% { transform: scale(0); opacity: 0.4; }
       100% { transform: scale(1); opacity: 0.4; }
     }
-     0%, 100% { opacity: 1; }
-     50% { opacity: 0; }
-    }
-    .fake-caret {
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }ret {
      display: inline-block;
       width: 2px;
      height: 18px;
