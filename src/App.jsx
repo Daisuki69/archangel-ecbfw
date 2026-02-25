@@ -39,6 +39,14 @@ const DEFAULT_STYLES = {
   shortcutLabelFont: "CerebriBook",
   datePillFont: "CerebriBook",
   pbbNameFont: "CerebriBook",
+  // Font Weights
+  txnLabelWeight: 800,
+  txnAmountWeight: 900,
+  txnSubWeight: 600,
+  shortcutLabelWeight: 800,
+  datePillWeight: 800,
+  balanceWeight: 500,
+  pbbNameWeight: 800,
 };
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
@@ -241,12 +249,12 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
     <div style={{padding:styles.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
-          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
-          <div style={{fontSize:styles.txnLabelSize,fontWeight:800,color:C.dark,fontFamily:`'${styles.txnLabelFont}',sans-serif`}}>{tx.label}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:styles.txnSubWeight}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
+          <div style={{fontSize:styles.txnLabelSize,fontWeight:styles.txnLabelWeight,color:C.dark,fontFamily:`'${styles.txnLabelFont}',sans-serif`}}>{tx.label}</div>
         </div>
         <div style={{textAlign:"right"}}>
           <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:styles.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+          <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
         </div>
       </div>
     </div>
@@ -256,13 +264,13 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
 const DateChip = ({label, styles=STYLES}) => (
   <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
-    <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
+    <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:styles.datePillWeight,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
   </div>
 );
 
 // ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
-const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools}) => {
+const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
   const [form, setForm] = useState({label:"",amount:"",time:"",positive:false});
@@ -307,6 +315,9 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
           </div>
           <div style={{...row}} onClick={()=>{onClearToday();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
+          </div>
+          <div style={{...row}} onClick={()=>{onLogout();onClose();}}>
+            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🚪 Log Out</span>
           </div>
           <div style={{...row,borderBottom:"none",justifyContent:"space-between"}}>
             <span style={{fontSize:14,fontWeight:800}}>🛠️ Developer Tools</span>
@@ -427,7 +438,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
 };
 
 // ── LOGIN ──────────────────────────────────────────────────────────────────────
-const LoginScreen = ({onLogin, fastMode}) => {
+const LoginScreen = ({onLogin, fastMode, onShowSettings}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(true);
   const [loading,setLoading]=useState(false);
@@ -468,7 +479,17 @@ const LoginScreen = ({onLogin, fastMode}) => {
       else window.removeEventListener('resize', updateLayout);
     };
   }, []);
-
+  const [secretTaps, setSecretTaps] = useState(0);
+  const [showSettingsBtn, setShowSettingsBtn] = useState(false);
+  const handleSecretTap = () => {
+    if (pw) return; // only when button is grayed (no password typed)
+    const next = secretTaps + 1;
+    setSecretTaps(next);
+    if (next >= 5) {
+      setSecretTaps(0);
+      setShowSettingsBtn(p => !p); // toggle on/off
+    }
+  };
   const showRequired = loginAttempted && pw.length === 0;
   // Exact hex requested by you
   const boxBorderColor = showRequired ? '#d08893' : (hasBeenClicked ? '#bebebe' : 'transparent');
@@ -490,9 +511,19 @@ const LoginScreen = ({onLogin, fastMode}) => {
 };
 
   const LoginBtn = (
-    <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
-      Log in
-    </button>
+    <div style={{position:"relative"}}>
+      <button onClick={pw ? handleLogin : handleSecretTap} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
+        Log in
+      </button>
+      {showSettingsBtn && (
+        <button onClick={onShowSettings} style={{
+          position:"absolute", top:"50%", right:"-48px", transform:"translateY(-50%)",
+          background:"none", border:"none", cursor:"pointer", padding:8, opacity:0.5
+        }}>
+          <Ic n="settings" s={20} c={C.dark}/>
+        </button>
+      )}
+    </div>
   );
 
   // OUTER WRAPPER: Locks strictly to the Viewport Height so the bottom never gets hidden by the keyboard
@@ -766,7 +797,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               </div>
 
               {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
-              <div style={{textAlign:"center", marginTop:8, fontSize:styles.pbbNameSize, fontWeight:800, color:C.dark}}>
+              <div style={{textAlign:"center", marginTop:8, fontSize:styles.pbbNameSize, fontWeight:styles.pbbNameWeight, color:C.dark}}>
                 {h.name}
               </div>
 
@@ -920,8 +951,6 @@ return (
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            {/* The Settings Button is back! */}
-            <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
             <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
               <Ic n="bell" s={22}/>
@@ -940,7 +969,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:styles.balanceFontSize,fontWeight:500,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
+              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -982,7 +1011,7 @@ return (
                       onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
                 {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}/>}
               </div>
-              <div style={{fontSize:styles.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
+              <div style={{fontSize:styles.shortcutLabelSize,ontWeight:styles.shortcutLabelWeight,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
             </div>
             ))}
           </div>
@@ -1400,13 +1429,13 @@ const handleAddTxn=(tx)=>{
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} onShowSettings={() => setShowSettings(true)} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
-          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} />}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} onLogout={()=>{ setScreen("login"); }} />}
           
           {/* Transition loading overlay */}
           {devToolsEnabled && (
