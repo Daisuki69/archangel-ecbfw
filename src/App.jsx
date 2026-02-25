@@ -25,6 +25,7 @@ const DEFAULT_STYLES = {
   datePillPadding: "6px 18px",
   datePillRadius: 30,
   datePillBg: "#111111",
+  datePillTopPad: 8,
 
   // Balance
   balanceFontSize: 30,
@@ -445,7 +446,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
         {Object.values(groups).map(group => (
           <div key={group.label}>
             <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
-              <div style={{height:8,background:C.white}}/>
+              <div style={{height:styles.datePillTopPad,background:C.white}}/>
               <DateChip label={group.label} styles={styles}/>
             </div>
             {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday} styles={styles}/>)}
