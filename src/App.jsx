@@ -85,6 +85,11 @@ const GlobalStyle = () => (
      margin-left: 1px;
      vertical-align: middle;
     }
+    .no-select {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
   `}</style>
 );
 
@@ -673,8 +678,8 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               display: "flex", 
               flexDirection: "column", 
               alignItems: "center"
-            }}>
-  
+              }}>
+                
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
@@ -901,7 +906,7 @@ return (
         </div>
 
         <div style={{background:C.white,borderRadius:20,padding:"14px 8px",marginBottom:12}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
+          <div className="no-select" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
             {shortcuts.map((s,i)=>(
               <div key={i} onClick={s.action}
                 style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",cursor:s.action?"pointer":"default",position:"relative",borderRadius:12,overflow:"hidden"}}
