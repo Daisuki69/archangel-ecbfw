@@ -35,6 +35,16 @@ const DEFAULT_STYLES = {
   pbbNameSize: 11,
   pbbTopStripHeight: 0,
   pbbBottomStripHeight: 77,
+  // PBB Stats Notch
+  pbbNotchPadding: "18px 0",
+  pbbNotchRadius: 12,
+  pbbNotchMarginX: 20,
+  pbbNotchStatSize: 18,
+  pbbNotchStatWeight: 900,
+  pbbNotchLabelSize: 11,
+  pbbNotchLabelWeight: 700,
+  pbbNotchStatFont: "CerebriBook",
+  pbbNotchLabelFont: "CerebriBook",
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -710,16 +720,16 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       <div style={{ width: "100%", background: "#000", height: styles.pbbBottomStripHeight }} />
 
       {/* Floating Stats Notch */}
-      <div style={{ padding: "0 20px", marginTop: "-58px", position: "relative", zIndex: 5 }}>
+      <div style={{ padding: `0 ${styles.pbbNotchMarginX}px`, marginTop: `-${styles.pbbStatsOverlap}px`, position: "relative", zIndex: 5 }}>
         {/* Changed borderRadius to 8 for a boxier look, and padding to 24px for more height */}
         <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "18px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
-            <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>before voting ends</div>
+            <div style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
+            <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>before voting ends</div>
           </div>
           <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: C.dark }}>{chancesLeft}/{maxChances}</div>
-            <div style={{ fontSize: 11, color: C.med, fontWeight: 700, marginTop: 2 }}>chances left to vote</div>
+            <div style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{chancesLeft}/{maxChances}</div>
+            <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>chances left to vote</div>
           </div>
         </div>
       </div>
