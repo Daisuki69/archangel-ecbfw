@@ -33,6 +33,7 @@ const DEFAULT_STYLES = {
   pbbPhotoSize: "75%",
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
+  pbbTopStripHeight: 20,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -689,8 +690,11 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         </div>
       </div>
       
+     {/* Top Strip */}
+      <div style={{ width: "100%", background: "#000", height: styles.pbbTopStripHeight }} />
+
      {/* Banner Area */}
-      <div style={{ position: "relative", width: "100%", background: "#000", height: "200px" }}>
+      <div style={{ position: "relative", width: "100%", background: "#000", height: styles.pbbBannerHeight }}>
         
         {/* Changed back to "cover" to touch sides, and added "top" so it only crops the bottom black space! */}
         <img src="/pbbceleb.png" alt="PBB Banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
