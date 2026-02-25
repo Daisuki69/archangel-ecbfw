@@ -171,18 +171,6 @@ const GlobalStyle = () => (
   `}</style>
 );
 
-  const [nextScreen,setNextScreen]=useState(null);
-  const [transitioning,setTransitioning]=useState(false);
-  const [balance, setBalance] = useState(3190.75);
-  const [todayTxns, setTodayTxns] = useState([]);
-  const [daysLeft, setDaysLeft] = useState(1);
-  const [chancesLeft, setChancesLeft] = useState(29);
-  const [maxChances,setMaxChances]=useState(30);
-  const [showSettings,setShowSettings]=useState(false);
-  const [fastMode,setFastMode]=useState(false);
-  const [devToolsEnabled, setDevToolsEnabled] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState([]);
-  const [styles, setStyles] = useState({...DEFAULT_STYLES});
 
 const fmt = (n) => Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
@@ -1334,6 +1322,19 @@ export default function MayaApp() {
   const [screen,setScreen]=useState("login");
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const [nextScreen,setNextScreen]=useState(null);
+  const [transitioning,setTransitioning]=useState(false);
+  const [balance, setBalance] = useState(3190.75);
+  const [todayTxns, setTodayTxns] = useState([]);
+  const [daysLeft, setDaysLeft] = useState(1);
+  const [chancesLeft, setChancesLeft] = useState(29);
+  const [maxChances,setMaxChances]=useState(30);
+  const [showSettings,setShowSettings]=useState(false);
+  const [fastMode,setFastMode]=useState(false);
+  const [devToolsEnabled, setDevToolsEnabled] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState([]);
+  const [styles, setStyles] = useState({...DEFAULT_STYLES});
 
   useEffect(() => {
     const timer = setTimeout(() => {
