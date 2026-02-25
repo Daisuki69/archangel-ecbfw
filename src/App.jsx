@@ -1262,7 +1262,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                 <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
                   <div>
                     <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
-                    <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
+                    <div style={{fontSize:10,color:C.light,marginTop:2}}>{Number.isNaN(val) ? "..." : String(val)}</div>
                   </div>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     {isColor && (
@@ -1272,7 +1272,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isNumber && (
                       <input type="number" value={val}
-                        onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
+                        onChange={e=>onStyleChange(key, Number(e.target.value))}
                         style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
                     )}
                     {isText && (
