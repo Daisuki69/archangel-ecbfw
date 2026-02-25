@@ -1091,7 +1091,7 @@ return (
 };
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
-const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard}) => {
+const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide}) => {
   const [inspecting, setInspecting] = useState(null);
 
   const fields = {
@@ -1127,6 +1127,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
       {/* Header */}
       <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+        <button onClick={onHide} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>Hide</button>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
           {pendingChanges.length > 0 && (
             <>
@@ -1323,6 +1324,7 @@ const handleAddTxn=(tx)=>{
             <DevToolsPanel
               styles={styles}
               pendingChanges={pendingChanges}
+              onHide={() => setDevToolsEnabled(false)}
               onStyleChange={(key, val) => {
                 STYLES = {...styles, [key]: val};
                 setStyles({...styles, [key]: val});
