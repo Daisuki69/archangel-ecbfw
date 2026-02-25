@@ -446,8 +446,9 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
         {Object.values(groups).map(group => (
           <div key={group.label}>
             <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
-              <div style={{height:styles.datePillTopPad,background:C.white}}/>
-              <DateChip label={group.label} styles={styles}/>
+              <div style={{marginTop: styles.datePillTopPad}}>
+                <DateChip label={group.label} styles={styles}/>
+              </div>
             </div>
             {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday} styles={styles}/>)}
           </div>
