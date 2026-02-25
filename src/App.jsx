@@ -1091,6 +1091,88 @@ return (
 };
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
+const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard}) => {
+  const [inspecting, setInspecting] = useState(null);
+
+  const fields = {
+    shortcutIconSize:    { label:"Icon Size", type:"number", unit:"px" },
+    shortcutIconRadius:  { label:"Icon Radius", type:"number", unit:"px" },
+    shortcutIconBg:      { label:"Icon Background", type:"color" },
+    shortcutIconColor:   { label:"Icon Color", type:"color" },
+    shortcutLabelSize:   { label:"Label Font Size", type:"number", unit:"px" },
+    txnRowPadding:       { label:"Transaction Row Padding", type:"text" },
+    txnLabelSize:        { label:"Transaction Label Size", type:"number", unit:"px" },
+    txnSubSize:          { label:"Transaction Sub Size", type:"number", unit:"px" },
+    txnAmountSize:       { label:"Transaction Amount Size", type:"number", unit:"px" },
+    datePillSize:        { label:"Date Pill Font Size", type:"number", unit:"px" },
+    datePillPadding:     { label:"Date Pill Padding", type:"text" },
+    datePillRadius:      { label:"Date Pill Radius", type:"number", unit:"px" },
+    datePillBg:          { label:"Date Pill Color", type:"color" },
+    balanceFontSize:     { label:"Balance Font Size", type:"number", unit:"px" },
+    pbbPhotoSize:        { label:"PBB Photo Size", type:"text" },
+    pbbPhotoRadius:      { label:"PBB Photo Radius", type:"number", unit:"px" },
+    pbbNameSize:         { label:"PBB Name Size", type:"number", unit:"px" },
+  };
+
+  const sections = {
+    "Shortcut Grid": ["shortcutIconSize","shortcutIconRadius","shortcutIconBg","shortcutIconColor","shortcutLabelSize"],
+    "Transactions":  ["txnRowPadding","txnLabelSize","txnSubSize","txnAmountSize"],
+    "Date Pill":     ["datePillSize","datePillPadding","datePillRadius","datePillBg"],
+    "Balance":       ["balanceFontSize"],
+    "PBB Screen":    ["pbbPhotoSize","pbbPhotoRadius","pbbNameSize"],
+  };
+
+  return (
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"70vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+      {/* Header */}
+      <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          {pendingChanges.length > 0 && (
+            <>
+              <span style={{fontSize:12,color:C.med,fontWeight:700}}>{pendingChanges.length} pending</span>
+              <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
+              <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>Save to GitHub</button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
+        {Object.entries(sections).map(([section, keys]) => (
+          <div key={section} style={{marginBottom:20}}>
+            <div style={{fontSize:11,fontWeight:900,color:C.light,letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>{section}</div>
+            {keys.map(key => {
+              const field = fields[key];
+              const isPending = pendingChanges.some(c => c.key === key);
+              return (
+                <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                  <span style={{fontSize:13,fontWeight:700,color:isPending?"#00b464":C.dark,flex:1}}>{field.label}</span>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    {field.type === "color" ? (
+                      <input type="color" value={styles[key]} onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:36,height:28,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
+                    ) : field.type === "number" ? (
+                      <input type="number" value={parseFloat(styles[key])||0}
+                        onChange={e=>onStyleChange(key, field.unit==="px" ? parseFloat(e.target.value) : e.target.value)}
+                        style={{width:64,padding:"4px 8px",borderRadius:8,border:`1px solid ${C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                    ) : (
+                      <input type="text" value={styles[key]}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:110,padding:"4px 8px",borderRadius:8,border:`1px solid ${C.gray}`,fontSize:12,fontWeight:700}}/>
+                    )}
+                    {field.unit && <span style={{fontSize:11,color:C.light}}>{field.unit}</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 export default function MayaApp() {
   const [screen,setScreen]=useState("login");
   const [isAppLoading, setIsAppLoading] = useState(true);
@@ -1229,14 +1311,57 @@ const handleAddTxn=(tx)=>{
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
           {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
-          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} />}
-          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} />}
-          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
+          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
+          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
+          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
           {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} />}
           
           {/* Transition loading overlay */}
+          {devToolsEnabled && (
+            <DevToolsPanel
+              styles={styles}
+              pendingChanges={pendingChanges}
+              onStyleChange={(key, val) => {
+                STYLES = {...styles, [key]: val};
+                setStyles({...styles, [key]: val});
+                const from = `${key}: ${JSON.stringify(DEFAULT_STYLES[key])}`;
+                const to = `${key}: ${JSON.stringify(val)}`;
+                setPendingChanges(p => {
+                  const filtered = p.filter(c => c.key !== key);
+                  return [...filtered, {key, from, to, oldVal: DEFAULT_STYLES[key], newVal: val}];
+                });
+              }}
+              onDiscard={() => {
+                STYLES = {...DEFAULT_STYLES};
+                setStyles({...DEFAULT_STYLES});
+                setPendingChanges([]);
+              }}
+              onCommit={async () => {
+                try {
+                  const changes = pendingChanges.map(c => ({
+                    from: `${c.key}: ${JSON.stringify(c.oldVal)}`,
+                    to: `${c.key}: ${JSON.stringify(c.newVal)}`
+                  }));
+                  const res = await fetch("/api/github", {
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({changes})
+                  });
+                  const data = await res.json();
+                  if(data.ok) {
+                    alert(`✅ Committed! SHA: ${data.commit.substring(0,7)}`);
+                    setPendingChanges([]);
+                  } else {
+                    alert(`❌ Error: ${data.error}`);
+                  }
+                } catch(e) {
+                  alert(`❌ Failed: ${e.message}`);
+                }
+              }}
+            />
+          )}
           {transitioning && (
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
