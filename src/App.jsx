@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 
 // ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
@@ -921,6 +922,13 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAppLoading(false);
+
+      // Only run this on a real Android/iOS device, not in the web browser
+      if (Capacitor.isNativePlatform()) {
+        // Style.Dark = Dark text/icons (for our white background)
+        StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+        StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+      }
       // Switch to white bars with dark icons once splash is gone
       StatusBar.setStyle({ style: Style.Light });
       StatusBar.setBackgroundColor({ color: '#ffffff' });
