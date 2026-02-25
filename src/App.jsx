@@ -70,7 +70,9 @@ const GlobalStyle = () => (
     input::-webkit-credentials-auto-fill-button { display: none !important; }
     input[type='password']::-webkit-textfield-decoration-container { display: none; }
     input::-webkit-contacts-auto-fill-button, input::-webkit-caps-lock-indicator { display: none !important; }
-    @keyframes blink {
+    @keyframes ripple {
+      to { transform: scale(1); opacity: 0; }
+    }
      0%, 100% { opacity: 1; }
      50% { opacity: 0; }
     }
@@ -443,7 +445,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
       {loading && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.35)",zIndex:200}}/>}
       
       {error && (
-        <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"24px",borderRadius:34}}>
+        <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
           <div style={{background:C.white,borderRadius:24,padding:"32px 24px 24px",width:"100%",textAlign:"center",boxShadow:"0 8px 32px rgba(0,0,0,0.2)"}}>
             <div style={{width:90,height:90,margin:"0 auto 20px",position:"relative"}}>
               <div style={{width:64,height:78,background:"#111",borderRadius:10,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",zIndex:2,boxShadow:"2px 4px 12px rgba(0,0,0,0.3)"}}>
@@ -902,7 +904,18 @@ return (
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
             {shortcuts.map((s,i)=>(
               <div key={i} onClick={s.action}
-                style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",cursor:s.action?"pointer":"default",position:"relative",borderRadius:12}}>
+                style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",cursor:s.action?"pointer":"default",position:"relative",borderRadius:12,overflow:"hidden"}}
+                onPointerDown={e=>{
+                  const el=e.currentTarget;
+                  const ripple=document.createElement("span");
+                  const rect=el.getBoundingClientRect();
+                  const size=Math.max(rect.width,rect.height)*2;
+                  const x=e.clientX-rect.left-size/2;
+                  const y=e.clientY-rect.top-size/2;
+                  ripple.style.cssText=`position:absolute;width:${size}px;height:${size}px;left:${x}px;top:${y}px;border-radius:50%;background:#d4d4d6;opacity:0.6;transform:scale(0);animation:ripple 0.5s linear;pointer-events:none;z-index:0;`;
+                  el.appendChild(ripple);
+                  ripple.addEventListener("animationend",()=>ripple.remove());
+                }}>
                 {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5}}>VOTE</div>}
                 <div style={{width:48,height:48,borderRadius:14,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5}}>
                   {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c="#333"/>}
