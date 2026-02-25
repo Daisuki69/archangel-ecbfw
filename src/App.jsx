@@ -1337,27 +1337,32 @@ export default function MayaApp() {
   const [styles, setStyles] = useState({...DEFAULT_STYLES});
 
   useEffect(() => {
+    // Set status bar to black immediately on mount (for splash screen)
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+    }
+
     const timer = setTimeout(() => {
       setIsAppLoading(false);
-      // Switch to white bars with dark icons once splash is gone
-      if (Capacitor.isNativePlatform()) {
-        StatusBar.setStyle({ style: Style.Light }).catch(() => {});
-        StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      }
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (isAppLoading || !Capacitor.isNativePlatform()) return;
-    if (transitioning) {
+    if (!Capacitor.isNativePlatform()) return;
+
+    if (isAppLoading || isLoggingIn) {
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+    } else if (transitioning) {
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#888888' }).catch(() => {});
     } else {
       StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
     }
-  }, [transitioning, isAppLoading]);
+  }, [transitioning, isAppLoading, isLoggingIn]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
