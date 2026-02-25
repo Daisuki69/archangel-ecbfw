@@ -918,33 +918,6 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
 const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAppLoading(false);
-
-      // Only run this on a real Android/iOS device, not in the web browser
-      if (Capacitor.isNativePlatform()) {
-        // Style.Dark = Dark text/icons (for our white background)
-        StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-        StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      }
-    }, 7000);
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    // Don't do anything if the splash screen is still showing
-    if (isAppLoading) return;
-
-    // Change the top status bar based on the transition state
-    if (transitioning) {
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: '#888888' }).catch(() => {});
-    } else {
-      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-    }
-  }, [transitioning, isAppLoading]);
 
   const tabs=["Wallet","Savings","Credit","Loans","Cards"];
   const shortcuts=[
@@ -1353,11 +1326,24 @@ export default function MayaApp() {
     const timer = setTimeout(() => {
       setIsAppLoading(false);
       // Switch to white bars with dark icons once splash is gone
-      StatusBar.setStyle({ style: Style.Light });
-      StatusBar.setBackgroundColor({ color: '#ffffff' });
+      if (Capacitor.isNativePlatform()) {
+        StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+        StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+      }
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (isAppLoading || !Capacitor.isNativePlatform()) return;
+    if (transitioning) {
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#888888' }).catch(() => {});
+    } else {
+      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+    }
+  }, [transitioning, isAppLoading]);
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
