@@ -26,6 +26,7 @@ const DEFAULT_STYLES = {
   datePillRadius: 30,
   datePillBg: "#111111",
   datePillTopPad: 14,
+  datePillBottomPad: 14,
 
   // Balance
   balanceFontSize: 30,
@@ -282,7 +283,7 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
 };
 
 const DateChip = ({label, styles=STYLES}) => (
-  <div style={{display:"flex",alignItems:"center",gap:10,padding:`${Math.max(0, styles.datePillTopPad)}px 20px 14px`,marginTop:Math.min(0, styles.datePillTopPad),background:C.white}}>
+  <div style={{display:"flex",alignItems:"center",gap:10,padding:`${Math.max(0, styles.datePillTopPad)}px 20px ${styles.datePillBottomPad}px`,marginTop:Math.min(0, styles.datePillTopPad),background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
     <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:styles.datePillWeight,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
