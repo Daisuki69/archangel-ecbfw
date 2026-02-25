@@ -6,6 +6,7 @@ import { App as CapApp } from '@capacitor/app';
 // ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
   // Shortcut grid
+  headerPadding: "12px 18px",
   shortcutIconSize: 56,
   shortcutIconRadius: 14,
   shortcutIconBg: "#f4f6f5",
@@ -951,7 +952,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
 return (
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'Jeko', sans-serif", fontWeight: 400}}>
       <div style={{background:C.white}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 18px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:styles.headerPadding}}>
           <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <Ic n="user" s={18} c={C.green}/>
           </div>
@@ -1214,6 +1215,7 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
 };
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
+  const [opacity, setOpacity] = useState(1);
   const scrollPos = useRef(0);
   const listRef = useRef(null);
 
@@ -1235,7 +1237,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 
       {/* Panel */}
       {open && (
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
@@ -1245,7 +1247,16 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                 <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
               )}
             </div>
-            <div style={{display:"flex",gap:8}}>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginRight:4}}>
+                <span style={{fontSize:8,fontWeight:800,color:C.light,lineHeight:1,marginBottom:2}}>OPACITY</span>
+                <input 
+                  type="range" min="0.2" max="1" step="0.1" 
+                  value={opacity} 
+                  onChange={e=>setOpacity(Number(e.target.value))}
+                  style={{width:50,height:4,cursor:"pointer"}}
+                />
+              </div>
               {pendingChanges.length > 0 && (
                 <>
                   <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
