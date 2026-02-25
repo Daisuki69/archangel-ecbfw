@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 // ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
@@ -1327,7 +1328,12 @@ export default function MayaApp() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsAppLoading(false), 7000);
+    const timer = setTimeout(() => {
+      setIsAppLoading(false);
+      // Switch to white bars with dark icons once splash is gone
+      StatusBar.setStyle({ style: Style.Light });
+      StatusBar.setBackgroundColor({ color: '#ffffff' });
+    }, 7000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -1516,6 +1522,20 @@ const handleAddTxn=(tx)=>{
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
           )}
+          
+          {/* Force white bars when normal */}
+          {!transitioning && !isAppLoading && (() => {
+            StatusBar.setStyle({ style: Style.Light });
+            StatusBar.setBackgroundColor({ color: '#ffffff' });
+            return null;
+          })()}
+          
+          {/* Dim the bars during transitions */}
+          {transitioning && (() => {
+            StatusBar.setStyle({ style: Style.Dark });
+            StatusBar.setBackgroundColor({ color: '#888888' });
+            return null;
+          })()}
         </div>
       </div>
     </div>
