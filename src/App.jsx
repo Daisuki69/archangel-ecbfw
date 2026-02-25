@@ -21,11 +21,11 @@ const DEFAULT_STYLES = {
   txnTimeGap: 3,
 
   // Date pill
-  datePillSize: 14,
+  datePillSize: 10.5,
   datePillPadding: "6px 18px",
   datePillRadius: 30,
   datePillBg: "#111111",
-  datePillTopPad: 0,
+  datePillTopPad: 14,
 
   // Balance
   balanceFontSize: 30,
