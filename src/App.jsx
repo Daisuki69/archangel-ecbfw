@@ -221,7 +221,7 @@ const relativeTime = (ts) => {
   return `${diffHrs} hour${diffHrs>1?"s":""} ago`;
 };
 
-const TxRow = ({tx, isToday}) => {
+const TxRow = ({tx, isToday, styles=STYLES}) => {
   const [,tick]=useState(0);
   useEffect(()=>{
     if(!isToday||!tx.timestamp) return;
@@ -245,7 +245,7 @@ const TxRow = ({tx, isToday}) => {
   );
 };
 
-const DateChip = ({label}) => (
+const DateChip = ({label, styles=STYLES}) => (
   <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
     <div style={{background:STYLES.datePillBg,color:C.white,borderRadius:STYLES.datePillRadius,padding:STYLES.datePillPadding,fontSize:STYLES.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
@@ -379,7 +379,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
   );
 };
 
-const TransactionsScreen = ({onBack, todayTxns}) => {
+const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
   const now = new Date();
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
@@ -408,9 +408,9 @@ const TransactionsScreen = ({onBack, todayTxns}) => {
           <div key={group.label}>
             <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
               <div style={{height:8,background:C.white}}/>
-              <DateChip label={group.label}/>
+              <DateChip label={group.label} styles={styles}/>
             </div>
-            {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday}/>)}
+            {group.txns.map(tx=><TxRow key={tx.id} tx={tx} isToday={group.isToday} styles={styles}/>)}
           </div>
         ))}
       </div>
@@ -626,7 +626,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 };
 
 // ── PBB SCREEN ─────────────────────────────────────────────────────────────────
-const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode}) => {
+const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode,styles=STYLES}) => {
   const [sel,setSel]=useState(null);
   const [voting,setVoting]=useState(false); 
   const [voted,setVoted]=useState(false);
@@ -868,7 +868,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
 };
 
 // ── HOME SCREEN ────────────────────────────────────────────────────────────────
-const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings}) => {
+const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
   
