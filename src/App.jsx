@@ -1092,84 +1092,62 @@ return (
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide}) => {
-  const [inspecting, setInspecting] = useState(null);
-
-  const fields = {
-    shortcutIconSize:    { label:"Icon Size", type:"number", unit:"px" },
-    shortcutIconRadius:  { label:"Icon Radius", type:"number", unit:"px" },
-    shortcutIconBg:      { label:"Icon Background", type:"color" },
-    shortcutIconColor:   { label:"Icon Color", type:"color" },
-    shortcutLabelSize:   { label:"Label Font Size", type:"number", unit:"px" },
-    txnRowPadding:       { label:"Transaction Row Padding", type:"text" },
-    txnLabelSize:        { label:"Transaction Label Size", type:"number", unit:"px" },
-    txnSubSize:          { label:"Transaction Sub Size", type:"number", unit:"px" },
-    txnAmountSize:       { label:"Transaction Amount Size", type:"number", unit:"px" },
-    datePillSize:        { label:"Date Pill Font Size", type:"number", unit:"px" },
-    datePillPadding:     { label:"Date Pill Padding", type:"text" },
-    datePillRadius:      { label:"Date Pill Radius", type:"number", unit:"px" },
-    datePillBg:          { label:"Date Pill Color", type:"color" },
-    balanceFontSize:     { label:"Balance Font Size", type:"number", unit:"px" },
-    pbbPhotoSize:        { label:"PBB Photo Size", type:"text" },
-    pbbPhotoRadius:      { label:"PBB Photo Radius", type:"number", unit:"px" },
-    pbbNameSize:         { label:"PBB Name Size", type:"number", unit:"px" },
-  };
-
-  const sections = {
-    "Shortcut Grid": ["shortcutIconSize","shortcutIconRadius","shortcutIconBg","shortcutIconColor","shortcutLabelSize"],
-    "Transactions":  ["txnRowPadding","txnLabelSize","txnSubSize","txnAmountSize"],
-    "Date Pill":     ["datePillSize","datePillPadding","datePillRadius","datePillBg"],
-    "Balance":       ["balanceFontSize"],
-    "PBB Screen":    ["pbbPhotoSize","pbbPhotoRadius","pbbNameSize"],
-  };
-
   return (
-    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"70vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+      
       {/* Header */}
-      <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
-        <button onClick={onHide} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>Hide</button>
-        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+      <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+          {pendingChanges.length > 0 && (
+            <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
+          )}
+        </div>
+        <div style={{display:"flex",gap:8}}>
           {pendingChanges.length > 0 && (
             <>
-              <span style={{fontSize:12,color:C.med,fontWeight:700}}>{pendingChanges.length} pending</span>
               <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
-              <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>Save to GitHub</button>
+              <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save to GitHub</button>
             </>
           )}
+          <button onClick={onHide} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>Hide</button>
         </div>
       </div>
 
-      {/* Scrollable content */}
+      {/* All STYLES variables auto-listed */}
       <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
-        {Object.entries(sections).map(([section, keys]) => (
-          <div key={section} style={{marginBottom:20}}>
-            <div style={{fontSize:11,fontWeight:900,color:C.light,letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>{section}</div>
-            {keys.map(key => {
-              const field = fields[key];
-              const isPending = pendingChanges.some(c => c.key === key);
-              return (
-                <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                  <span style={{fontSize:13,fontWeight:700,color:isPending?"#00b464":C.dark,flex:1}}>{field.label}</span>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    {field.type === "color" ? (
-                      <input type="color" value={styles[key]} onChange={e=>onStyleChange(key, e.target.value)}
-                        style={{width:36,height:28,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
-                    ) : field.type === "number" ? (
-                      <input type="number" value={parseFloat(styles[key])||0}
-                        onChange={e=>onStyleChange(key, field.unit==="px" ? parseFloat(e.target.value) : e.target.value)}
-                        style={{width:64,padding:"4px 8px",borderRadius:8,border:`1px solid ${C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
-                    ) : (
-                      <input type="text" value={styles[key]}
-                        onChange={e=>onStyleChange(key, e.target.value)}
-                        style={{width:110,padding:"4px 8px",borderRadius:8,border:`1px solid ${C.gray}`,fontSize:12,fontWeight:700}}/>
-                    )}
-                    {field.unit && <span style={{fontSize:11,color:C.light}}>{field.unit}</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+        {Object.entries(styles).map(([key, val]) => {
+          const isPending = pendingChanges.some(c => c.key === key);
+          const isColor = typeof val === "string" && val.startsWith("#");
+          const isNumber = typeof val === "number";
+          const isText = typeof val === "string" && !val.startsWith("#");
+
+          return (
+            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
+              <div>
+                <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
+                <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                {isColor && (
+                  <input type="color" value={val}
+                    onChange={e=>onStyleChange(key, e.target.value)}
+                    style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
+                )}
+                {isNumber && (
+                  <input type="number" value={val}
+                    onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
+                    style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                )}
+                {isText && (
+                  <input type="text" value={val}
+                    onChange={e=>onStyleChange(key, e.target.value)}
+                    style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
