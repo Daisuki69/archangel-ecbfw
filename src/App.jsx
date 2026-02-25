@@ -33,8 +33,8 @@ const DEFAULT_STYLES = {
   pbbPhotoSize: "75%",
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
-  pbbTopStripHeight: 20,
-  pbbBottomStripHeight: 20,
+  pbbTopStripHeight: 0,
+  pbbBottomStripHeight: 77,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
