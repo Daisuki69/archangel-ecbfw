@@ -32,7 +32,7 @@ const DEFAULT_STYLES = {
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
 };
-let STYLES = { ...DEFAULT_STYLES };
+let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ message }) => (
@@ -254,7 +254,7 @@ const DateChip = ({label}) => (
 );
 
 // ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
-const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode}) => {
+const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
   const [form, setForm] = useState({label:"",amount:"",time:"",positive:false});
@@ -297,8 +297,24 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
               ))}
             </div>
           </div>
-          <div style={{...row,borderBottom:"none"}} onClick={()=>{onClearToday();onClose();}}>
+          <div style={{...row}} onClick={()=>{onClearToday();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
+          </div>
+          <div style={{...row,borderBottom:"none",justifyContent:"space-between"}}>
+            <span style={{fontSize:14,fontWeight:800}}>🛠️ Developer Tools</span>
+            <div onClick={onToggleDevTools} style={{
+              width:44,height:24,borderRadius:12,
+              background:devToolsEnabled?"#00b464":"#ccc",
+              position:"relative",cursor:"pointer",transition:"background 0.2s"
+            }}>
+              <div style={{
+                position:"absolute",top:2,
+                left:devToolsEnabled?22:2,
+                width:20,height:20,borderRadius:"50%",
+                background:"white",transition:"left 0.2s",
+                boxShadow:"0 1px 4px rgba(0,0,0,0.2)"
+              }}/>
+            </div>
           </div>
         </>}
 
@@ -1095,6 +1111,9 @@ export default function MayaApp() {
   const [maxChances,setMaxChances]=useState(30);
   const [showSettings,setShowSettings]=useState(false);
   const [fastMode,setFastMode]=useState(false);
+  const [devToolsEnabled, setDevToolsEnabled] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState([]);
+  const [styles, setStyles] = useState({...DEFAULT_STYLES});
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
     const ref = doc(db, "ecbfw", "shared")
@@ -1215,7 +1234,7 @@ const handleAddTxn=(tx)=>{
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} />}
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
-          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} />}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} />}
           
           {/* Transition loading overlay */}
           {transitioning && (
