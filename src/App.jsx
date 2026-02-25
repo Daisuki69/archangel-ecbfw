@@ -17,6 +17,8 @@ const DEFAULT_STYLES = {
   txnLabelSize: 15,
   txnSubSize: 12,
   txnAmountSize: 15,
+  txnSubGap: 3,
+  txnTimeGap: 3,
 
   // Date pill
   datePillSize: 14,
@@ -249,11 +251,11 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
     <div style={{padding:styles.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:styles.txnSubWeight}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:styles.txnSubGap,fontWeight:styles.txnSubWeight}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
           <div style={{fontSize:styles.txnLabelSize,fontWeight:styles.txnLabelWeight,color:C.dark,fontFamily:`'${styles.txnLabelFont}',sans-serif`}}>{tx.label}</div>
         </div>
         <div style={{textAlign:"right",flexShrink:0}}>
-          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:styles.txnTimeGap,fontWeight:600}}>{displayTime}</div>
           <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
         </div>
       </div>
