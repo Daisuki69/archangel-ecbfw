@@ -918,11 +918,28 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
   
-  const [, setTick] = useState(0);
   useEffect(() => {
-    const iv = setInterval(() => setTick(t => t + 1), 30000);
-    return () => clearInterval(iv);
+    const timer = setTimeout(() => {
+      setIsAppLoading(false);
+      // Switch to white bars with dark icons once splash is gone
+      StatusBar.setStyle({ style: Style.Light });
+      StatusBar.setBackgroundColor({ color: '#ffffff' });
+    }, 7000);
+    return () => clearTimeout(timer);
   }, []);
+  useEffect(() => {
+    // Don't do anything if the splash screen is still showing
+    if (isAppLoading) return;
+
+    // Change the top status bar based on the transition state
+    if (transitioning) {
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#888888' }).catch(() => {});
+    } else {
+      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+    }
+  }, [transitioning, isAppLoading]);
 
   const tabs=["Wallet","Savings","Credit","Loans","Cards"];
   const shortcuts=[
@@ -1522,20 +1539,6 @@ const handleAddTxn=(tx)=>{
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
           )}
-          
-          {/* Force white bars when normal */}
-          {!transitioning && !isAppLoading && (() => {
-            StatusBar.setStyle({ style: Style.Light });
-            StatusBar.setBackgroundColor({ color: '#ffffff' });
-            return null;
-          })()}
-          
-          {/* Dim the bars during transitions */}
-          {transitioning && (() => {
-            StatusBar.setStyle({ style: Style.Dark });
-            StatusBar.setBackgroundColor({ color: '#888888' });
-            return null;
-          })()}
         </div>
       </div>
     </div>
