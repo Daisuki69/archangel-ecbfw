@@ -31,6 +31,14 @@ const DEFAULT_STYLES = {
   pbbPhotoSize: "75%",
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
+  // Fonts
+  bodyFont: "CerebriBook",
+  balanceFont: "JekoMedium",
+  txnLabelFont: "CerebriBook",
+  txnAmountFont: "JekoMedium",
+  shortcutLabelFont: "CerebriBook",
+  datePillFont: "CerebriBook",
+  pbbNameFont: "CerebriBook",
 };
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
@@ -85,7 +93,7 @@ const GlobalStyle = () => (
 
     /* Default App Font */
     body { 
-      font-family: 'CerebriBook', sans-serif; 
+      font-family: '${STYLES.bodyFont}', sans-serif; 
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -230,15 +238,15 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
   },[isToday,tx.timestamp]);
   const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
   return (
-    <div style={{padding:STYLES.txnRowPadding}}>
+    <div style={{padding:styles.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
-          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
-          <div style={{fontSize:STYLES.txnLabelSize,fontWeight:800,color:C.dark}}>{tx.label}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
+          <div style={{fontSize:styles.txnLabelSize,fontWeight:800,color:C.dark,fontFamily:`'${styles.txnLabelFont}',sans-serif`}}>{tx.label}</div>
         </div>
         <div style={{textAlign:"right"}}>
-          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:STYLES.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
+          <div style={{fontSize:styles.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
         </div>
       </div>
     </div>
@@ -248,7 +256,7 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
 const DateChip = ({label, styles=STYLES}) => (
   <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
-    <div style={{background:STYLES.datePillBg,color:C.white,borderRadius:STYLES.datePillRadius,padding:STYLES.datePillPadding,fontSize:STYLES.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
+    <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
   </div>
 );
@@ -731,10 +739,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
-                width: STYLES.pbbPhotoSize,
+                width: syles.pbbPhotoSize,
                 cursor:"pointer",
                 aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
-                borderRadius: STYLES.pbbPhotoRadius,
+                borderRadius: styles.pbbPhotoRadius,
                 position:"relative",
                 display:"flex",
                 flexDirection:"column",
@@ -758,7 +766,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               </div>
 
               {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
-              <div style={{textAlign:"center", marginTop:8, fontSize:STYLES.pbbNameSize, fontWeight:800, color:C.dark}}>
+              <div style={{textAlign:"center", marginTop:8, fontSize:syles.pbbNameSize, fontWeight:800, color:C.dark}}>
                 {h.name}
               </div>
 
@@ -932,7 +940,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:STYLES.balanceFontSize,fontWeight:500,letterSpacing:-1}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
+              <div style={{fontSize:styles.balanceFontSize,fontWeight:500,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -958,7 +966,7 @@ return (
             {shortcuts.map((s,i)=>(
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",position:"relative",borderRadius:12}}>
                 {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5,zIndex:2}}>VOTE</div>}
-                <div onClick={s.action} style={{width:STYLES.shortcutIconSize,height:STYLES.shortcutIconSize,borderRadius:STYLES.shortcutIconRadius,background:STYLES.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
+                <div onClick={s.action} style={{width:styles.shortcutIconSize,height:styles.shortcutIconSize,borderRadius:styles.shortcutIconRadius,background:styles.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
                   onPointerDown={s.action ? e=>{
                     const el=e.currentTarget;
                     const ripple=document.createElement("span");
@@ -972,9 +980,9 @@ return (
                       } : undefined}
                       onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
                       onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
-                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={STYLES.shortcutIconColor}/>}
+                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}
               </div>
-              <div style={{fontSize:STYLES.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
+              <div style={{fontSize:styles.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
             </div>
             ))}
           </div>
@@ -1091,65 +1099,106 @@ return (
 };
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
-const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide}) => {
+const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
-      
-      {/* Header */}
-      <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+    <>
+      {/* Floating side button */}
+      {!open && (
+        <div onClick={()=>setOpen(true)} style={{
+          position:"fixed", right:0, top:"50%", transform:"translateY(-50%)",
+          background:C.green, color:"white", writingMode:"vertical-rl",
+          padding:"12px 6px", borderRadius:"12px 0 0 12px",
+          fontSize:11, fontWeight:900, cursor:"pointer", zIndex:8999,
+          boxShadow:"-2px 0 12px rgba(0,0,0,0.15)",
+          display:"flex", flexDirection:"column", alignItems:"center", gap:6,
+          letterSpacing:1
+        }}>
           {pendingChanges.length > 0 && (
-            <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
+            <div style={{
+              background:"#e74c3c", color:"white", borderRadius:"50%",
+              width:16, height:16, fontSize:9, fontWeight:900,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              writingMode:"horizontal-tb", marginBottom:4
+            }}>{pendingChanges.length}</div>
           )}
+          🛠️ DEV
         </div>
-        <div style={{display:"flex",gap:8}}>
-          {pendingChanges.length > 0 && (
-            <>
-              <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
-              <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save to GitHub</button>
-            </>
-          )}
-          <button onClick={onHide} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>Hide</button>
-        </div>
-      </div>
+      )}
 
-      {/* All STYLES variables auto-listed */}
-      <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
-        {Object.entries(styles).map(([key, val]) => {
-          const isPending = pendingChanges.some(c => c.key === key);
-          const isColor = typeof val === "string" && val.startsWith("#");
-          const isNumber = typeof val === "number";
-          const isText = typeof val === "string" && !val.startsWith("#");
-
-          return (
-            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
-              <div>
-                <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
-                <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                {isColor && (
-                  <input type="color" value={val}
-                    onChange={e=>onStyleChange(key, e.target.value)}
-                    style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
-                )}
-                {isNumber && (
-                  <input type="number" value={val}
-                    onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
-                    style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
-                )}
-                {isText && (
-                  <input type="text" value={val}
-                    onChange={e=>onStyleChange(key, e.target.value)}
-                    style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
-                )}
-              </div>
+      {/* Panel */}
+      {open && (
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+          
+          {/* Header */}
+          <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+              {pendingChanges.length > 0 && (
+                <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
+              )}
             </div>
-          );
-        })}
-      </div>
-    </div>
+            <div style={{display:"flex",gap:8}}>
+              {pendingChanges.length > 0 && (
+                <>
+                  <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
+                  <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
+                </>
+              )}
+              <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
+              <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
+            </div>
+          </div>
+
+          {/* All STYLES variables auto-listed */}
+          <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
+            {Object.entries(styles).map(([key, val]) => {
+              const isPending = pendingChanges.some(c => c.key === key);
+              const isColor = typeof val === "string" && val.startsWith("#");
+              const isNumber = typeof val === "number";
+              const isFont = typeof val === "string" && key.toLowerCase().includes("font");
+              const isText = typeof val === "string" && !val.startsWith("#") && !isFont;
+
+              return (
+                <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
+                    <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    {isColor && (
+                      <input type="color" value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
+                    )}
+                    {isNumber && (
+                      <input type="number" value={val}
+                        onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
+                        style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                    )}
+                    {isText && (
+                      <input type="text" value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
+                    )}
+                    {isFont && (
+                      <select value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700,background:C.white,cursor:"pointer"}}>
+                        {["CerebriBook","CerebriBold","JekoLight","JekoRegular","JekoMedium","JekoBold","JekoBlack"].map(f=>(
+                          <option key={f} value={f}>{f}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 export default function MayaApp() {
@@ -1302,7 +1351,7 @@ const handleAddTxn=(tx)=>{
             <DevToolsPanel
               styles={styles}
               pendingChanges={pendingChanges}
-              onHide={() => setDevToolsEnabled(false)}
+              onClose={() => setDevToolsEnabled(false)}
               onStyleChange={(key, val) => {
                 STYLES = {...styles, [key]: val};
                 setStyles({...styles, [key]: val});
