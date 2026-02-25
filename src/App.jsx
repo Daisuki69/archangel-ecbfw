@@ -3,7 +3,7 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 
-// Ã¢ÂÂÃ¢ÂÂ STYLES CONFIG (DevTools editable) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
 const DEFAULT_STYLES = {
   // Shortcut grid
   shortcutIconSize: 56,
@@ -25,12 +25,20 @@ const DEFAULT_STYLES = {
   datePillBg: "#111111",
 
   // Balance
-  balanceFontSize: 50,
+  balanceFontSize: 30,
 
   // PBB candidate photo
   pbbPhotoSize: "75%",
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
+  // Fonts
+  bodyFont: "CerebriBook",
+  balanceFont: "JekoMedium",
+  txnLabelFont: "CerebriBook",
+  txnAmountFont: "JekoMedium",
+  shortcutLabelFont: "CerebriBook",
+  datePillFont: "CerebriBook",
+  pbbNameFont: "CerebriBook",
 };
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
@@ -51,7 +59,7 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CEREBRI SANS PRO (Standard App Font) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
     @font-face {
       font-family: 'CerebriBook';
       src: url('/CerebriSansPro-Book.otf') format('opentype'); 
@@ -61,7 +69,7 @@ const GlobalStyle = () => (
       src: url('/CerebriSansPro-Bold.otf') format('opentype'); 
     }
 
-    /* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ JEKO (Numbers, Balances, Login) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+    /* ─── JEKO (Numbers, Balances, Login) ─── */
     @font-face {
       font-family: 'JekoLight';
       src: url('/fonnts.com-Jeko_Light.ttf') format('truetype');
@@ -85,7 +93,7 @@ const GlobalStyle = () => (
 
     /* Default App Font */
     body { 
-      font-family: 'CerebriBook', sans-serif; 
+      font-family: '${STYLES.bodyFont}', sans-serif; 
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -230,15 +238,15 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
   },[isToday,tx.timestamp]);
   const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
   return (
-    <div style={{padding:STYLES.txnRowPadding}}>
+    <div style={{padding:styles.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
-          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
-          <div style={{fontSize:STYLES.txnLabelSize,fontWeight:800,color:C.dark}}>{tx.label}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
+          <div style={{fontSize:styles.txnLabelSize,fontWeight:800,color:C.dark,fontFamily:`'${styles.txnLabelFont}',sans-serif`}}>{tx.label}</div>
         </div>
         <div style={{textAlign:"right"}}>
-          <div style={{fontSize:STYLES.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:STYLES.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} Ã¢ÂÂ±{fmt(tx.amount)}</div>
+          <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:3,fontWeight:600}}>{displayTime}</div>
+          <div style={{fontSize:styles.txnAmountSize,fontWeight:900,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
         </div>
       </div>
     </div>
@@ -248,12 +256,12 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
 const DateChip = ({label, styles=STYLES}) => (
   <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:C.white}}>
     <div style={{flex:1,height:1,background:C.gray}}/>
-    <div style={{background:STYLES.datePillBg,color:C.white,borderRadius:STYLES.datePillRadius,padding:STYLES.datePillPadding,fontSize:STYLES.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
+    <div style={{background:styles.datePillBg,color:C.white,borderRadius:styles.datePillRadius,padding:styles.datePillPadding,fontSize:styles.datePillSize,fontWeight:800,whiteSpace:"nowrap"}}>{label}</div>
     <div style={{flex:1,height:1,background:C.gray}}/>
   </div>
 );
 
-// Ã¢ÂÂÃ¢ÂÂ SETTINGS MODAL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
 const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
@@ -266,7 +274,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
   const btnPrimary = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:C.green,color:C.white,fontWeight:900,fontSize:15,cursor:"pointer",marginTop:10};
   const btnGray = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:"#ccc",color:C.white,fontWeight:800,fontSize:14,cursor:"pointer",marginTop:8};
   const row = {padding:"15px 0",borderBottom:`1px solid ${C.gray}`,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"};
-  const titles = {main:"Ã¢ÂÂÃ¯Â¸Â Hidden Settings", editBal:"Ã°ÂÂÂ° Edit Balance", addTxn:"Ã°ÂÂÂ Add Transaction", editPBB:"Ã°ÂÂÂ³Ã¯Â¸Â Edit PBB Stats"};
+  const titles = {main:"⚙️ Hidden Settings", editBal:"💰 Edit Balance", addTxn:"📋 Add Transaction", editPBB:"🗳️ Edit PBB Stats"};
 
   return (
     <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",zIndex:600,display:"flex",alignItems:"flex-end"}}>
@@ -278,16 +286,16 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
         {view==="main" && <>
           <div style={row} onClick={()=>setView("editBal")}>
-            <span style={{fontSize:14,fontWeight:800}}>Edit Wallet Balance</span><span style={{color:C.light,fontSize:18}}>Ã¢ÂÂº</span>
+            <span style={{fontSize:14,fontWeight:800}}>Edit Wallet Balance</span><span style={{color:C.light,fontSize:18}}>›</span>
           </div>
           <div style={row} onClick={()=>setView("addTxn")}>
-            <span style={{fontSize:14,fontWeight:800}}>Add Transaction</span><span style={{color:C.light,fontSize:18}}>Ã¢ÂÂº</span>
+            <span style={{fontSize:14,fontWeight:800}}>Add Transaction</span><span style={{color:C.light,fontSize:18}}>›</span>
           </div>
           <div style={row} onClick={()=>setView("editPBB")}>
-            <span style={{fontSize:14,fontWeight:800}}>Edit PBB Stats</span><span style={{color:C.light,fontSize:18}}>Ã¢ÂÂº</span>
+            <span style={{fontSize:14,fontWeight:800}}>Edit PBB Stats</span><span style={{color:C.light,fontSize:18}}>›</span>
           </div>
           <div style={{...row}}>
-            <span style={{fontSize:14,fontWeight:800}}>Ã¢ÂÂ¡ Delays</span>
+            <span style={{fontSize:14,fontWeight:800}}>⚡ Delays</span>
             <div style={{display:"flex",gap:6}}>
               {[{v:false,l:"Default"},{v:true,l:"Fast"}].map(o=>(
                 <div key={String(o.v)} onClick={()=>onSetFastMode(o.v)}
@@ -298,10 +306,10 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
             </div>
           </div>
           <div style={{...row}} onClick={()=>{onClearToday();onClose();}}>
-            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>Ã°ÂÂÂÃ¯Â¸Â Clear Today's Transactions</span>
+            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
           </div>
           <div style={{...row,borderBottom:"none",justifyContent:"space-between"}}>
-            <span style={{fontSize:14,fontWeight:800}}>Ã°ÂÂÂ Ã¯Â¸Â Developer Tools</span>
+            <span style={{fontSize:14,fontWeight:800}}>🛠️ Developer Tools</span>
             <div onClick={onToggleDevTools} style={{
               width:44,height:24,borderRadius:12,
               background:devToolsEnabled?"#00b464":"#ccc",
@@ -320,17 +328,17 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
         {view==="editBal" && <>
           <div style={{fontSize:13,color:C.med,marginBottom:4,fontWeight:700}}>Current balance</div>
-          <div style={{fontSize:24,fontWeight:900,marginBottom:18}}>Ã¢ÂÂ±{fmt(balance)}</div>
-          <label style={{fontSize:13,fontWeight:800,color:C.med}}>New Balance (Ã¢ÂÂ±)</label>
+          <div style={{fontSize:24,fontWeight:900,marginBottom:18}}>₱{fmt(balance)}</div>
+          <label style={{fontSize:13,fontWeight:800,color:C.med}}>New Balance (₱)</label>
           <input style={iStyle} type="number" value={newBal} onChange={e=>setNewBal(e.target.value)} placeholder="e.g. 5000.00"/>
           <button style={btnPrimary} onClick={()=>{onSaveBalance(parseFloat(newBal)||0);onClose();}}>Save Balance</button>
-          <button style={btnGray} onClick={()=>setView("main")}>Ã¢ÂÂ Back</button>
+          <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
         </>}
 
         {view==="addTxn" && <>
           <label style={{fontSize:13,fontWeight:800,color:C.med}}>Transaction Label</label>
           <input style={iStyle} value={form.label} onChange={e=>setForm({...form,label:e.target.value})} placeholder="e.g. PBB Save Princess x500"/>
-          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (Ã¢ÂÂ±)</label>
+          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (₱)</label>
           <input style={iStyle} type="number" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="e.g. 500"/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Time</label>
           <input style={iStyle} value={form.time} onChange={e=>setForm({...form,time:e.target.value})} placeholder="e.g. 05:52 PM"/>
@@ -348,7 +356,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
             onAddTxn({id:"m"+Date.now(),label:form.label,time:form.time||"--:-- --",amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
             onClose();
           }}>Add Transaction</button>
-          <button style={btnGray} onClick={()=>setView("main")}>Ã¢ÂÂ Back</button>
+          <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
         </>}
 
         {view==="editPBB" && (()=>{
@@ -357,13 +365,13 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
           const chancesOverMax = parsedChances > parsedMax;
           return <>
             <div style={{fontSize:13,color:C.med,marginBottom:16,fontWeight:700,lineHeight:1.6}}>
-              Current: <strong style={{color:C.dark}}>{daysLeft} day{daysLeft!==1?"s":""} left</strong> ÃÂ· <strong style={{color:C.dark}}>{chancesLeft}/{maxChances} chances</strong>
+              Current: <strong style={{color:C.dark}}>{daysLeft} day{daysLeft!==1?"s":""} left</strong> · <strong style={{color:C.dark}}>{chancesLeft}/{maxChances} chances</strong>
             </div>
             <label style={{fontSize:13,fontWeight:800,color:C.med}}>Days Till Voting Ends</label>
             <input style={iStyle} type="number" min="0" value={newDays} onChange={e=>setNewDays(e.target.value)} placeholder="e.g. 3"/>
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Chances Left to Vote</label>
             <input style={{...iStyle,borderColor:chancesOverMax?"#d08893":C.gray}} type="number" min="0" value={newChances} onChange={e=>setNewChances(e.target.value)} placeholder="e.g. 25"/>
-            {chancesOverMax&&<div style={{color:"#d08893",fontSize:12,fontWeight:700,marginTop:5}}>Ã¢ÂÂ Ã¯Â¸Â Chances left cannot exceed max chances ({parsedMax})</div>}
+            {chancesOverMax&&<div style={{color:"#d08893",fontSize:12,fontWeight:700,marginTop:5}}>⚠️ Chances left cannot exceed max chances ({parsedMax})</div>}
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Max Chances (denominator)</label>
             <input style={iStyle} type="number" min="1" value={newMax} onChange={e=>setNewMax(e.target.value)} placeholder="e.g. 30"/>
             <button style={{...btnPrimary,background:chancesOverMax?"#aaa":C.green,cursor:chancesOverMax?"not-allowed":"pointer"}} onClick={()=>{
@@ -371,7 +379,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
               onSavePBB({days:parseInt(newDays)||0, chances:parsedChances, max:parsedMax});
               onClose();
             }}>Save PBB Stats</button>
-            <button style={btnGray} onClick={()=>setView("main")}>Ã¢ÂÂ Back</button>
+            <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
           </>;
         })()}
       </div>
@@ -418,7 +426,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
   );
 };
 
-// Ã¢ÂÂÃ¢ÂÂ LOGIN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ── LOGIN ──────────────────────────────────────────────────────────────────────
 const LoginScreen = ({onLogin, fastMode}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(true);
@@ -522,7 +530,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MAIN SCROLLABLE AREA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+      {/* ─── MAIN SCROLLABLE AREA ─── */}
       <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden", 
         display: "flex", flexDirection: "column", 
@@ -550,7 +558,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           <div style={{fontSize:14,fontWeight:560,color:C.med,letterSpacing:-0.5, marginBottom: 39.5}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
-            {/* Ã°ÂÂÂ Changed background to #f9f9f9 and default border to transparent Ã°ÂÂÂ */}
+            {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
             <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
@@ -601,7 +609,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 
       </div>
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ STICKY FOOTER OVERLAY Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+      {/* ─── STICKY FOOTER OVERLAY ─── */}
       {/* If open, this snaps to the bottom of the viewport directly above the keyboard.
           Because it has a solid white background, the content in the scrollable area above slides cleanly behind it. */}
       <div style={{
@@ -625,7 +633,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   );
 };
 
-// Ã¢ÂÂÃ¢ÂÂ PBB SCREEN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ── PBB SCREEN ─────────────────────────────────────────────────────────────────
 const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode,styles=STYLES}) => {
   const [sel,setSel]=useState(null);
   const [voting,setVoting]=useState(false); 
@@ -731,10 +739,10 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               {/* This picture box is now shrunk to 50% size! */}
               <div onClick={()=>setSel(h.name)} style={{
                 background: h.img ? `url(${h.img}) center/cover no-repeat` : h.bg,
-                width: STYLES.pbbPhotoSize,
+                width: syles.pbbPhotoSize,
                 cursor:"pointer",
                 aspectRatio: "1 / 1", /* Keeps the photo perfectly square, no matter what! */
-                borderRadius: STYLES.pbbPhotoRadius,
+                borderRadius: styles.pbbPhotoRadius,
                 position:"relative",
                 display:"flex",
                 flexDirection:"column",
@@ -758,7 +766,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               </div>
 
               {/* Text underneath slightly reduced to fit the smaller 50% vibe */}
-              <div style={{textAlign:"center", marginTop:8, fontSize:STYLES.pbbNameSize, fontWeight:800, color:C.dark}}>
+              <div style={{textAlign:"center", marginTop:8, fontSize:syles.pbbNameSize, fontWeight:800, color:C.dark}}>
                 {h.name}
               </div>
 
@@ -805,7 +813,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
                 {[10, 50, 100, 300, 500].map(opt => (
                   <div key={opt} style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 0', borderBottom:`1px solid ${C.gray}`}}>
                     <div>
-                      <div style={{fontSize:16, fontWeight:900, color:C.dark}}>Ã¢ÂÂ±{fmt(opt)}</div>
+                      <div style={{fontSize:16, fontWeight:900, color:C.dark}}>₱{fmt(opt)}</div>
                       <div style={{fontSize:13, color:C.med, marginTop:2}}>{opt} votes to save {sel}</div>
                     </div>
                     <button
@@ -856,7 +864,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
             
             <div style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:40}}>
               <span style={{color:C.med,fontSize:14,fontWeight:600}}>{vInfo.cnt} votes to save {vInfo.name}</span>
-              <span style={{fontWeight:800,fontSize:16,color:C.dark}}>Ã¢ÂÂ±{fmt(vInfo.cnt)}</span>
+              <span style={{fontWeight:800,fontSize:16,color:C.dark}}>₱{fmt(vInfo.cnt)}</span>
             </div>
             
             <button onClick={()=>{setVoted(false);setSel(null);}} style={{width:"100%",padding:"16px",borderRadius:12,background:C.green,border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:"pointer"}}>Done</button>
@@ -867,7 +875,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   );
 };
 
-// Ã¢ÂÂÃ¢ÂÂ HOME SCREEN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ── HOME SCREEN ────────────────────────────────────────────────────────────────
 const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
@@ -932,7 +940,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:STYLES.balanceFontSize,fontWeight:500,letterSpacing:-1}}>{showBal?`Ã¢ÂÂ±${fmt(balance)}`:"Ã¢ÂÂ± Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢"}</div>
+              <div style={{fontSize:styles.balanceFontSize,fontWeight:500,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -947,7 +955,7 @@ return (
           <div style={{marginTop:12,background:"#f0faf5",borderRadius:12,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
               <div style={{fontWeight:900,fontSize:13}}>Easy Credit</div>
-              <div style={{fontSize:11,color:C.med}}>Borrow up to Ã¢ÂÂ±30K</div>
+              <div style={{fontSize:11,color:C.med}}>Borrow up to ₱30K</div>
             </div>
             <button style={{background:C.green,border:"none",borderRadius:20,padding:"9px 16px",color:"white",fontWeight:900,fontSize:12,cursor:"pointer"}}>Get it now</button>
           </div>
@@ -958,7 +966,7 @@ return (
             {shortcuts.map((s,i)=>(
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",position:"relative",borderRadius:12}}>
                 {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5,zIndex:2}}>VOTE</div>}
-                <div onClick={s.action} style={{width:STYLES.shortcutIconSize,height:STYLES.shortcutIconSize,borderRadius:STYLES.shortcutIconRadius,background:STYLES.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
+                <div onClick={s.action} style={{width:styles.shortcutIconSize,height:styles.shortcutIconSize,borderRadius:styles.shortcutIconRadius,background:styles.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
                   onPointerDown={s.action ? e=>{
                     const el=e.currentTarget;
                     const ripple=document.createElement("span");
@@ -972,9 +980,9 @@ return (
                       } : undefined}
                       onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
                       onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
-                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={STYLES.shortcutIconColor}/>}
+                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}
               </div>
-              <div style={{fontSize:STYLES.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}}>{s.label}</div>
+              <div style={{fontSize:styles.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
             </div>
             ))}
           </div>
@@ -984,9 +992,9 @@ return (
           <div style={{color:C.green,fontSize:22,fontWeight:900,lineHeight:1.1,maxWidth:"75%",marginBottom:16,zIndex:2}}>
             Refer friends<br/>and get P100 per<br/>successful referral
           </div>
-          <div style={{position:"absolute",right:-20,top:0,opacity:0.6,fontSize:80}}>Ã°ÂÂÂ¸</div>
+          <div style={{position:"absolute",right:-20,top:0,opacity:0.6,fontSize:80}}>💸</div>
           <div style={{background:C.white,margin:"0 -20px",padding:"12px 20px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
-            <span style={{fontSize:16}}>Ã°ÂÂ¤Â©</span>
+            <span style={{fontSize:16}}>🤩</span>
             <span style={{fontWeight:900,fontSize:13}}>Refer now</span>
           </div>
         </div>
@@ -1000,11 +1008,11 @@ return (
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"16px 0",marginBottom:20}}>
             {[
               {l:"Unlock\nmore", c:C.green, bg:"#e6f9f0", icon:"LVL\nUP", locked:false},
-              {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"Ã°ÂÂÂ¡Ã¯Â¸Â", locked:false},
-              {l:"InstaPay\nCashback", c:C.light, bg:C.bg, icon:"Ã°ÂÂÂ¸", locked:true},
-              {l:"Bills\nCashback", c:C.light, bg:C.bg, icon:"Ã°ÂÂ§Â¾", locked:true},
-              {l:"Crypto\nCashback", c:C.light, bg:C.bg, icon:"Ã°ÂÂÂ", locked:true},
-              {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"Ã°ÂÂÂ¡Ã¯Â¸Â", locked:true},
+              {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"🛡️", locked:false},
+              {l:"InstaPay\nCashback", c:C.light, bg:C.bg, icon:"💸", locked:true},
+              {l:"Bills\nCashback", c:C.light, bg:C.bg, icon:"🧾", locked:true},
+              {l:"Crypto\nCashback", c:C.light, bg:C.bg, icon:"🚀", locked:true},
+              {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"🛡️", locked:true},
             ].map((xp, i) => (
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
                 <div style={{width:54,height:60,position:"relative",marginBottom:8}}>
@@ -1016,7 +1024,7 @@ return (
                   </div>
                   {xp.locked && (
                     <div style={{position:"absolute",bottom:0,left:0,background:"#000",borderRadius:"50%",width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid white"}}>
-                      <span style={{fontSize:10}}>Ã°ÂÂÂ</span>
+                      <span style={{fontSize:10}}>🔒</span>
                     </div>
                   )}
                 </div>
@@ -1026,7 +1034,7 @@ return (
           </div>
           
           <div style={{textAlign:"center",paddingTop:8,borderTop:`1px solid ${C.gray}`}}>
-            <span style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all benefits Ã¢ÂÂº</span>
+            <span style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all benefits ›</span>
           </div>
         </div>
 
@@ -1044,7 +1052,7 @@ return (
               </div>
               <div style={{textAlign:"right"}}>
                 <div style={{fontSize:12,color:C.light,marginBottom:2,fontWeight:600}}>{getDisplayDate(tx)}</div>
-                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} Ã¢ÂÂ±{fmt(tx.amount)}</div>
+                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
               </div>
             </div>
           ))}
@@ -1058,14 +1066,14 @@ return (
                 <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Missions</div>
                 <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"70%"}}>Earn rewards for completing tasks</div>
               </div>
-              <div style={{position:"absolute",right:-10,bottom:-10,fontSize:50}}>Ã°ÂÂÂ¯</div>
+              <div style={{position:"absolute",right:-10,bottom:-10,fontSize:50}}>🎯</div>
             </div>
             <div style={{flex:1,background:"#4929aa",borderRadius:16,padding:"16px",position:"relative",overflow:"hidden",minHeight:100}}>
               <div style={{position:"relative",zIndex:2}}>
                 <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Vouchers</div>
                 <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"80%"}}>Go claim them before they're gone</div>
               </div>
-              <div style={{position:"absolute",right:-5,bottom:-5,fontSize:45}}>Ã°ÂÂÂÃ¯Â¸Â</div>
+              <div style={{position:"absolute",right:-5,bottom:-5,fontSize:45}}>🎟️</div>
             </div>
           </div>
         </div>
@@ -1090,66 +1098,107 @@ return (
   );
 };
 
-// Ã¢ÂÂÃ¢ÂÂ ROOT Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide}) => {
+// ── ROOT ───────────────────────────────────────────────────────────────────────
+const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
-      
-      {/* Header */}
-      <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <span style={{fontWeight:900,fontSize:15}}>Ã°ÂÂÂ Ã¯Â¸Â DevTools</span>
+    <>
+      {/* Floating side button */}
+      {!open && (
+        <div onClick={()=>setOpen(true)} style={{
+          position:"fixed", right:0, top:"50%", transform:"translateY(-50%)",
+          background:C.green, color:"white", writingMode:"vertical-rl",
+          padding:"12px 6px", borderRadius:"12px 0 0 12px",
+          fontSize:11, fontWeight:900, cursor:"pointer", zIndex:8999,
+          boxShadow:"-2px 0 12px rgba(0,0,0,0.15)",
+          display:"flex", flexDirection:"column", alignItems:"center", gap:6,
+          letterSpacing:1
+        }}>
           {pendingChanges.length > 0 && (
-            <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
+            <div style={{
+              background:"#e74c3c", color:"white", borderRadius:"50%",
+              width:16, height:16, fontSize:9, fontWeight:900,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              writingMode:"horizontal-tb", marginBottom:4
+            }}>{pendingChanges.length}</div>
           )}
+          🛠️ DEV
         </div>
-        <div style={{display:"flex",gap:8}}>
-          {pendingChanges.length > 0 && (
-            <>
-              <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
-              <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>Ã°ÂÂÂ¾ Save to GitHub</button>
-            </>
-          )}
-          <button onClick={onHide} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>Hide</button>
-        </div>
-      </div>
+      )}
 
-      {/* All STYLES variables auto-listed */}
-      <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
-        {Object.entries(styles).map(([key, val]) => {
-          const isPending = pendingChanges.some(c => c.key === key);
-          const isColor = typeof val === "string" && val.startsWith("#");
-          const isNumber = typeof val === "number";
-          const isText = typeof val === "string" && !val.startsWith("#");
-
-          return (
-            <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
-              <div>
-                <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
-                <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                {isColor && (
-                  <input type="color" value={val}
-                    onChange={e=>onStyleChange(key, e.target.value)}
-                    style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
-                )}
-                {isNumber && (
-                  <input type="number" value={val}
-                    onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
-                    style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
-                )}
-                {isText && (
-                  <input type="text" value={val}
-                    onChange={e=>onStyleChange(key, e.target.value)}
-                    style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
-                )}
-              </div>
+      {/* Panel */}
+      {open && (
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)"}}>
+          
+          {/* Header */}
+          <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+              {pendingChanges.length > 0 && (
+                <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
+              )}
             </div>
-          );
-        })}
-      </div>
-    </div>
+            <div style={{display:"flex",gap:8}}>
+              {pendingChanges.length > 0 && (
+                <>
+                  <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
+                  <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
+                </>
+              )}
+              <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
+              <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
+            </div>
+          </div>
+
+          {/* All STYLES variables auto-listed */}
+          <div style={{overflowY:"auto",padding:"12px 18px 32px"}}>
+            {Object.entries(styles).map(([key, val]) => {
+              const isPending = pendingChanges.some(c => c.key === key);
+              const isColor = typeof val === "string" && val.startsWith("#");
+              const isNumber = typeof val === "number";
+              const isFont = typeof val === "string" && key.toLowerCase().includes("font");
+              const isText = typeof val === "string" && !val.startsWith("#") && !isFont;
+
+              return (
+                <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{key}</div>
+                    <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(val)}</div>
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    {isColor && (
+                      <input type="color" value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
+                    )}
+                    {isNumber && (
+                      <input type="number" value={val}
+                        onChange={e=>onStyleChange(key, parseFloat(e.target.value)||0)}
+                        style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                    )}
+                    {isText && (
+                      <input type="text" value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
+                    )}
+                    {isFont && (
+                      <select value={val}
+                        onChange={e=>onStyleChange(key, e.target.value)}
+                        style={{padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700,background:C.white,cursor:"pointer"}}>
+                        {["CerebriBook","CerebriBold","JekoLight","JekoRegular","JekoMedium","JekoBold","JekoBlack"].map(f=>(
+                          <option key={f} value={f}>{f}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 export default function MayaApp() {
@@ -1279,7 +1328,7 @@ const handleAddTxn=(tx)=>{
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
-  if (isLoggingIn) return <SplashScreen message="Ã¢ÂÂ Ã¢ÂÂ Ã¢ÂÂ " />;
+  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
@@ -1302,7 +1351,7 @@ const handleAddTxn=(tx)=>{
             <DevToolsPanel
               styles={styles}
               pendingChanges={pendingChanges}
-              onHide={() => setDevToolsEnabled(false)}
+              onClose={() => setDevToolsEnabled(false)}
               onStyleChange={(key, val) => {
                 STYLES = {...styles, [key]: val};
                 setStyles({...styles, [key]: val});
@@ -1331,13 +1380,13 @@ const handleAddTxn=(tx)=>{
                   });
                   const data = await res.json();
                   if(data.ok) {
-                    alert(`Ã¢ÂÂ Committed! SHA: ${data.commit.substring(0,7)}`);
+                    alert(`✅ Committed! SHA: ${data.commit.substring(0,7)}`);
                     setPendingChanges([]);
                   } else {
-                    alert(`Ã¢ÂÂ Error: ${data.error}`);
+                    alert(`❌ Error: ${data.error}`);
                   }
                 } catch(e) {
-                  alert(`Ã¢ÂÂ Failed: ${e.message}`);
+                  alert(`❌ Failed: ${e.message}`);
                 }
               }}
             />
