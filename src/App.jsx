@@ -724,7 +724,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
       {/* Floating Stats Notch */}
       <div style={{ padding: `0 ${styles.pbbNotchMarginX}px`, marginTop: `-${styles.pbbStatsOverlap}px`, position: "relative", zIndex: 5 }}>
         {/* Changed borderRadius to 8 for a boxier look, and padding to 24px for more height */}
-        <div style={{ background: C.white, borderRadius: 12, display: "flex", padding: "18px 0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
+        <div style={{ background: C.white, borderRadius: styles.pbbNotchRadius, display: "flex", padding: styles.pbbNotchPadding, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
             <div style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
             <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>before voting ends</div>
