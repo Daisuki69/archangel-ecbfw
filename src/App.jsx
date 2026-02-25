@@ -3,7 +3,7 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 
-// ── STYLES CONFIG (DevTools editable) ──────────────────────────────────────
+// ââ STYLES CONFIG (DevTools editable) ââââââââââââââââââââââââââââââââââââââ
 const DEFAULT_STYLES = {
   // Shortcut grid
   shortcutIconSize: 56,
@@ -33,8 +33,8 @@ const DEFAULT_STYLES = {
   pbbPhotoSize: "75%",
   pbbPhotoRadius: 12,
   pbbNameSize: 11,
-  pbbTopStripHeight: 20,
-  pbbBottomStripHeight: 20,
+  pbbTopStripHeight: 0,
+  pbbBottomStripHeight: 77,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -71,7 +71,7 @@ const SplashScreen = ({ message }) => (
 
 const GlobalStyle = () => (
   <style>{`
-    /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
+    /* âââ CEREBRI SANS PRO (Standard App Font) âââ */
     @font-face {
       font-family: 'CerebriBook';
       src: url('/CerebriSansPro-Book.otf') format('opentype'); 
@@ -81,7 +81,7 @@ const GlobalStyle = () => (
       src: url('/CerebriSansPro-Bold.otf') format('opentype'); 
     }
 
-    /* ─── JEKO (Numbers, Balances, Login) ─── */
+    /* âââ JEKO (Numbers, Balances, Login) âââ */
     @font-face {
       font-family: 'JekoLight';
       src: url('/fonnts.com-Jeko_Light.ttf') format('truetype');
@@ -258,7 +258,7 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
         </div>
         <div style={{textAlign:"right",flexShrink:0}}>
           <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:styles.txnTimeGap,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+          <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} â±{fmt(tx.amount)}</div>
         </div>
       </div>
     </div>
@@ -273,7 +273,7 @@ const DateChip = ({label, styles=STYLES}) => (
   </div>
 );
 
-// ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
+// ââ SETTINGS MODAL âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
@@ -286,7 +286,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
   const btnPrimary = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:C.green,color:C.white,fontWeight:900,fontSize:15,cursor:"pointer",marginTop:10};
   const btnGray = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:"#ccc",color:C.white,fontWeight:800,fontSize:14,cursor:"pointer",marginTop:8};
   const row = {padding:"15px 0",borderBottom:`1px solid ${C.gray}`,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"};
-  const titles = {main:"⚙️ Hidden Settings", editBal:"💰 Edit Balance", addTxn:"📋 Add Transaction", editPBB:"🗳️ Edit PBB Stats"};
+  const titles = {main:"âï¸ Hidden Settings", editBal:"ð° Edit Balance", addTxn:"ð Add Transaction", editPBB:"ð³ï¸ Edit PBB Stats"};
 
   return (
     <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",zIndex:600,display:"flex",alignItems:"flex-end"}}>
@@ -298,16 +298,16 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
         {view==="main" && <>
           <div style={row} onClick={()=>setView("editBal")}>
-            <span style={{fontSize:14,fontWeight:800}}>Edit Wallet Balance</span><span style={{color:C.light,fontSize:18}}>›</span>
+            <span style={{fontSize:14,fontWeight:800}}>Edit Wallet Balance</span><span style={{color:C.light,fontSize:18}}>âº</span>
           </div>
           <div style={row} onClick={()=>setView("addTxn")}>
-            <span style={{fontSize:14,fontWeight:800}}>Add Transaction</span><span style={{color:C.light,fontSize:18}}>›</span>
+            <span style={{fontSize:14,fontWeight:800}}>Add Transaction</span><span style={{color:C.light,fontSize:18}}>âº</span>
           </div>
           <div style={row} onClick={()=>setView("editPBB")}>
-            <span style={{fontSize:14,fontWeight:800}}>Edit PBB Stats</span><span style={{color:C.light,fontSize:18}}>›</span>
+            <span style={{fontSize:14,fontWeight:800}}>Edit PBB Stats</span><span style={{color:C.light,fontSize:18}}>âº</span>
           </div>
           <div style={{...row}}>
-            <span style={{fontSize:14,fontWeight:800}}>⚡ Delays</span>
+            <span style={{fontSize:14,fontWeight:800}}>â¡ Delays</span>
             <div style={{display:"flex",gap:6}}>
               {[{v:false,l:"Default"},{v:true,l:"Fast"}].map(o=>(
                 <div key={String(o.v)} onClick={()=>onSetFastMode(o.v)}
@@ -318,13 +318,13 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
             </div>
           </div>
           <div style={{...row}} onClick={()=>{onClearToday();onClose();}}>
-            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
+            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>ðï¸ Clear Today's Transactions</span>
           </div>
           <div style={{...row}} onClick={()=>{onLogout();onClose();}}>
-            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🚪 Log Out</span>
+            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>ðª Log Out</span>
           </div>
           <div style={{...row,borderBottom:"none",justifyContent:"space-between"}}>
-            <span style={{fontSize:14,fontWeight:800}}>🛠️ Developer Tools</span>
+            <span style={{fontSize:14,fontWeight:800}}>ð ï¸ Developer Tools</span>
             <div onClick={onToggleDevTools} style={{
               width:44,height:24,borderRadius:12,
               background:devToolsEnabled?"#00b464":"#ccc",
@@ -343,17 +343,17 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
 
         {view==="editBal" && <>
           <div style={{fontSize:13,color:C.med,marginBottom:4,fontWeight:700}}>Current balance</div>
-          <div style={{fontSize:24,fontWeight:900,marginBottom:18}}>₱{fmt(balance)}</div>
-          <label style={{fontSize:13,fontWeight:800,color:C.med}}>New Balance (₱)</label>
+          <div style={{fontSize:24,fontWeight:900,marginBottom:18}}>â±{fmt(balance)}</div>
+          <label style={{fontSize:13,fontWeight:800,color:C.med}}>New Balance (â±)</label>
           <input style={iStyle} type="number" value={newBal} onChange={e=>setNewBal(e.target.value)} placeholder="e.g. 5000.00"/>
           <button style={btnPrimary} onClick={()=>{onSaveBalance(parseFloat(newBal)||0);onClose();}}>Save Balance</button>
-          <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
+          <button style={btnGray} onClick={()=>setView("main")}>â Back</button>
         </>}
 
         {view==="addTxn" && <>
           <label style={{fontSize:13,fontWeight:800,color:C.med}}>Transaction Label</label>
           <input style={iStyle} value={form.label} onChange={e=>setForm({...form,label:e.target.value})} placeholder="e.g. PBB Save Princess x500"/>
-          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (₱)</label>
+          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (â±)</label>
           <input style={iStyle} type="number" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="e.g. 500"/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Time</label>
           <input style={iStyle} value={form.time} onChange={e=>setForm({...form,time:e.target.value})} placeholder="e.g. 05:52 PM"/>
@@ -371,7 +371,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
             onAddTxn({id:"m"+Date.now(),label:form.label,time:form.time||"--:-- --",amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
             onClose();
           }}>Add Transaction</button>
-          <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
+          <button style={btnGray} onClick={()=>setView("main")}>â Back</button>
         </>}
 
         {view==="editPBB" && (()=>{
@@ -380,13 +380,13 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
           const chancesOverMax = parsedChances > parsedMax;
           return <>
             <div style={{fontSize:13,color:C.med,marginBottom:16,fontWeight:700,lineHeight:1.6}}>
-              Current: <strong style={{color:C.dark}}>{daysLeft} day{daysLeft!==1?"s":""} left</strong> · <strong style={{color:C.dark}}>{chancesLeft}/{maxChances} chances</strong>
+              Current: <strong style={{color:C.dark}}>{daysLeft} day{daysLeft!==1?"s":""} left</strong> Â· <strong style={{color:C.dark}}>{chancesLeft}/{maxChances} chances</strong>
             </div>
             <label style={{fontSize:13,fontWeight:800,color:C.med}}>Days Till Voting Ends</label>
             <input style={iStyle} type="number" min="0" value={newDays} onChange={e=>setNewDays(e.target.value)} placeholder="e.g. 3"/>
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Chances Left to Vote</label>
             <input style={{...iStyle,borderColor:chancesOverMax?"#d08893":C.gray}} type="number" min="0" value={newChances} onChange={e=>setNewChances(e.target.value)} placeholder="e.g. 25"/>
-            {chancesOverMax&&<div style={{color:"#d08893",fontSize:12,fontWeight:700,marginTop:5}}>⚠️ Chances left cannot exceed max chances ({parsedMax})</div>}
+            {chancesOverMax&&<div style={{color:"#d08893",fontSize:12,fontWeight:700,marginTop:5}}>â ï¸ Chances left cannot exceed max chances ({parsedMax})</div>}
             <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Max Chances (denominator)</label>
             <input style={iStyle} type="number" min="1" value={newMax} onChange={e=>setNewMax(e.target.value)} placeholder="e.g. 30"/>
             <button style={{...btnPrimary,background:chancesOverMax?"#aaa":C.green,cursor:chancesOverMax?"not-allowed":"pointer"}} onClick={()=>{
@@ -394,7 +394,7 @@ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday,
               onSavePBB({days:parseInt(newDays)||0, chances:parsedChances, max:parsedMax});
               onClose();
             }}>Save PBB Stats</button>
-            <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
+            <button style={btnGray} onClick={()=>setView("main")}>â Back</button>
           </>;
         })()}
       </div>
@@ -441,7 +441,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
   );
 };
 
-// ── LOGIN ──────────────────────────────────────────────────────────────────────
+// ââ LOGIN ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const LoginScreen = ({onLogin, fastMode}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(true);
@@ -545,7 +545,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
         </svg>
       </div>
 
-      {/* ─── MAIN SCROLLABLE AREA ─── */}
+      {/* âââ MAIN SCROLLABLE AREA âââ */}
       <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden", 
         display: "flex", flexDirection: "column", 
@@ -573,7 +573,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
           <div style={{fontSize:14,fontWeight:560,color:C.med,letterSpacing:-0.5, marginBottom: 39.5}}>CARL CEDRIC</div>
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
-            {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
+            {/* ð Changed background to #f9f9f9 and default border to transparent ð */}
             <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
               <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
@@ -624,7 +624,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 
       </div>
 
-      {/* ─── STICKY FOOTER OVERLAY ─── */}
+      {/* âââ STICKY FOOTER OVERLAY âââ */}
       {/* If open, this snaps to the bottom of the viewport directly above the keyboard.
           Because it has a solid white background, the content in the scrollable area above slides cleanly behind it. */}
       <div style={{
@@ -648,7 +648,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
   );
 };
 
-// ── PBB SCREEN ─────────────────────────────────────────────────────────────────
+// ââ PBB SCREEN âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMode,styles=STYLES}) => {
   const [sel,setSel]=useState(null);
   const [voting,setVoting]=useState(false); 
@@ -833,7 +833,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
                 {[10, 50, 100, 300, 500].map(opt => (
                   <div key={opt} style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 0', borderBottom:`1px solid ${C.gray}`}}>
                     <div>
-                      <div style={{fontSize:16, fontWeight:900, color:C.dark}}>₱{fmt(opt)}</div>
+                      <div style={{fontSize:16, fontWeight:900, color:C.dark}}>â±{fmt(opt)}</div>
                       <div style={{fontSize:13, color:C.med, marginTop:2}}>{opt} votes to save {sel}</div>
                     </div>
                     <button
@@ -884,7 +884,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
             
             <div style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:40}}>
               <span style={{color:C.med,fontSize:14,fontWeight:600}}>{vInfo.cnt} votes to save {vInfo.name}</span>
-              <span style={{fontWeight:800,fontSize:16,color:C.dark}}>₱{fmt(vInfo.cnt)}</span>
+              <span style={{fontWeight:800,fontSize:16,color:C.dark}}>â±{fmt(vInfo.cnt)}</span>
             </div>
             
             <button onClick={()=>{setVoted(false);setSel(null);}} style={{width:"100%",padding:"16px",borderRadius:12,background:C.green,border:"none",fontSize:16,fontWeight:900,color:C.white,cursor:"pointer"}}>Done</button>
@@ -895,7 +895,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   );
 };
 
-// ── HOME SCREEN ────────────────────────────────────────────────────────────────
+// ââ HOME SCREEN ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
   const [showBal,setShowBal]=useState(true);
   const [tab,setTab]=useState("Wallet");
@@ -960,7 +960,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
+              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`â±${fmt(balance)}`:"â± â¢â¢â¢â¢â¢â¢â¢â¢"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
@@ -975,7 +975,7 @@ return (
           <div style={{marginTop:12,background:"#f0faf5",borderRadius:12,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
               <div style={{fontWeight:900,fontSize:13}}>Easy Credit</div>
-              <div style={{fontSize:11,color:C.med}}>Borrow up to ₱30K</div>
+              <div style={{fontSize:11,color:C.med}}>Borrow up to â±30K</div>
             </div>
             <button style={{background:C.green,border:"none",borderRadius:20,padding:"9px 16px",color:"white",fontWeight:900,fontSize:12,cursor:"pointer"}}>Get it now</button>
           </div>
@@ -1012,9 +1012,9 @@ return (
           <div style={{color:C.green,fontSize:22,fontWeight:900,lineHeight:1.1,maxWidth:"75%",marginBottom:16,zIndex:2}}>
             Refer friends<br/>and get P100 per<br/>successful referral
           </div>
-          <div style={{position:"absolute",right:-20,top:0,opacity:0.6,fontSize:80}}>💸</div>
+          <div style={{position:"absolute",right:-20,top:0,opacity:0.6,fontSize:80}}>ð¸</div>
           <div style={{background:C.white,margin:"0 -20px",padding:"12px 20px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
-            <span style={{fontSize:16}}>🤩</span>
+            <span style={{fontSize:16}}>ð¤©</span>
             <span style={{fontWeight:900,fontSize:13}}>Refer now</span>
           </div>
         </div>
@@ -1028,11 +1028,11 @@ return (
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"16px 0",marginBottom:20}}>
             {[
               {l:"Unlock\nmore", c:C.green, bg:"#e6f9f0", icon:"LVL\nUP", locked:false},
-              {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"🛡️", locked:false},
-              {l:"InstaPay\nCashback", c:C.light, bg:C.bg, icon:"💸", locked:true},
-              {l:"Bills\nCashback", c:C.light, bg:C.bg, icon:"🧾", locked:true},
-              {l:"Crypto\nCashback", c:C.light, bg:C.bg, icon:"🚀", locked:true},
-              {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"🛡️", locked:true},
+              {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"ð¡ï¸", locked:false},
+              {l:"InstaPay\nCashback", c:C.light, bg:C.bg, icon:"ð¸", locked:true},
+              {l:"Bills\nCashback", c:C.light, bg:C.bg, icon:"ð§¾", locked:true},
+              {l:"Crypto\nCashback", c:C.light, bg:C.bg, icon:"ð", locked:true},
+              {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"ð¡ï¸", locked:true},
             ].map((xp, i) => (
               <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
                 <div style={{width:54,height:60,position:"relative",marginBottom:8}}>
@@ -1044,7 +1044,7 @@ return (
                   </div>
                   {xp.locked && (
                     <div style={{position:"absolute",bottom:0,left:0,background:"#000",borderRadius:"50%",width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid white"}}>
-                      <span style={{fontSize:10}}>🔒</span>
+                      <span style={{fontSize:10}}>ð</span>
                     </div>
                   )}
                 </div>
@@ -1054,7 +1054,7 @@ return (
           </div>
           
           <div style={{textAlign:"center",paddingTop:8,borderTop:`1px solid ${C.gray}`}}>
-            <span style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all benefits ›</span>
+            <span style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all benefits âº</span>
           </div>
         </div>
 
@@ -1072,7 +1072,7 @@ return (
               </div>
               <div style={{textAlign:"right"}}>
                 <div style={{fontSize:12,color:C.light,marginBottom:2,fontWeight:600}}>{getDisplayDate(tx)}</div>
-                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} â±{fmt(tx.amount)}</div>
               </div>
             </div>
           ))}
@@ -1086,14 +1086,14 @@ return (
                 <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Missions</div>
                 <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"70%"}}>Earn rewards for completing tasks</div>
               </div>
-              <div style={{position:"absolute",right:-10,bottom:-10,fontSize:50}}>🎯</div>
+              <div style={{position:"absolute",right:-10,bottom:-10,fontSize:50}}>ð¯</div>
             </div>
             <div style={{flex:1,background:"#4929aa",borderRadius:16,padding:"16px",position:"relative",overflow:"hidden",minHeight:100}}>
               <div style={{position:"relative",zIndex:2}}>
                 <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Vouchers</div>
                 <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"80%"}}>Go claim them before they're gone</div>
               </div>
-              <div style={{position:"absolute",right:-5,bottom:-5,fontSize:45}}>🎟️</div>
+              <div style={{position:"absolute",right:-5,bottom:-5,fontSize:45}}>ðï¸</div>
             </div>
           </div>
         </div>
@@ -1118,7 +1118,7 @@ return (
   );
 };
 
-// ── ROOT ───────────────────────────────────────────────────────────────────────
+// ââ ROOT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const FloatingDevButton = ({pendingCount, onOpen}) => {
   const [pos, setPos] = useState({side:"right", y:50}); // y = percentage
   const dragging = useRef(false);
@@ -1192,7 +1192,7 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
           writingMode:"horizontal-tb", marginBottom:4
         }}>{pendingCount}</div>
       )}
-      🛠️ DEV
+      ð ï¸ DEV
     </div>
   );
 };
@@ -1216,7 +1216,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+              <span style={{fontWeight:900,fontSize:15}}>ð ï¸ DevTools</span>
               {pendingChanges.length > 0 && (
                 <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
               )}
@@ -1225,11 +1225,11 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
               {pendingChanges.length > 0 && (
                 <>
                   <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
-                  <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
+                  <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>ð¾ Save</button>
                 </>
               )}
-              <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
-              <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
+              <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>â Min</button>
+              <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>â</button>
             </div>
           </div>
 
@@ -1410,7 +1410,7 @@ const handleAddTxn=(tx)=>{
 
   // --- STEP 4: The Gatekeeper ---
   if (isAppLoading) return <SplashScreen />;
-  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
+  if (isLoggingIn) return <SplashScreen message="â â â " />;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
@@ -1462,13 +1462,13 @@ const handleAddTxn=(tx)=>{
                   });
                   const data = await res.json();
                   if(data.ok) {
-                    alert(`✅ Committed! SHA: ${data.commit.substring(0,7)}`);
+                    alert(`â Committed! SHA: ${data.commit.substring(0,7)}`);
                     setPendingChanges([]);
                   } else {
-                    alert(`❌ Error: ${data.error}`);
+                    alert(`â Error: ${data.error}`);
                   }
                 } catch(e) {
-                  alert(`❌ Failed: ${e.message}`);
+                  alert(`â Failed: ${e.message}`);
                 }
               }}
             />
