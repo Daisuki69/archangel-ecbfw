@@ -980,7 +980,7 @@ return (
                       } : undefined}
                       onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
                       onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
-                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}
+                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}/>}
               </div>
               <div style={{fontSize:styles.shortcutLabelSize,fontWeight:800,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
             </div>
