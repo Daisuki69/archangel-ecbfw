@@ -949,7 +949,7 @@ return (
 
       <div style={{flex:1,overflowY:"auto",padding:"12px 12px 100px"}}>
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
               <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
