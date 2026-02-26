@@ -308,7 +308,10 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
     const iv=setInterval(()=>tick(t=>t+1),30000);
     return ()=>clearInterval(iv);
   },[isToday,tx.timestamp]);
-  const displayTime = isToday && tx.timestamp ? relativeTime(tx.timestamp) : tx.time;
+  const now = new Date();
+  const txDay = tx.timestamp ? new Date(tx.timestamp) : null;
+  const actuallyToday = txDay && txDay.toDateString()===now.toDateString();
+  const displayTime = actuallyToday ? relativeTime(tx.timestamp) : tx.time;
   return (
     <div style={{padding:styles.txnRowPadding}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
