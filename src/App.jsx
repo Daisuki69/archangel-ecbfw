@@ -7,7 +7,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 const NavBar = registerPlugin('NavBar');
 
 const C = {
-  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f",
+  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f", {
   white:"#fff", bg:"#f2f2f2", gray:"#e8e8e8", dark:"#111",
   med:"#555", light:"#999",
 };
@@ -1292,13 +1292,19 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
   }, [open]);
 
   useEffect(() => {
+    const initialHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
     const handler = () => {
-      const shrunk = window.visualViewport && window.visualViewport.height < window.innerHeight - 100;
+      const current = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      const shrunk = current < initialHeight - 100;
       setKeyboardUp(shrunk);
       if (!shrunk) setFocusedKey(null);
     };
     window.visualViewport?.addEventListener("resize", handler);
-    return () => window.visualViewport?.removeEventListener("resize", handler);
+    window.addEventListener("resize", handler);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handler);
+      window.removeEventListener("resize", handler);
+    };
   }, []);
 
   if (open && keyboardUp && focusedKey) {
@@ -1399,7 +1405,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isNumber && (
                       <input type="text" value={localNums[key] !== undefined ? localNums[key] : String(val)}
-                        onFocus={()=>setFocusedKey(key)}
+                        onFocus={()=>{ setFocusedKey(key); setKeyboardUp(true); }}
                         onChange={e => {
                           const raw = e.target.value;
                           setLocalNums(prev => ({...prev, [key]: raw}));
@@ -1410,7 +1416,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isText && (
                       <input type="text" value={val}
-                        onFocus={()=>setFocusedKey(key)}
+                        onFocus={()=>{ setFocusedKey(key); setKeyboardUp(true); }}
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
                     )}
