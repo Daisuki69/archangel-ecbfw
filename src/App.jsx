@@ -79,11 +79,11 @@ const DEFAULT_STYLES = {
   balanceWeight: 500,
   pbbNameWeight: 800,
   // Floating Nav
-  floatingNavBottom: 24,
+  floatingNavBottom: 37,
   floatingNavOuterPadding: "0 20px",
-  floatingNavRadius: 24,
-  floatingNavInnerPadding: "12px 36px",
-  floatingNavMaxWidth: 280,
+  floatingNavRadius: 15,
+  floatingNavInnerPadding: "15.7px 40px",
+  floatingNavMaxWidth: 265,
 };
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
