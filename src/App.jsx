@@ -76,7 +76,7 @@ const DEFAULT_STYLES = {
   txnSubWeight: 600,
   shortcutLabelWeight: 800,
   datePillWeight: 800,
-  balanceWeight: 500,
+  balanceWeight: 600,
   pbbNameWeight: 800,
   // Floating Nav
   floatingNavBottom: 24,
@@ -101,7 +101,7 @@ const DEFAULT_STYLES = {
   tabInactiveFontSize: 14,
   tabFont: "CerebriBook",
   tabFirstActivePaddingLeft: 25,
-  tabFirstInactivePaddingLeft: 6,
+  tabFirstInactivePaddingLeft: 15,
 };
 
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
@@ -996,7 +996,7 @@ return (
             </div>
           </div>
         </div>
-        <div style={{display:"flex",paddingLeft:tab===tabs[0]?styles.tabFirstActivePaddingLeft:styles.tabFirstInactivePaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
+        <div style={{display:"flex",paddingLeft:tab===tabs[0]?styles.tabFirstActivePaddingLeft:styles.tabFirstInactivePaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none",transition:"padding-left 0.15s"}}>
           {tabs.map(t=>(
             <div key={t} onClick={()=>setTab(t)} style={{
               marginLeft:styles.tabRowGap,
