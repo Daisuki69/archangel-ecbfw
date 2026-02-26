@@ -1340,8 +1340,8 @@ export default function MayaApp() {
   useEffect(() => {
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
     }
 
     const timer = setTimeout(() => {
@@ -1354,15 +1354,14 @@ export default function MayaApp() {
     if (!Capacitor.isNativePlatform()) return;
 
     if (isAppLoading || isLoggingIn) {
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
     } else {
-      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
     }
-  }, [isAppLoading, isLoggingIn]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
