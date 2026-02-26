@@ -1267,6 +1267,7 @@ const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
+  const [localNums, setLocalNums] = useState({});
   const scrollPos = useRef(0);
   const listRef = useRef(null);
 
@@ -1343,7 +1344,16 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
                     )}
-                    {isNumber && <NumberInput val={val} isPending={isPending} onStyleChange={onStyleChange} keyName={key} />}
+                    {isNumber && (
+                      <input type="text" value={localNums[key] !== undefined ? localNums[key] : String(val)}
+                        onChange={e => {
+                          const raw = e.target.value;
+                          setLocalNums(prev => ({...prev, [key]: raw}));
+                          const n = parseFloat(raw);
+                          if (!isNaN(n)) onStyleChange(key, n);
+                        }}
+                        style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                    )}
                     {isText && (
                       <input type="text" value={val}
                         onChange={e=>onStyleChange(key, e.target.value)}
