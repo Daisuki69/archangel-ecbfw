@@ -84,6 +84,10 @@ const DEFAULT_STYLES = {
   floatingNavRadius: 24,
   floatingNavInnerPadding: "12px 36px",
   floatingNavMaxWidth: 265,
+  // Eye Button
+  eyeIconSize: 20,
+  eyeIconMarginTop: 4,
+  eyeIconMarginRight: 0,
   // Profile Icon
   profileIconMarginTop: 0,
   profileIconMarginLeft: 0,
@@ -1025,7 +1029,7 @@ return (
               <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
-            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:4}}><Ic n={showBal?"eye":"eyeOff"} s={20} c="#aaa"/></button>
+            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/></button>
           </div>
           <div style={{display:"flex",gap:10,marginTop:16}}>
             {[{n:"cashin",l:"Cash in"},{n:"send",l:"Send"}].map(b=>(
@@ -1319,7 +1323,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
               </div>
               {pendingChanges.length > 0 && (
                 <>
-                  <button onClick={onDiscard} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
+                  <button onClick={() => { setLocalNums({}); onDiscard(); }} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
                   <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
                 </>
               )}
