@@ -337,7 +337,7 @@ const DateChip = ({label, styles=STYLES}) => (
  const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
-  const [form, setForm] = useState({label:"",amount:"",time:"",date:new Date().toISOString().split("T")[0],positive:false});
+  const [form, setForm] = useState({label:"",amount:"",time:`${String(new Date().getHours()).padStart(2,"0")}:${String(new Date().getMinutes()).padStart(2,"0")}`,date:new Date().toISOString().split("T")[0],positive:false});
   const [newDays, setNewDays] = useState(String(daysLeft));
   const [newChances, setNewChances] = useState(String(chancesLeft));
   const [newMax, setNewMax] = useState(String(maxChances));
@@ -382,7 +382,8 @@ const DateChip = ({label, styles=STYLES}) => (
           <div style={{...row}} onClick={()=>setView("clearTxns")}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Transactions</span><span style={{color:C.light,fontSize:18}}>›</span>
           </div>
-          {view==="clearTxns" && <>
+          </>}
+        {view==="clearTxns" && <>
             <div style={{marginBottom:16}}>
               <label style={{fontSize:13,fontWeight:800,color:C.med,display:"block",marginBottom:6}}>Month</label>
               <select value={clearMonth} onChange={e=>setClearMonth(Number(e.target.value))} style={{...iStyle}}>
@@ -404,7 +405,6 @@ const DateChip = ({label, styles=STYLES}) => (
               onClose();
             }}>Clear Selected Day</button>
             <button style={btnGray} onClick={()=>setView("main")}>Cancel</button>
-          </>}
           <div style={{...row}} onClick={()=>{onLogout();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🚪 Log Out</span>
           </div>
@@ -443,7 +443,7 @@ const DateChip = ({label, styles=STYLES}) => (
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Date</label>
           <input style={iStyle} type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Time</label>
-          <input style={iStyle} value={form.time} onChange={e=>setForm({...form,time:e.target.value})} placeholder="e.g. 05:52 PM"/>
+          <input style={iStyle} type="time" value={form.time} onChange={e=>setForm({...form,time:e.target.value})}/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Type</label>
           <div style={{display:"flex",gap:10,marginTop:8}}>
             {[{v:false,l:"Purchased (deduct)"},{v:true,l:"Received (add)"}].map(o=>(
@@ -455,8 +455,13 @@ const DateChip = ({label, styles=STYLES}) => (
           </div>
           <button style={btnPrimary} onClick={()=>{
             if(!form.label||!form.amount) return;
-            const txDate = form.date ? new Date(form.date).getTime() : Date.now();
-            onAddTxn({id:"m"+Date.now(),label:form.label,time:form.time||"--:-- --",timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
+            const [h,m] = (form.time||"00:00").split(":").map(Number);
+            const base = form.date ? new Date(form.date) : new Date();
+            base.setHours(h,m,0,0);
+            const txDate = base.getTime();
+            const h12 = h%12||12, ampm = h>=12?"PM":"AM";
+            const timeLabel = `${String(h12).padStart(2,"0")}:${String(m).padStart(2,"0")} ${ampm}`;
+            onAddTxn({id:"m"+Date.now(),label:form.label,time:timeLabel,timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
             onClose();
           }}>Add Transaction</button>
           <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
