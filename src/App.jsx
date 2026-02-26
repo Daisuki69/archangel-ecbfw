@@ -1307,34 +1307,10 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
     };
   }, []);
 
-  if (open && keyboardUp && focusedKey) {
-    const val = styles[focusedKey];
-    const isPending = pendingChanges.some(c => c.key === focusedKey);
-    const isNumber = typeof val === "number";
-    return (
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9999,background:C.white,borderTop:`2px solid ${isPending?C.green:C.gray}`,padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 -2px 12px rgba(0,0,0,0.15)"}}>
-        <div>
-          <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{focusedKey}</div>
-          <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(DEFAULT_STYLES[focusedKey])}</div>
-        </div>
-        {isNumber && (
-          <input type="text" autoFocus value={localNums[focusedKey] !== undefined ? localNums[focusedKey] : String(val)}
-            onChange={e => {
-              const raw = e.target.value;
-              setLocalNums(prev => ({...prev, [focusedKey]: raw}));
-              const n = parseFloat(raw);
-              if (!isNaN(n)) onStyleChange(focusedKey, n);
-            }}
-            style={{width:100,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:16,fontWeight:700,textAlign:"center"}}/>
-        )}
-        {typeof val === "string" && !val.startsWith("#") && (
-          <input type="text" autoFocus value={val}
-            onChange={e=>onStyleChange(focusedKey, e.target.value)}
-            style={{width:140,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:14,fontWeight:700}}/>
-        )}
-      </div>
-    );
-  }
+  const slim = open && keyboardUp && focusedKey;
+  const focusedVal = focusedKey ? styles[focusedKey] : null;
+  const focusedPending = focusedKey ? pendingChanges.some(c => c.key === focusedKey) : false;
+  const focusedIsNumber = typeof focusedVal === "number";
 
   return (
     <>
@@ -1348,7 +1324,35 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 
       {/* Panel */}
       {open && (
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity,transition:"border-radius 0.25s"}}>
+
+          {/* Slim keyboard strip — always rendered, animated in/out */}
+          <div style={{overflow:"hidden",maxHeight:slim?"80px":"0px",opacity:slim?1:0,transition:"max-height 0.25s ease, opacity 0.2s ease",borderBottom:slim?`1px solid ${C.gray}`:"none"}}>
+            <div style={{padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div>
+                <div style={{fontSize:12,fontWeight:900,color:focusedPending?C.green:C.dark}}>{focusedKey}</div>
+                <div style={{fontSize:10,color:C.light,marginTop:2}}>{focusedKey ? String(DEFAULT_STYLES[focusedKey]) : ""}</div>
+              </div>
+              {focusedIsNumber && (
+                <input type="text" value={focusedKey && localNums[focusedKey] !== undefined ? localNums[focusedKey] : String(focusedVal ?? "")}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    setLocalNums(prev => ({...prev, [focusedKey]: raw}));
+                    const n = parseFloat(raw);
+                    if (!isNaN(n)) onStyleChange(focusedKey, n);
+                  }}
+                  style={{width:100,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${focusedPending?C.green:C.gray}`,fontSize:16,fontWeight:700,textAlign:"center"}}/>
+              )}
+              {typeof focusedVal === "string" && focusedVal && !focusedVal.startsWith("#") && (
+                <input type="text" value={focusedVal}
+                  onChange={e=>onStyleChange(focusedKey, e.target.value)}
+                  style={{width:140,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${focusedPending?C.green:C.gray}`,fontSize:14,fontWeight:700}}/>
+              )}
+            </div>
+          </div>
+
+          {/* Full panel content — collapses when keyboard is up */}
+          <div style={{overflow:"hidden",maxHeight:slim?"0px":"75vh",opacity:slim?0:1,transition:"max-height 0.25s ease, opacity 0.2s ease",display:"flex",flexDirection:"column"}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
@@ -1433,6 +1437,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       )}
