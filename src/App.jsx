@@ -1253,7 +1253,6 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
 };
 const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
   const [local, setLocal] = useState(String(val));
-  useEffect(() => { setLocal(String(val)); }, [val]);
   return (
     <input type="text" inputMode="decimal" value={local}
       onChange={e => {
