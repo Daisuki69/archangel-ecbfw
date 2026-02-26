@@ -1260,6 +1260,7 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
 };
 const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
   const [local, setLocal] = useState(String(val));
+  useEffect(() => { setLocal(String(val)); }, [val]);
   return (
     <input type="text" inputMode="decimal" value={local}
       onChange={e => {
@@ -1533,6 +1534,7 @@ const handleAddTxn=(tx)=>{
                 const to = `${key}: ${JSON.stringify(val)}`;
                 setPendingChanges(p => {
                   const filtered = p.filter(c => c.key !== key);
+                  if (val === DEFAULT_STYLES[key]) return filtered;
                   return [...filtered, {key, from, to, oldVal: DEFAULT_STYLES[key], newVal: val}];
                 });
               }}
