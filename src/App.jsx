@@ -79,11 +79,11 @@ const DEFAULT_STYLES = {
   balanceWeight: 600,
   pbbNameWeight: 800,
   // Floating Nav
-  floatingNavBottom: 10,
+  floatingNavBottom: 37,
   floatingNavOuterPadding: "0 20px",
   floatingNavRadius: 15,
   floatingNavInnerPadding: "15.7px 40px",
-  floatingNavMaxWidth: 300,
+  floatingNavMaxWidth: 265,
   // Eye Button
   eyeIconSize: 25,
   eyeIconMarginTop: -22,
