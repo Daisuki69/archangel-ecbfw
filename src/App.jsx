@@ -1251,6 +1251,16 @@ const FloatingDevButton = ({pendingCount, onOpen}) => {
     </div>
   );
 };
+const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
+  const [local, setLocal] = React.useState(String(val));
+  React.useEffect(() => { setLocal(String(val)); }, [val]);
+  return (
+    <input type="text" value={local}
+      onChange={e => setLocal(e.target.value)}
+      onBlur={() => { const n = parseFloat(local); if (!isNaN(n)) onStyleChange(keyName, n); }}
+      style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?"#00b464":"#e8e8e8"}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+  );
+};
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
@@ -1339,7 +1349,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
                     )}
-                    {isNumber && <NumberInput />}
+                    {isNumber && <NumberInput val={val} isPending={isPending} onStyleChange={onStyleChange} keyName={key} />}
                     {isText && (
                       <input type="text" value={val}
                         onChange={e=>onStyleChange(key, e.target.value)}
