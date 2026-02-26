@@ -79,10 +79,10 @@ const DEFAULT_STYLES = {
   balanceWeight: 600,
   pbbNameWeight: 800,
   // Floating Nav
-  floatingNavBottom: 24,
+  floatingNavBottom: 37,
   floatingNavOuterPadding: "0 20px",
-  floatingNavRadius: 24,
-  floatingNavInnerPadding: "12px 36px",
+  floatingNavRadius: 15,
+  floatingNavInnerPadding: "15.7px 40px",
   floatingNavMaxWidth: 265,
   // Eye Button
   eyeIconSize: 25,
@@ -1049,7 +1049,10 @@ return (
         onTouchEnd={()=>{
           if(pullY>=PULL_THRESHOLD){
             setIsRefreshing(true);
-            setTimeout(()=>{setIsRefreshing(false);setPullY(0);},900);
+            setTimeout(()=>{
+              sessionStorage.setItem("loggedIn","true");
+              window.location.reload();
+            },900);
           } else {
             setPullY(0);
           }
@@ -1473,8 +1476,9 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
   );
 };
 export default function MayaApp() {
-  const [screen,setScreen]=useState("login");
-  const [isAppLoading, setIsAppLoading] = useState(true);
+  const wasLoggedIn = sessionStorage.getItem("loggedIn") === "true";
+  const [screen,setScreen]=useState(wasLoggedIn?"home":"login");
+  const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [nextScreen,setNextScreen]=useState(null);
@@ -1599,7 +1603,7 @@ const handleAddTxn=(tx)=>{
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home"); }, 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
