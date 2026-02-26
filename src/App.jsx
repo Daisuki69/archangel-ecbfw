@@ -514,7 +514,8 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
 
   // append hardcoded FEB21 group
   if (!groups["February 21, 2026"]) {
-    groups["February 21, 2026"] = { label: "February 21, 2026", txns: FEB21, isToday: false };
+    const feb21Stamped = FEB21.map(tx=>({...tx, timestamp: tx.timestamp||new Date("2026-02-21").getTime()}));
+    groups["February 21, 2026"] = { label: "February 21, 2026", txns: feb21Stamped, isToday: false };
   }
 
   const sortedGroups = Object.values(groups).sort((a, b) => {
@@ -1022,7 +1023,8 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
     {icon:"more",label:"More"},
   ];
   
-  const combinedTxns = [...todayTxns, ...FEB21].sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0, 5);
+  const feb21Stamped = FEB21.map(tx=>({...tx, timestamp: tx.timestamp||new Date("2026-02-21").getTime()}));
+  const combinedTxns = [...todayTxns, ...feb21Stamped].sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0, 5);
 
   const getDisplayDate = (tx) => {
     if (!tx.timestamp) return "21 Feb 2026";
@@ -1526,6 +1528,18 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 export default function MayaApp() {
   const wasLoggedIn = sessionStorage.getItem("loggedIn") === "true";
   useEffect(()=>{ document.body.style.opacity="1"; },[]);
+  useEffect(()=>{
+    const handler = (e) => {
+      sessionStorage.removeItem("loggedIn");
+      window.location.reload();
+    };
+    window.addEventListener("error", handler);
+    window.addEventListener("unhandledrejection", handler);
+    return()=>{
+      window.removeEventListener("error", handler);
+      window.removeEventListener("unhandledrejection", handler);
+    };
+  },[]);
   const [screen,setScreen]=useState(wasLoggedIn?"home":"login");
   const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
