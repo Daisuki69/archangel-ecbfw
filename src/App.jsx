@@ -992,9 +992,10 @@ return (
             </div>
           </div>
         </div>
-        <div style={{display:"flex",gap:styles.tabRowGap,paddingLeft:styles.tabRowPaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
+        <div style={{display:"flex",paddingLeft:styles.tabRowPaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
           {tabs.map(t=>(
             <div key={t} onClick={()=>setTab(t)} style={{
+              marginLeft:styles.tabRowGap,
               padding:`${styles.tabPillPaddingY}px ${styles.tabPillPaddingX}px`,
               borderRadius:styles.tabPillRadius,
               fontWeight:tab===t?styles.tabActiveFontWeight:styles.tabInactiveFontWeight,
