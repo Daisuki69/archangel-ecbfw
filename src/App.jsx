@@ -7,7 +7,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 const NavBar = registerPlugin('NavBar');
 
 const C = {
-  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f", {
+  mint:"#2ff29e", green:"#00b464", purple:"#4929aa", wine:"#1f155f", 
   white:"#fff", bg:"#f2f2f2", gray:"#e8e8e8", dark:"#111",
   med:"#555", light:"#999",
 };
