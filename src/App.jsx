@@ -977,7 +977,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
     {icon:"more",label:"More"},
   ];
   
-  const combinedTxns = [...[...todayTxns].reverse(), ...FEB21].slice(0, 3);
+  const combinedTxns = [...[...todayTxns].reverse(), ...FEB21].slice(0, 5);
 
   const getDisplayDate = (tx) => {
     if (!tx.timestamp) return "21 Feb 2026";
