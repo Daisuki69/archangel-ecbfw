@@ -1345,10 +1345,6 @@ export default function MayaApp() {
 
     const timer = setTimeout(() => {
       setIsAppLoading(false);
-      setTimeout(() => {
-        NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-        NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-      }, 80);
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
@@ -1479,7 +1475,7 @@ const handleAddTxn=(tx)=>{
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); setTimeout(() => { NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {}); NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {}); }, 80); navigate("home"); }, 5000); }} fastMode={fastMode} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); navigate("home"); }, 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
