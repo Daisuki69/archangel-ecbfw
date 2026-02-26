@@ -1068,7 +1068,7 @@ return (
               <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{balance===null?"₱ ••••••••":showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
-            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal&&balance!==null?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/>
+            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal&&balance!==null?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/></button>
           </div>
           <div style={{display:"flex",gap:10,marginTop:16}}>
             {[{n:"cashin",l:"Cash in"},{n:"send",l:"Send"}].map(b=>(
