@@ -99,140 +99,43 @@ const SplashScreen = ({ message }) => (
 const GlobalStyle = () => (
   <style>{`
     /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
-    @font-face {
-      font-family: 'CerebriThin';
-      src: url('/CerebriSansPro-Thin.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriThinItalic';
-      src: url('/CerebriSansPro-ThinItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriExtraLight';
-      src: url('/CerebriSansPro-ExtraLight.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriExtraLightItalic';
-      src: url('/CerebriSansPro-ExtraLightItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriLight';
-      src: url('/CerebriSansPro-Light.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriLightItalic';
-      src: url('/CerebriSansPro-LightItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriBook';
-      src: url('/CerebriSansPro-Book.otf') format('opentype'); 
-    }
-    @font-face {
-      font-family: 'CerebriRegular';
-      src: url('/CerebriSansPro-Regular.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriItalic';
-      src: url('/CerebriSansPro-Italic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriMedium';
-      src: url('/CerebriSansPro-Medium.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriMediumItalic';
-      src: url('/CerebriSansPro-MediumItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriSemiBold';
-      src: url('/CerebriSansPro-SemiBold.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriSemiBoldItalic';
-      src: url('/CerebriSansPro-SemiBoldItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriBold';
-      src: url('/CerebriSansPro-Bold.otf') format('opentype'); 
-    }
-    @font-face {
-      font-family: 'CerebriBoldItalic';
-      src: url('/CerebriSansPro-BoldItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriExtraBold';
-      src: url('/CerebriSansPro-ExtraBold.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriExtraBoldItalic';
-      src: url('/CerebriSansPro-ExtraBoldItalic.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriHeavy';
-      src: url('/CerebriSansPro-Heavy.otf') format('opentype');
-    }
-    @font-face {
-      font-family: 'CerebriHeavyItalic';
-      src: url('/CerebriSansPro-HeavyItalic.otf') format('opentype');
-    }
+    @font-face { font-family: 'CerebriThin'; src: url('/CerebriSansPro-Thin.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriThinItalic'; src: url('/CerebriSansPro-ThinItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriExtraLight'; src: url('/CerebriSansPro-ExtraLight.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriExtraLightItalic'; src: url('/CerebriSansPro-ExtraLightItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriLight'; src: url('/CerebriSansPro-Light.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriLightItalic'; src: url('/CerebriSansPro-LightItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriBook'; src: url('/CerebriSansPro-Book.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriItalic'; src: url('/CerebriSansPro-Italic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriRegular'; src: url('/CerebriSansPro-Regular.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriMedium'; src: url('/CerebriSansPro-Medium.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriMediumItalic'; src: url('/CerebriSansPro-MediumItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriSemiBold'; src: url('/CerebriSansPro-SemiBold.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriSemiBoldItalic'; src: url('/CerebriSansPro-SemiBoldItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriBold'; src: url('/CerebriSansPro-Bold.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriBoldItalic'; src: url('/CerebriSansPro-BoldItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriExtraBold'; src: url('/CerebriSansPro-ExtraBold.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriExtraBoldItalic'; src: url('/CerebriSansPro-ExtraBoldItalic.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriHeavy'; src: url('/CerebriSansPro-Heavy.otf') format('opentype'); }
+    @font-face { font-family: 'CerebriHeavyItalic'; src: url('/CerebriSansPro-HeavyItalic.otf') format('opentype'); }
 
     /* ─── JEKO (Numbers, Balances, Login) ─── */
-    @font-face {
-      font-family: 'JekoThin';
-      src: url('/fonnts.com-Jeko_Thin.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoThinItalic';
-      src: url('/fonnts.com-Jeko_Thin_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoLight';
-      src: url('/fonnts.com-Jeko_Light.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoLightItalic';
-      src: url('/fonnts.com-Jeko_Light_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoRegular';
-      src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoRegularItalic';
-      src: url('/fonnts.com-Jeko_Regular_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoMedium';
-      src: url('/fonnts.com-Jeko_Medium.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoMediumItalic';
-      src: url('/fonnts.com-Jeko_Medium_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoSemiBold';
-      src: url('/fonnts.com-Jeko_SemiBold.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoSemiBoldItalic';
-      src: url('/fonnts.com-Jeko_SemiBold_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoBold';
-      src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoBoldItalic';
-      src: url('/fonnts.com-Jeko_Bold_Italic.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoBlack';
-      src: url('/fonnts.com-Jeko_Black.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'JekoBlackItalic';
-      src: url('/fonnts.com-Jeko_Black_Italic.ttf') format('truetype');
-    }
+    @font-face { font-family: 'JekoThin'; src: url('/fonnts.com-Jeko_Thin.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoThinItalic'; src: url('/fonnts.com-Jeko_Thin_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoLight'; src: url('/fonnts.com-Jeko_Light.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoLightItalic'; src: url('/fonnts.com-Jeko_Light_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoRegular'; src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoRegularItalic'; src: url('/fonnts.com-Jeko_Regular_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoMedium'; src: url('/Jeko-Medium.otf') format('opentype'); }
+    @font-face { font-family: 'JekoMediumItalic'; src: url('/fonnts.com-Jeko_Medium_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoSemiBold'; src: url('/fonnts.com-Jeko_SemiBold.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoSemiBoldItalic'; src: url('/fonnts.com-Jeko_SemiBold_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoBold'; src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoBoldItalic'; src: url('/fonnts.com-Jeko_Bold_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoBlack'; src: url('/fonnts.com-Jeko_Black.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoBlackItalic'; src: url('/fonnts.com-Jeko_Black_Italic.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoVariable'; src: url('/fonnts.com-Jeko_Variable.ttf') format('truetype'); }
+    @font-face { font-family: 'JekoItalicVariable'; src: url('/fonnts.com-Jeko_Italic_Variable.ttf') format('truetype'); }
 
     /* Default App Font */
     body { 
@@ -1408,16 +1311,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                       <select value={val}
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700,background:C.white,cursor:"pointer"}}>
-                        {[
-                          "CerebriThin","CerebriThinItalic","CerebriExtraLight","CerebriExtraLightItalic",
-                          "CerebriLight","CerebriLightItalic","CerebriBook","CerebriRegular","CerebriItalic",
-                          "CerebriMedium","CerebriMediumItalic","CerebriSemiBold","CerebriSemiBoldItalic",
-                          "CerebriBold","CerebriBoldItalic","CerebriExtraBold","CerebriExtraBoldItalic",
-                          "CerebriHeavy","CerebriHeavyItalic",
-                          "JekoThin","JekoThinItalic","JekoLight","JekoLightItalic","JekoRegular","JekoRegularItalic",
-                          "JekoMedium","JekoMediumItalic","JekoSemiBold","JekoSemiBoldItalic","JekoBold","JekoBoldItalic",
-                          "JekoBlack","JekoBlackItalic"
-                        ].map(f=>(
+                        {["CerebriThin","CerebriThinItalic","CerebriExtraLight","CerebriExtraLightItalic","CerebriLight","CerebriLightItalic","CerebriBook","CerebriItalic","CerebriRegular","CerebriMedium","CerebriMediumItalic","CerebriSemiBold","CerebriSemiBoldItalic","CerebriBold","CerebriBoldItalic","CerebriExtraBold","CerebriExtraBoldItalic","CerebriHeavy","CerebriHeavyItalic","JekoThin","JekoThinItalic","JekoLight","JekoLightItalic","JekoRegular","JekoRegularItalic","JekoMedium","JekoMediumItalic","JekoSemiBold","JekoSemiBoldItalic","JekoBold","JekoBoldItalic","JekoBlack","JekoBlackItalic","JekoVariable","JekoItalicVariable"].map(f=>(
                           <option key={f} value={f}>{f}</option>
                         ))}
                       </select>
