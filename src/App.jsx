@@ -512,8 +512,17 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
     groups[key].txns.push(tx);
   });
 
-  // append hardcoded FEB21 group at the end
-  groups["February 21, 2026"] = { label: "February 21, 2026", txns: FEB21, isToday: false };
+  // append hardcoded FEB21 group
+  if (!groups["February 21, 2026"]) {
+    groups["February 21, 2026"] = { label: "February 21, 2026", txns: FEB21, isToday: false };
+  }
+
+  const sortedGroups = Object.values(groups).sort((a, b) => {
+    if (a.isToday) return -1;
+    if (b.isToday) return 1;
+    const parseLabel = l => new Date(l);
+    return parseLabel(b.label) - parseLabel(a.label);
+  });
 
   return (
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.white, fontFamily: "'JekoMedium', sans-serif"}}>
@@ -523,7 +532,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
         <div style={{width:30}}/>
       </div>
       <div className="txn-scroll" style={{flex:1,overflowY:"auto",background:C.white}}>
-        {Object.values(groups).map(group => (
+        {sortedGroups.map(group => (
           <div key={group.label}>
             <div style={{position:"sticky", top: 0, zIndex: 20, background: C.white, boxShadow: "0 -2px 0 white, 0 2px 0 white"}}>
               <DateChip label={group.label} styles={styles}/>
