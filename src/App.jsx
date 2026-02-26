@@ -78,6 +78,12 @@ const DEFAULT_STYLES = {
   datePillWeight: 800,
   balanceWeight: 500,
   pbbNameWeight: 800,
+  // Floating Nav
+  floatingNavBottom: 24,
+  floatingNavOuterPadding: "0 20px",
+  floatingNavRadius: 24,
+  floatingNavInnerPadding: "12px 36px",
+  floatingNavMaxWidth: 280,
 };
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
@@ -1129,8 +1135,8 @@ return (
         </div>
       </div>
 
-      <div style={{position:"absolute",bottom:24,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:"0 20px"}}>
-        <div style={{background:"#000",borderRadius:24,padding:"12px 36px",display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:280,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
+      <div style={{position:"absolute",bottom:styles.floatingNavBottom,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:styles.floatingNavOuterPadding}}>
+        <div style={{background:"#000",borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
           <div style={{background:C.green,borderRadius:8,width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:900,fontSize:16}}>m</div>
           <Ic n="scan" s={22} c="white"/>
           <Ic n="grid" s={22} c="white"/>
