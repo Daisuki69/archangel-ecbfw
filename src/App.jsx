@@ -85,9 +85,9 @@ const DEFAULT_STYLES = {
   floatingNavInnerPadding: "12px 36px",
   floatingNavMaxWidth: 265,
   // Eye Button
-  eyeIconSize: 20,
-  eyeIconMarginTop: 4,
-  eyeIconMarginRight: 0,
+  eyeIconSize: 25,
+  eyeIconMarginTop: -22,
+  eyeIconMarginRight: 10,
   // Profile Icon
   profileIconMarginTop: 0,
   profileIconMarginLeft: 0,
@@ -1301,7 +1301,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 
       {/* Panel */}
       {open && (
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:420,display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
