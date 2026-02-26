@@ -86,10 +86,10 @@ const DEFAULT_STYLES = {
   floatingNavMaxWidth: 265,
 
   // Tab Bar
-  tabRowPaddingLeft: 25,
-  tabRowGap: 0,
-  tabPillPaddingX: 25,
-  tabPillPaddingY: 6.5,
+  tabRowPaddingLeft: 35,
+  tabRowGap: -10,
+  tabPillPaddingX: 30,
+  tabPillPaddingY: 6.8,
   tabPillRadius: 20,
   tabPillBg: "#000000",
   tabPillColor: "#ffffff",
