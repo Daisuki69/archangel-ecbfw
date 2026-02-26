@@ -1327,7 +1327,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
         <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity,transition:"border-radius 0.25s"}}>
 
           {/* Slim keyboard strip — always rendered, animated in/out */}
-          <div style={{overflow:"hidden",maxHeight:slim?"80px":"0px",opacity:slim?1:0,transition:"max-height 0.25s ease, opacity 0.2s ease",borderBottom:slim?`1px solid ${C.gray}`:"none"}}>
+          <div style={{borderBottom:slim?`1px solid ${C.gray}`:"none",transform:slim?"translateY(0)":"translateY(-10px)",opacity:slim?1:0,pointerEvents:slim?"auto":"none",position:slim?"relative":"absolute",width:"100%",transition:"transform 0.2s ease, opacity 0.2s ease"}}>
             <div style={{padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div>
                 <div style={{fontSize:12,fontWeight:900,color:focusedPending?C.green:C.dark}}>{focusedKey}</div>
@@ -1352,7 +1352,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
           </div>
 
           {/* Full panel content — collapses when keyboard is up */}
-          <div style={{overflow:"hidden",maxHeight:slim?"0px":"75vh",opacity:slim?0:1,transition:"max-height 0.25s ease, opacity 0.2s ease",display:"flex",flexDirection:"column"}}>
+          <div style={{maxHeight:"75vh",transform:slim?"translateY(10px)":"translateY(0)",opacity:slim?0:1,pointerEvents:slim?"none":"auto",transition:"transform 0.2s ease, opacity 0.2s ease",display:"flex",flexDirection:"column"}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
