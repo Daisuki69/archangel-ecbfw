@@ -1340,8 +1340,7 @@ export default function MayaApp() {
   useEffect(() => {
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
-      StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
-      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
     }
 
     const timer = setTimeout(() => {
@@ -1354,12 +1353,10 @@ export default function MayaApp() {
     if (!Capacitor.isNativePlatform()) return;
 
     if (isAppLoading || isLoggingIn) {
-      StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
-      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
       NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
-     } else {
-      StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+    } else {
+      NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
       NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
     }
   }, [isAppLoading, isLoggingIn]);
