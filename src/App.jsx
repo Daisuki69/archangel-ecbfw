@@ -86,10 +86,10 @@ const DEFAULT_STYLES = {
   floatingNavMaxWidth: 265,
 
   // Tab Bar
-  tabRowPaddingLeft: 6,
-  tabRowGap: 2,
-  tabPillPaddingX: 16,
-  tabPillPaddingY: 9,
+  tabRowPaddingLeft: 25,
+  tabRowGap: 0,
+  tabPillPaddingX: 25,
+  tabPillPaddingY: 6.5,
   tabPillRadius: 20,
   tabPillBg: "#000000",
   tabPillColor: "#ffffff",
@@ -1332,7 +1332,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isNumber && (
                       <input type="number" value={val}
-                        onChange={e=>onStyleChange(key, Number(e.target.value))}
+                        onChange={e=>{ const n=e.target.valueAsNumber; if(!isNaN(n)) onStyleChange(key, n); }}
                         style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
                     )}
                     {isText && (
