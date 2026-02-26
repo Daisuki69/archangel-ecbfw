@@ -1205,7 +1205,6 @@ return (
           </div>
         </div>
       </div>
-      </div>
 
       <div style={{position:"absolute",bottom:styles.floatingNavBottom,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:styles.floatingNavOuterPadding}}>
         <div style={{background:"#000",borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
