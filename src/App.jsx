@@ -1396,8 +1396,8 @@ export default function MayaApp() {
     if(transitioning) return;
     setNextScreen(dest);
     setTransitioning(true);
-    NavBar.setStatusBarColor({ color: '#aaaaaa', darkIcons: true }).catch(() => {});
-    NavBar.setColor({ color: '#aaaaaa', darkButtons: true }).catch(() => {});
+    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
+    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
     const delay = fastMode ? 0 : 500 + Math.random()*1000;
     setTimeout(()=>{
       setScreen(dest);
