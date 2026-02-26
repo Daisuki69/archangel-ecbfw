@@ -1051,7 +1051,10 @@ return (
             setIsRefreshing(true);
             setTimeout(()=>{
               sessionStorage.setItem("loggedIn","true");
-              window.location.reload();
+              document.body.style.transition="opacity 0.3s";
+              document.body.style.opacity="0";
+              document.body.style.background="#f2f2f2";
+              setTimeout(()=>window.location.reload(),300);
             },900);
           } else {
             setPullY(0);
@@ -1065,7 +1068,7 @@ return (
               <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{balance===null?"₱ ••••••••":showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
-            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/></button>
+            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal&&balance!==null?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/>
           </div>
           <div style={{display:"flex",gap:10,marginTop:16}}>
             {[{n:"cashin",l:"Cash in"},{n:"send",l:"Send"}].map(b=>(
