@@ -1062,7 +1062,7 @@ return (
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
+              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{balance===null?"₱ ••••••••":showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
               <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
             </div>
             <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/></button>
@@ -1483,7 +1483,7 @@ export default function MayaApp() {
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
-  const [balance, setBalance] = useState(3190.75);
+  const [balance, setBalance] = useState(null);
   const [todayTxns, setTodayTxns] = useState([]);
   const [daysLeft, setDaysLeft] = useState(1);
   const [chancesLeft, setChancesLeft] = useState(29);
