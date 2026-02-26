@@ -97,7 +97,11 @@ const DEFAULT_STYLES = {
   tabFontSize: 14,
   tabActiveFontWeight: 900,
   tabInactiveFontWeight: 600,
+  tabActiveFontSize: 14,
+  tabInactiveFontSize: 14,
   tabFont: "CerebriBook",
+  tabFirstActivePaddingLeft: 25,
+  tabFirstInactivePaddingLeft: 6,
 };
 
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
@@ -992,14 +996,14 @@ return (
             </div>
           </div>
         </div>
-        <div style={{display:"flex",paddingLeft:styles.tabRowPaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
+        <div style={{display:"flex",paddingLeft:tab===tabs[0]?styles.tabFirstActivePaddingLeft:styles.tabFirstInactivePaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
           {tabs.map(t=>(
             <div key={t} onClick={()=>setTab(t)} style={{
               marginLeft:styles.tabRowGap,
               padding:`${styles.tabPillPaddingY}px ${styles.tabPillPaddingX}px`,
               borderRadius:styles.tabPillRadius,
               fontWeight:tab===t?styles.tabActiveFontWeight:styles.tabInactiveFontWeight,
-              fontSize:styles.tabFontSize,
+              fontSize:tab===t?styles.tabActiveFontSize:styles.tabInactiveFontSize,
               fontFamily:`'${styles.tabFont}',sans-serif`,
               background:tab===t?styles.tabPillBg:"transparent",
               color:tab===t?styles.tabPillColor:styles.tabInactiveColor,
