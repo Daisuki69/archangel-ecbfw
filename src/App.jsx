@@ -1454,10 +1454,12 @@ const handleAddTxn=(tx)=>{
       const toast = document.createElement("div");
       toast.innerText = "Press back again to exit";
       toast.style.cssText = `
-        position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
-        background:#333; color:#fff; padding:10px 22px; border-radius:20px;
-        font-size:14px; font-weight:700; z-index:99999; opacity:1;
-        transition: opacity 0.5s; white-space:nowrap;
+        position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+        background:#1a1a1a; color:#ffffff; padding:13px 28px; border-radius:30px;
+        font-size:13px; font-weight:700; font-family:'CerebriBook',sans-serif;
+        letter-spacing:0.2px; z-index:99999; opacity:1;
+        box-shadow:0 4px 24px rgba(0,0,0,0.35);
+        transition: opacity 0.4s; white-space:nowrap;
       `;
       document.body.appendChild(toast);
       timer = setTimeout(() => {
@@ -1467,9 +1469,12 @@ const handleAddTxn=(tx)=>{
       }, 2000);
     };
 
-    const sub = CapApp.addListener("backButton", handleBack);
+    let listenerHandle = null;
+    CapApp.addListener("backButton", handleBack).then(l => {
+      listenerHandle = l;
+    });
     return () => {
-      sub.then(l => l.remove());
+      if (listenerHandle) listenerHandle.remove();
       if (timer) clearTimeout(timer);
     };
   }, []);
