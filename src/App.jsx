@@ -84,7 +84,9 @@ const DEFAULT_STYLES = {
   floatingNavRadius: 24,
   floatingNavInnerPadding: "12px 36px",
   floatingNavMaxWidth: 265,
-
+  // Profile Icon
+  profileIconMarginTop: 0,
+  profileIconMarginLeft: 0,
   // Tab Bar
   tabRowPaddingLeft: 35,
   tabRowGap: -10,
@@ -983,7 +985,7 @@ return (
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'Jeko', sans-serif", fontWeight: 400}}>
       <div style={{background:C.white}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:styles.headerPadding}}>
-          <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center",marginTop:styles.profileIconMarginTop,marginLeft:styles.profileIconMarginLeft}}>
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
