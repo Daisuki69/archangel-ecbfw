@@ -81,9 +81,9 @@ const DEFAULT_STYLES = {
   // Floating Nav
   floatingNavBottom: 37,
   floatingNavOuterPadding: "0 20px",
-  floatingNavRadius: 24,
-  floatingNavInnerPadding: "12px 36px",
-  floatingNavMaxWidth: 280,
+  floatingNavRadius: 15,
+  floatingNavInnerPadding: "15.7px 40px",
+  floatingNavMaxWidth: 265,
   // Eye Button
   eyeIconSize: 25,
   eyeIconMarginTop: -22,
