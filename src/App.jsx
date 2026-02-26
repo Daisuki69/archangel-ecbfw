@@ -1280,6 +1280,8 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
   const [localNums, setLocalNums] = useState({});
+  const [focusedKey, setFocusedKey] = useState(null);
+  const [keyboardUp, setKeyboardUp] = useState(false);
   const scrollPos = useRef(0);
   const listRef = useRef(null);
 
@@ -1288,6 +1290,45 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
       listRef.current.scrollTop = scrollPos.current;
     }
   }, [open]);
+
+  useEffect(() => {
+    const handler = () => {
+      const shrunk = window.visualViewport && window.visualViewport.height < window.innerHeight - 100;
+      setKeyboardUp(shrunk);
+      if (!shrunk) setFocusedKey(null);
+    };
+    window.visualViewport?.addEventListener("resize", handler);
+    return () => window.visualViewport?.removeEventListener("resize", handler);
+  }, []);
+
+  if (open && keyboardUp && focusedKey) {
+    const val = styles[focusedKey];
+    const isPending = pendingChanges.some(c => c.key === focusedKey);
+    const isNumber = typeof val === "number";
+    return (
+      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9999,background:C.white,borderTop:`2px solid ${isPending?C.green:C.gray}`,padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 -2px 12px rgba(0,0,0,0.15)"}}>
+        <div>
+          <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{focusedKey}</div>
+          <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(DEFAULT_STYLES[focusedKey])}</div>
+        </div>
+        {isNumber && (
+          <input type="text" autoFocus value={localNums[focusedKey] !== undefined ? localNums[focusedKey] : String(val)}
+            onChange={e => {
+              const raw = e.target.value;
+              setLocalNums(prev => ({...prev, [focusedKey]: raw}));
+              const n = parseFloat(raw);
+              if (!isNaN(n)) onStyleChange(focusedKey, n);
+            }}
+            style={{width:100,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:16,fontWeight:700,textAlign:"center"}}/>
+        )}
+        {typeof val === "string" && !val.startsWith("#") && (
+          <input type="text" autoFocus value={val}
+            onChange={e=>onStyleChange(focusedKey, e.target.value)}
+            style={{width:140,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:14,fontWeight:700}}/>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -1301,7 +1342,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 
       {/* Panel */}
       {open && (
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:420,display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
@@ -1358,6 +1399,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isNumber && (
                       <input type="text" value={localNums[key] !== undefined ? localNums[key] : String(val)}
+                        onFocus={()=>setFocusedKey(key)}
                         onChange={e => {
                           const raw = e.target.value;
                           setLocalNums(prev => ({...prev, [key]: raw}));
@@ -1368,6 +1410,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     )}
                     {isText && (
                       <input type="text" value={val}
+                        onFocus={()=>setFocusedKey(key)}
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{width:120,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:12,fontWeight:700}}/>
                     )}
