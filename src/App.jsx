@@ -957,6 +957,12 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
 // ── HOME SCREEN ────────────────────────────────────────────────────────────────
 const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
   const [showBal,setShowBal]=useState(true);
+  const [pullY,setPullY]=useState(0);
+  const [isRefreshing,setIsRefreshing]=useState(false);
+  const pullStartY=useRef(0);
+  const scrollRef=useRef(null);
+  const PULL_MAX=80;
+  const PULL_THRESHOLD=60;
   const [tab,setTab]=useState("Wallet");
 
   const tabs=["Wallet","Savings","Credit","Loans","Cards"];
@@ -1022,7 +1028,34 @@ return (
         </div>
       </div>
 
-      <div style={{flex:1,overflowY:"auto",padding:"12px 12px 100px"}}>
+      <div style={{overflow:"hidden",height:pullY>0||isRefreshing?Math.min(pullY,PULL_MAX):0,transition:pullY===0?"height 0.3s":undefined,display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <svg viewBox="0 0 60 20" width={50} height={18} style={{opacity:isRefreshing?1:Math.min(pullY/PULL_THRESHOLD,1),transform:`scale(${isRefreshing?1:0.6+0.4*Math.min(pullY/PULL_THRESHOLD,1)})`,transition:pullY===0?"all 0.3s":undefined}}>
+          <path d="M2,10 C6,2 12,2 15,10 C18,18 24,18 30,10 C36,2 42,2 45,10 C48,18 54,18 58,10" stroke={isRefreshing?C.green:"#aaa"} strokeWidth="3" fill="none" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div ref={scrollRef}
+        onTouchStart={e=>{
+          if(scrollRef.current?.scrollTop===0){
+            pullStartY.current=e.touches[0].clientY;
+          }
+        }}
+        onTouchMove={e=>{
+          if(pullStartY.current===0) return;
+          const delta=e.touches[0].clientY-pullStartY.current;
+          if(delta>0 && scrollRef.current?.scrollTop===0){
+            setPullY(Math.min(delta*0.5,PULL_MAX));
+          }
+        }}
+        onTouchEnd={()=>{
+          if(pullY>=PULL_THRESHOLD){
+            setIsRefreshing(true);
+            setTimeout(()=>{setIsRefreshing(false);setPullY(0);},900);
+          } else {
+            setPullY(0);
+          }
+          pullStartY.current=0;
+        }}
+        style={{flex:1,overflowY:"auto",padding:"12px 12px 100px"}}>
         <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
@@ -1172,6 +1205,7 @@ return (
           </div>
         </div>
       </div>
+      </div>
 
       <div style={{position:"absolute",bottom:styles.floatingNavBottom,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:styles.floatingNavOuterPadding}}>
         <div style={{background:"#000",borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
@@ -1307,10 +1341,34 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
     };
   }, []);
 
-  const slim = open && keyboardUp && focusedKey;
-  const focusedVal = focusedKey ? styles[focusedKey] : null;
-  const focusedPending = focusedKey ? pendingChanges.some(c => c.key === focusedKey) : false;
-  const focusedIsNumber = typeof focusedVal === "number";
+  if (open && keyboardUp && focusedKey) {
+    const val = styles[focusedKey];
+    const isPending = pendingChanges.some(c => c.key === focusedKey);
+    const isNumber = typeof val === "number";
+    return (
+      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9999,background:C.white,borderTop:`2px solid ${isPending?C.green:C.gray}`,padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 -2px 12px rgba(0,0,0,0.15)"}}>
+        <div>
+          <div style={{fontSize:12,fontWeight:900,color:isPending?C.green:C.dark}}>{focusedKey}</div>
+          <div style={{fontSize:10,color:C.light,marginTop:2}}>{String(DEFAULT_STYLES[focusedKey])}</div>
+        </div>
+        {isNumber && (
+          <input type="text" autoFocus value={localNums[focusedKey] !== undefined ? localNums[focusedKey] : String(val)}
+            onChange={e => {
+              const raw = e.target.value;
+              setLocalNums(prev => ({...prev, [focusedKey]: raw}));
+              const n = parseFloat(raw);
+              if (!isNaN(n)) onStyleChange(focusedKey, n);
+            }}
+            style={{width:100,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:16,fontWeight:700,textAlign:"center"}}/>
+        )}
+        {typeof val === "string" && !val.startsWith("#") && (
+          <input type="text" autoFocus value={val}
+            onChange={e=>onStyleChange(focusedKey, e.target.value)}
+            style={{width:140,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:14,fontWeight:700}}/>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -1324,35 +1382,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 
       {/* Panel */}
       {open && (
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity,transition:"border-radius 0.25s"}}>
-
-          {/* Slim keyboard strip — always rendered, animated in/out */}
-          <div style={{borderBottom:slim?`1px solid ${C.gray}`:"none",transform:slim?"translateY(0)":"translateY(-10px)",opacity:slim?1:0,pointerEvents:slim?"auto":"none",position:slim?"relative":"absolute",width:"100%",transition:"transform 0.2s ease, opacity 0.2s ease"}}>
-            <div style={{padding:"10px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-              <div>
-                <div style={{fontSize:12,fontWeight:900,color:focusedPending?C.green:C.dark}}>{focusedKey}</div>
-                <div style={{fontSize:10,color:C.light,marginTop:2}}>{focusedKey ? String(DEFAULT_STYLES[focusedKey]) : ""}</div>
-              </div>
-              {focusedIsNumber && (
-                <input type="text" value={focusedKey && localNums[focusedKey] !== undefined ? localNums[focusedKey] : String(focusedVal ?? "")}
-                  onChange={e => {
-                    const raw = e.target.value;
-                    setLocalNums(prev => ({...prev, [focusedKey]: raw}));
-                    const n = parseFloat(raw);
-                    if (!isNaN(n)) onStyleChange(focusedKey, n);
-                  }}
-                  style={{width:100,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${focusedPending?C.green:C.gray}`,fontSize:16,fontWeight:700,textAlign:"center"}}/>
-              )}
-              {typeof focusedVal === "string" && focusedVal && !focusedVal.startsWith("#") && (
-                <input type="text" value={focusedVal}
-                  onChange={e=>onStyleChange(focusedKey, e.target.value)}
-                  style={{width:140,padding:"8px 10px",borderRadius:8,border:`1.5px solid ${focusedPending?C.green:C.gray}`,fontSize:14,fontWeight:700}}/>
-              )}
-            </div>
-          </div>
-
-          {/* Full panel content — collapses when keyboard is up */}
-          <div style={{maxHeight:"75vh",transform:slim?"translateY(10px)":"translateY(0)",opacity:slim?0:1,pointerEvents:slim?"none":"auto",transition:"transform 0.2s ease, opacity 0.2s ease",display:"flex",flexDirection:"column"}}>
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
           
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
@@ -1437,7 +1467,6 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                 </div>
               );
             })}
-          </div>
           </div>
         </div>
       )}
