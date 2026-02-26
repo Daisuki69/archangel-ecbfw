@@ -1480,6 +1480,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
 };
 export default function MayaApp() {
   const wasLoggedIn = sessionStorage.getItem("loggedIn") === "true";
+  useEffect(()=>{ document.body.style.opacity="1"; },[]);
   const [screen,setScreen]=useState(wasLoggedIn?"home":"login");
   const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
