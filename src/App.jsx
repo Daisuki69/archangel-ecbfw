@@ -346,7 +346,9 @@ const DateChip = ({label, styles=STYLES}) => (
   const btnPrimary = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:C.green,color:C.white,fontWeight:900,fontSize:15,cursor:"pointer",marginTop:10};
   const btnGray = {width:"100%",padding:"13px",borderRadius:12,border:"none",background:"#ccc",color:C.white,fontWeight:800,fontSize:14,cursor:"pointer",marginTop:8};
   const row = {padding:"15px 0",borderBottom:`1px solid ${C.gray}`,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"};
-  const titles = {main:"⚙️ Hidden Settings", editBal:"💰 Edit Balance", addTxn:"📋 Add Transaction", editPBB:"🗳️ Edit PBB Stats"};
+  const titles = {main:"⚙️ Hidden Settings", editBal:"💰 Edit Balance", addTxn:"📋 Add Transaction", editPBB:"🗳️ Edit PBB Stats", clearTxns:"🗑️ Clear Transactions"};
+  const [clearMonth, setClearMonth] = useState(new Date().getMonth());
+  const [clearDay, setClearDay] = useState(new Date().getDate());
 
   return (
     <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.65)",zIndex:600,display:"flex",alignItems:"flex-end"}}>
@@ -377,9 +379,32 @@ const DateChip = ({label, styles=STYLES}) => (
               ))}
             </div>
           </div>
-          <div style={{...row}} onClick={()=>{onClearToday();onClose();}}>
-            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Today's Transactions</span>
+          <div style={{...row}} onClick={()=>setView("clearTxns")}>
+            <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🗑️ Clear Transactions</span><span style={{color:C.light,fontSize:18}}>›</span>
           </div>
+          {view==="clearTxns" && <>
+            <div style={{marginBottom:16}}>
+              <label style={{fontSize:13,fontWeight:800,color:C.med,display:"block",marginBottom:6}}>Month</label>
+              <select value={clearMonth} onChange={e=>setClearMonth(Number(e.target.value))} style={{...iStyle}}>
+                {["January","February","March","April","May","June","July","August","September","October","November","December"].map((m,i)=>(
+                  <option key={i} value={i}>{m}</option>
+                ))}
+              </select>
+            </div>
+            <div style={{marginBottom:24}}>
+              <label style={{fontSize:13,fontWeight:800,color:C.med,display:"block",marginBottom:6}}>Day</label>
+              <select value={clearDay} onChange={e=>setClearDay(Number(e.target.value))} style={{...iStyle}}>
+                {Array.from({length:31},(_,i)=>i+1).map(d=>(
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+            <button style={{...btnPrimary,background:"#e74c3c"}} onClick={()=>{
+              onClearToday(clearMonth, clearDay);
+              onClose();
+            }}>Clear Selected Day</button>
+            <button style={btnGray} onClick={()=>setView("main")}>Cancel</button>
+          </>}
           <div style={{...row}} onClick={()=>{onLogout();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🚪 Log Out</span>
           </div>
@@ -1613,7 +1638,14 @@ const handleAddTxn=(tx)=>{
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
-          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={() => { setTodayTxns([]); updateDoc(doc(db,"ecbfw","shared"),{transactions:[]}); }} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} onLogout={()=>{ setScreen("login"); }} />}
+          {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={(month, day) => {
+  const filtered = todayTxns.filter(tx => {
+    const d = new Date(tx.timestamp);
+    return !(d.getMonth()===month && d.getDate()===day);
+  });
+  setTodayTxns(filtered);
+  updateDoc(doc(db,"ecbfw","shared"),{transactions:filtered});
+}} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} onLogout={()=>{ setScreen("login"); }} />}
           
           {/* Transition loading overlay */}
           {devToolsEnabled && (
