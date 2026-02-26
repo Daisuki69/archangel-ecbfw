@@ -142,7 +142,7 @@ const GlobalStyle = () => (
       font-family: '${STYLES.bodyFont}', sans-serif; 
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
     input, button, textarea { font-family: inherit; }
     
     ::-webkit-scrollbar { width: 0; height: 0; }
