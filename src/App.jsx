@@ -1621,7 +1621,7 @@ export default function MayaApp() {
 };
 
 const handleAddTxn=(tx)=>{
-  const stamped={...tx,timestamp:Date.now()};
+  const stamped={...tx,timestamp:tx.timestamp||Date.now()};
   runTransaction(db, async (t) => {
     const snap = await t.get(doc(db,"ecbfw","shared"));
     const d = snap.data();
