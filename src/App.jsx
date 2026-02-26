@@ -3,7 +3,6 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { NavigationBar } from '@capacitor/navigation-bar';
 import { Capacitor } from '@capacitor/core';
 
 const C = {
@@ -1356,11 +1355,11 @@ export default function MayaApp() {
     if (isAppLoading || isLoggingIn) {
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
-      NavigationBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+      window.Capacitor?.Plugins?.NavBar?.setColor({ color: '#000000', darkButtons: false }).catch?.(() => {});
     } else {
       StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      NavigationBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+      window.Capacitor?.Plugins?.NavBar?.setColor({ color: '#ffffff', darkButtons: true }).catch?.(() => {});
     }
   }, [isAppLoading, isLoggingIn]);
 
