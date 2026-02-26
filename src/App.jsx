@@ -79,12 +79,27 @@ const DEFAULT_STYLES = {
   balanceWeight: 500,
   pbbNameWeight: 800,
   // Floating Nav
-  floatingNavBottom: 37,
+  floatingNavBottom: 24,
   floatingNavOuterPadding: "0 20px",
-  floatingNavRadius: 15,
-  floatingNavInnerPadding: "15.7px 40px",
+  floatingNavRadius: 24,
+  floatingNavInnerPadding: "12px 36px",
   floatingNavMaxWidth: 265,
+
+  // Tab Bar
+  tabRowPaddingLeft: 6,
+  tabRowGap: 2,
+  tabPillPaddingX: 16,
+  tabPillPaddingY: 9,
+  tabPillRadius: 20,
+  tabPillBg: "#000000",
+  tabPillColor: "#ffffff",
+  tabInactiveColor: "#555555",
+  tabFontSize: 14,
+  tabActiveFontWeight: 900,
+  tabInactiveFontWeight: 600,
+  tabFont: "CerebriBook",
 };
+
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
@@ -309,7 +324,7 @@ const DateChip = ({label, styles=STYLES}) => (
 );
 
 // ── SETTINGS MODAL ─────────────────────────────────────────────────────────────
-const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
+ const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
   const [form, setForm] = useState({label:"",amount:"",time:"",positive:false});
@@ -977,9 +992,21 @@ return (
             </div>
           </div>
         </div>
-        <div style={{display:"flex",gap:2,paddingLeft:6,overflowX:"auto"}}>
+        <div style={{display:"flex",gap:styles.tabRowGap,paddingLeft:styles.tabRowPaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none"}}>
           {tabs.map(t=>(
-            <div key={t} onClick={()=>setTab(t)} style={{padding:"9px 16px",borderRadius:"20px",fontWeight:tab===t?900:600,fontSize:14,background:tab===t?"#000":"transparent",color:tab===t?"white":C.med,cursor:"pointer",whiteSpace:"nowrap",transition:"all 0.15s"}}>{t}</div>
+            <div key={t} onClick={()=>setTab(t)} style={{
+              padding:`${styles.tabPillPaddingY}px ${styles.tabPillPaddingX}px`,
+              borderRadius:styles.tabPillRadius,
+              fontWeight:tab===t?styles.tabActiveFontWeight:styles.tabInactiveFontWeight,
+              fontSize:styles.tabFontSize,
+              fontFamily:`'${styles.tabFont}',sans-serif`,
+              background:tab===t?styles.tabPillBg:"transparent",
+              color:tab===t?styles.tabPillColor:styles.tabInactiveColor,
+              cursor:"pointer",
+              whiteSpace:"nowrap",
+              flexShrink:0,
+              transition:"all 0.15s"
+            }}>{t}</div>
           ))}
         </div>
       </div>
