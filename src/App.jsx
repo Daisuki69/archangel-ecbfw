@@ -1317,6 +1317,15 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
               const isNumber = typeof val === "number";
               const isFont = typeof val === "string" && key.toLowerCase().includes("font");
               const isText = typeof val === "string" && !val.startsWith("#") && !isFont;
+              const NumberInput = () => {
+                const [local, setLocal] = React.useState(String(val));
+                return (
+                  <input type="text" value={local}
+                    onChange={e => setLocal(e.target.value)}
+                    onBlur={() => { const n = parseFloat(local); if (!isNaN(n)) onStyleChange(key, n); }}
+                    style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
+                );
+              };
 
               return (
                 <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
@@ -1330,11 +1339,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                         onChange={e=>onStyleChange(key, e.target.value)}
                         style={{width:40,height:30,border:"none",borderRadius:6,cursor:"pointer",padding:0}}/>
                     )}
-                    {isNumber && (
-                      <input type="text" defaultValue={val} key={val}
-                        onBlur={e=>{ const n=parseFloat(e.target.value); if(!isNaN(n)) onStyleChange(key, n); }}
-                        style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?C.green:C.gray}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
-                    )}
+                    {isNumber && <NumberInput />}
                     {isText && (
                       <input type="text" value={val}
                         onChange={e=>onStyleChange(key, e.target.value)}
