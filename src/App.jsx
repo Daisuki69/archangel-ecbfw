@@ -79,7 +79,7 @@ const DEFAULT_STYLES = {
   balanceWeight: 600,
   pbbNameWeight: 800,
   // Floating Nav
-  floatingNavBottom: 37,
+  floatingNavBottom: 10,
   floatingNavOuterPadding: "0 20px",
   floatingNavRadius: 15,
   floatingNavInnerPadding: "15.7px 40px",
