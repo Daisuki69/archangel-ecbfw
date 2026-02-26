@@ -1265,20 +1265,6 @@ const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
       style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?"#00b464":"#e8e8e8"}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
   );
 };
-const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
-  const [local, setLocal] = useState(String(val));
-  useEffect(() => { setLocal(String(val)); }, [val]);
-  const handleChange = (e) => {
-    const raw = e.target.value;
-    setLocal(raw);
-    const n = parseFloat(raw);
-    if (!isNaN(n)) onStyleChange(keyName, n);
-  };
-  return (
-    <input type="text" value={local} onChange={handleChange}
-      style={{width:70,padding:"5px 8px",borderRadius:8,border:`1.5px solid ${isPending?"#00b464":"#e8e8e8"}`,fontSize:13,fontWeight:700,textAlign:"center"}}/>
-  );
-};
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
