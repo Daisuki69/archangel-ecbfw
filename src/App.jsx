@@ -337,7 +337,7 @@ const DateChip = ({label, styles=STYLES}) => (
  const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
-  const [form, setForm] = useState({label:"",amount:"",time:"",positive:false});
+  const [form, setForm] = useState({label:"",amount:"",time:"",date:new Date().toISOString().split("T")[0],positive:false});
   const [newDays, setNewDays] = useState(String(daysLeft));
   const [newChances, setNewChances] = useState(String(chancesLeft));
   const [newMax, setNewMax] = useState(String(maxChances));
@@ -440,6 +440,8 @@ const DateChip = ({label, styles=STYLES}) => (
           <input style={iStyle} value={form.label} onChange={e=>setForm({...form,label:e.target.value})} placeholder="e.g. PBB Save Princess x500"/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (₱)</label>
           <input style={iStyle} type="number" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="e.g. 500"/>
+          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Date</label>
+          <input style={iStyle} type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Time</label>
           <input style={iStyle} value={form.time} onChange={e=>setForm({...form,time:e.target.value})} placeholder="e.g. 05:52 PM"/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Type</label>
@@ -453,7 +455,8 @@ const DateChip = ({label, styles=STYLES}) => (
           </div>
           <button style={btnPrimary} onClick={()=>{
             if(!form.label||!form.amount) return;
-            onAddTxn({id:"m"+Date.now(),label:form.label,time:form.time||"--:-- --",amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
+            const txDate = form.date ? new Date(form.date).getTime() : Date.now();
+            onAddTxn({id:"m"+Date.now(),label:form.label,time:form.time||"--:-- --",timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
             onClose();
           }}>Add Transaction</button>
           <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
