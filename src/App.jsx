@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationBar } from '@capacitor/navigation-bar';
 import { Capacitor } from '@capacitor/core';
 
 const C = {
@@ -1355,9 +1356,11 @@ export default function MayaApp() {
     if (isAppLoading || isLoggingIn) {
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+      NavigationBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
     } else {
       StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
+      NavigationBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
     }
   }, [isAppLoading, isLoggingIn]);
 
@@ -1529,7 +1532,7 @@ const handleAddTxn=(tx)=>{
             />
           )}
           {transitioning && (
-            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
               <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
               <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </div>
