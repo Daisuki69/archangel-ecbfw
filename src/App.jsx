@@ -108,12 +108,16 @@ const DEFAULT_STYLES = {
   tabFont: "CerebriBook",
   tabFirstActivePaddingLeft: 25,
   tabFirstInactivePaddingLeft: 15,
+  // Splash Animation
+  splashEnterDuration: 0.4,
+  splashExitDuration: 0.6,
+  splashCenterDuration: 2200,
 };
 
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
-const SplashScreen = ({ animState }) => (
+const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => (
   <div style={{
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -124,8 +128,8 @@ const SplashScreen = ({ animState }) => (
                animState === 'center' ? 'translateX(0%)' :
                animState === 'exitRight' ? 'translateX(100%)' : 'translateY(0%)',
     transition: animState === 'exitUp' ? 'transform 0.08s ease-in' :
-                animState === 'center' ? 'transform 0.4s ease' :
-                animState === 'exitRight' ? 'transform 0.6s ease' : 'none',
+                animState === 'center' ? `transform ${styles.splashEnterDuration}s ease` :
+                animState === 'exitRight' ? `transform ${styles.splashExitDuration}s ease` : 'none',
   }}>
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
   </div>
@@ -1664,7 +1668,7 @@ const handleAddTxn=(tx)=>{
 };
 
   // --- STEP 4: The Gatekeeper ---
-  if (isAppLoading) return <SplashScreen animState={splashAnim}/>;
+  if (isAppLoading) return <SplashScreen animState={splashAnim} styles={styles}/>;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
@@ -1673,7 +1677,7 @@ const handleAddTxn=(tx)=>{
       <div style={{ width: "100%", maxWidth: 480, height: "100vh", background: C.white, overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
-          {splashAnim !== "hidden" && <SplashScreen animState={splashAnim}/>}
+          {splashAnim !== "hidden" && <SplashScreen animState={splashAnim} styles={styles}/>}
           
           {screen === "login" && <LoginScreen onLogin={() => {
             setIsLoggingIn(true);
@@ -1686,8 +1690,8 @@ const handleAddTxn=(tx)=>{
               setTimeout(() => {
                 setIsLoggingIn(false);
                 setSplashAnim("hidden");
-              }, 600);
-            }, fastMode ? 50 : 2200);
+              }, styles.splashExitDuration * 1000);
+            }, fastMode ? 50 : styles.splashCenterDuration);
           }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
