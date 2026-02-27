@@ -1787,15 +1787,20 @@ const handleAddTxn=(tx)=>{
                   // defer mounting the heavy `home` screen until exit completes.
                   setTimeout(() => {
                     sessionStorage.setItem("loggedIn", "true");
-                    // start exit animation
-                    setSplashAnim("exitRight");
+                    
+                    // FIX: Switch to Home screen immediately while Splash is covering the view
+                    setScreen("home");
 
-                    // when exit animation finishes, mount home and hide splash
-                    setTimeout(() => {
-                      setScreen("home");
-                      setIsLoggingIn(false);
-                      setSplashAnim("hidden");
-                    }, styles.splashExitDuration * 1000);
+                    // Allow a frame for Home to mount, then slide Splash away to reveal it
+                    requestAnimationFrame(() => {
+                      setSplashAnim("exitRight");
+
+                      // when exit animation finishes, hide splash and cleanup
+                      setTimeout(() => {
+                        setIsLoggingIn(false);
+                        setSplashAnim("hidden");
+                      }, styles.splashExitDuration * 1000);
+                    });
                   }, fastMode ? 50 : styles.splashCenterDuration);
                 };
 
