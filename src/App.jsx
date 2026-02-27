@@ -117,25 +117,34 @@ const DEFAULT_STYLES = {
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
-const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => (
-  <div style={{
-    position: 'fixed', inset: 0, backgroundColor: '#000',
-    display: 'flex', flexDirection: 'column', justifyContent: 'center',
-    alignItems: 'center', zIndex: 10000,
-    paddingTop: 0,
-    willChange: 'transform',
-    backfaceVisibility: 'hidden',
-    transform: animState === 'exitUp' ? 'translate3d(0,-100%,0)' :
-               animState === 'enterRight' ? 'translate3d(100%,0,0)' :
-               animState === 'center' ? 'translate3d(0,0,0)' :
-               animState === 'exitRight' ? 'translate3d(100%,0,0)' : 'translate3d(0,0,0)',
-    transition: animState === 'exitUp' ? 'transform 0.08s ease-in' :
-                animState === 'center' ? `transform ${styles.splashEnterDuration}s ease` :
-                animState === 'exitRight' ? `transform ${styles.splashExitDuration}s ease` : 'none',
-  }}>
-    <img src="/mayasplashscreen.jpg" alt="Maya" decoding="async" loading="eager" style={{ width: '100vw', height: '100vh', objectFit: 'cover' }} />
-  </div>
-);
+const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => {
+  const isEntering = animState === 'enterRight' || animState === 'center';
+  const isExiting = animState === 'exitRight' || animState === 'exitUp';
+  const transitionDuration = isEntering ? styles.splashEnterDuration : (isExiting ? styles.splashExitDuration : 0);
+  const transition = transitionDuration > 0 ? `transform ${transitionDuration}s ease` : 'none';
+  const transform = animState === 'exitUp' ? 'translate3d(0,-100%,0)'
+    : animState === 'enterRight' ? 'translate3d(100%,0,0)'
+    : animState === 'center' ? 'translate3d(0,0,0)'
+    : animState === 'exitRight' ? 'translate3d(100%,0,0)'
+    : 'translate3d(0,0,0)';
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, backgroundColor: '#000',
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      alignItems: 'center', zIndex: 10000,
+      paddingTop: 0,
+      willChange: 'transform',
+      backfaceVisibility: 'hidden',
+      transform,
+      transition,
+      WebkitTransform: transform,
+      WebkitBackfaceVisibility: 'hidden'
+    }}>
+      <img src="/mayasplashscreen.jpg" alt="Maya" decoding="async" loading="eager" style={{ width: '100vw', height: '100vh', objectFit: 'cover', transform: 'translateZ(0)' }} />
+    </div>
+  );
+};
 
 const GlobalStyle = () => (
   <style>{`
@@ -1727,8 +1736,10 @@ const handleAddTxn=(tx)=>{
           
           {screen === "login" && <LoginScreen onLogin={() => {
             setIsLoggingIn(true);
+            // ensure the "enterRight" state is flushed to the compositor
+            // before transitioning to center — use double RAF for smoothness
             setSplashAnim("enterRight");
-            setTimeout(() => setSplashAnim("center"), 50);
+            requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
             setTimeout(() => {
               sessionStorage.setItem("loggedIn", "true");
               setScreen("home");
