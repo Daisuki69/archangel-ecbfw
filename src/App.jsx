@@ -1574,25 +1574,38 @@ export default function MayaApp() {
       NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
     }
 
+    // Show the splash in center, then run exit animation, then mark app loaded.
     const timer = setTimeout(() => {
-      setIsAppLoading(false);
+      // Trigger exit animation first so UI (and system bars) can follow it
       setSplashAnim("exitUp");
-      setTimeout(() => setSplashAnim("hidden"), 80);
+
+      // Wait for the exit animation to finish, then hide splash and mark loading done
+      // exitUp uses a very short transition so 150ms is safe; adjust if you change CSS
+      const finish = setTimeout(() => {
+        setSplashAnim("hidden");
+        setIsAppLoading(false);
+      }, 150);
+
+      // ensure finish clears if outer effect is cleaned up
+      return () => clearTimeout(finish);
     }, 7000);
+
     return () => clearTimeout(timer);
   }, []);
 
     useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    if (isAppLoading || isLoggingIn) {
+    // Make system bars follow the splash animation state so they transition
+    // in sync with the visible splash/dim effect.
+    if (splashAnim !== "hidden" || isLoggingIn) {
       NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
       NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
     } else {
       NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
       NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
     }
-  }, [isAppLoading, isLoggingIn]);
+  }, [splashAnim, isLoggingIn]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
