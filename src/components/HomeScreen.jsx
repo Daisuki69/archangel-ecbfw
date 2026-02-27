@@ -131,10 +131,10 @@ export default function HomeScreen({balance,todayTxns,onPBB,onSeeAll,onSettings,
       </div>
 
       <div style={{position:"absolute",bottom:styles.floatingNavBottom,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:styles.floatingNavOuterPadding}}>
-        <div style={{background:"#000",borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
-          <div style={{background:C.green,borderRadius:8,width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:900,fontSize:16}}>m</div>
-          <Ic n="scan" s={22} c="white"/>
-          <Ic n="grid" s={22} c="white"/>
+        <div style={{background:C.white,borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 6px 18px rgba(0,0,0,0.08)",border:`1px solid ${C.gray}`}}>
+          <div style={{background:C.green,borderRadius:8,width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:900,fontSize:16}}>m</div>
+          <Ic n="scan" s={22} c={C.dark}/>
+          <Ic n="grid" s={22} c={C.dark}/>
         </div>
       </div>
     </div>
