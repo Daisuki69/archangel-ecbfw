@@ -1549,6 +1549,7 @@ export default function MayaApp() {
   const [screen,setScreen]=useState(wasLoggedIn?"home":"login");
   const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [splashAnim, setSplashAnim] = useState(wasLoggedIn ? "hidden" : "visible");
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
@@ -1571,6 +1572,8 @@ export default function MayaApp() {
 
     const timer = setTimeout(() => {
       setIsAppLoading(false);
+      setSplashAnim("exitUp");
+      setTimeout(() => setSplashAnim("hidden"), 80);
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
