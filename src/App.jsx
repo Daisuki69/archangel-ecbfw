@@ -1729,16 +1729,16 @@ export default function MayaApp() {
   const handleNavigate = (dest) => {
     if (transitioning) return;
     setTransitioning(true);
+    setOverlay(dest);
     NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
     NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
-    setOverlay(dest);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       setSlidePosition(1);
       const delay = fastMode ? 0 : 400;
       setTimeout(() => {
+        setTransitioning(false);
         NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
         NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-        setTransitioning(false);
       }, delay);
     }));
   };
@@ -1752,9 +1752,9 @@ export default function MayaApp() {
     const delay = fastMode ? 0 : 400;
     setTimeout(() => {
       setOverlay(null);
+      setTransitioning(false);
       NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
       NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-      setTransitioning(false);
     }, delay);
   };
 
