@@ -1687,7 +1687,7 @@ const handleAddTxn=(tx)=>{
                 setIsLoggingIn(false);
                 setSplashAnim("hidden");
               }, 400);
-            }, fastMode ? 50 : 1200);
+            }, fastMode ? 50 : 2200);
           }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
