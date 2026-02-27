@@ -117,7 +117,7 @@ const DEFAULT_STYLES = {
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
-const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => {
+const SplashScreen = ({ animState, styles = DEFAULT_STYLES, style }) => {
   const isEntering = animState === 'enterRight' || animState === 'center';
   const isExiting = animState === 'exitRight' || animState === 'exitUp';
   const transitionDuration = isEntering ? styles.splashEnterDuration : (isExiting ? styles.splashExitDuration : 0);
@@ -139,7 +139,8 @@ const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => {
       transform,
       transition,
       WebkitTransform: transform,
-      WebkitBackfaceVisibility: 'hidden'
+      WebkitBackfaceVisibility: 'hidden',
+      ...style
     }}>
       <img src="/mayasplashscreen.jpg" alt="Maya" decoding="async" loading="eager" style={{ width: '100vw', height: '100vh', objectFit: 'cover', transform: 'translateZ(0)' }} />
     </div>
@@ -1760,41 +1761,60 @@ const handleAddTxn=(tx)=>{
       <div style={{ width: "100%", maxWidth: 480, height: "100vh", background: C.white, overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
-          {splashAnim !== "hidden" && <SplashScreen animState={splashAnim} styles={styles}/>}
-          
-          {screen === "login" && <LoginScreen onLogin={() => {
-            setIsLoggingIn(true);
+          {/* SLIDER CONTAINER: Wraps Login and Splash for synchronized horizontal transition */}
+          <div style={{
+            display: 'flex',
+            width: '200%',
+            height: '100%',
+            // If splash is entering or centered, we shift left by 50% (showing the right half/splash)
+            // Otherwise we are at 0% (showing the left half/login or home)
+            transform: (splashAnim === 'enterRight' || splashAnim === 'center') ? 'translateX(-50%)' : 'translateX(0%)',
+            transition: `transform ${splashAnim === 'enterRight' ? styles.splashEnterDuration : styles.splashExitDuration}s ease`,
+            willChange: 'transform'
+          }}>
+            {/* LEFT PANEL (50% width): Shows LoginScreen or HomeScreen */}
+            <div style={{ width: '50%', height: '100%', flexShrink: 0, position: 'relative' }}>
+              {screen === "login" && <LoginScreen onLogin={() => {
+                setIsLoggingIn(true);
 
-            const startLoginSequence = () => {
-              // ensure the "enterRight" state is flushed to the compositor
-              // before transitioning to center — use double RAF for smoothness
-              setSplashAnim("enterRight");
-              requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
+                const startLoginSequence = () => {
+                  // ensure the "enterRight" state is flushed to the compositor
+                  // before transitioning to center — use double RAF for smoothness
+                  setSplashAnim("enterRight");
+                  requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
 
-              // After the splash centers, trigger the exit animation, but
-              // defer mounting the heavy `home` screen until exit completes.
-              setTimeout(() => {
-                sessionStorage.setItem("loggedIn", "true");
-                // start exit animation
-                setSplashAnim("exitRight");
+                  // After the splash centers, trigger the exit animation, but
+                  // defer mounting the heavy `home` screen until exit completes.
+                  setTimeout(() => {
+                    sessionStorage.setItem("loggedIn", "true");
+                    // start exit animation
+                    setSplashAnim("exitRight");
 
-                // when exit animation finishes, mount home and hide splash
-                setTimeout(() => {
-                  setScreen("home");
-                  setIsLoggingIn(false);
-                  setSplashAnim("hidden");
-                }, styles.splashExitDuration * 1000);
-              }, fastMode ? 50 : styles.splashCenterDuration);
-            };
+                    // when exit animation finishes, mount home and hide splash
+                    setTimeout(() => {
+                      setScreen("home");
+                      setIsLoggingIn(false);
+                      setSplashAnim("hidden");
+                    }, styles.splashExitDuration * 1000);
+                  }, fastMode ? 50 : styles.splashCenterDuration);
+                };
 
-            // If the splash image hasn't finished preloading, wait for it first
-            if (!splashReadyRef.current) {
-              preloadSplash().then(startLoginSequence);
-            } else startLoginSequence();
-          }} fastMode={fastMode} />}
-          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
-          {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
-          {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
+                // If the splash image hasn't finished preloading, wait for it first
+                if (!splashReadyRef.current) {
+                  preloadSplash().then(startLoginSequence);
+                } else startLoginSequence();
+              }} fastMode={fastMode} />}
+              {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
+              {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
+              {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
+            </div>
+
+            {/* RIGHT PANEL (50% width): Shows SplashScreen */}
+            <div style={{ width: '50%', height: '100%', flexShrink: 0, position: 'relative' }}>
+              {/* We pass animState="center" to force the internal transform to 0,0,0 so it stays static relative to this container */}
+              {splashAnim !== "hidden" && <SplashScreen animState="center" styles={styles} style={{ position: 'absolute', width: '100%', height: '100%' }} />}
+            </div>
+          </div>
           
           {/* Settings Modal (iPhone toggle successfully removed) */}
           {showSettings && <SettingsModal balance={balance} onClose={() => setShowSettings(false)} onSaveBalance={b => { setBalance(b); updateDoc(doc(db,"ecbfw","shared"),{balance:b}); }} onAddTxn={handleAddTxn} onClearToday={(month, day) => {
