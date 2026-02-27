@@ -121,7 +121,7 @@ const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => {
   const isEntering = animState === 'enterRight' || animState === 'center';
   const isExiting = animState === 'exitRight' || animState === 'exitUp';
   const transitionDuration = isEntering ? styles.splashEnterDuration : (isExiting ? styles.splashExitDuration : 0);
-  const transition = transitionDuration > 0 ? `transform ${transitionDuration}s ease` : 'none';
+  const transition = transitionDuration > -10 ? `transform ${transitionDuration}s ease` : 'none';
   const transform = animState === 'exitUp' ? 'translate3d(0,-100%,0)'
     : animState === 'enterRight' ? 'translate3d(100%,0,0)'
     : animState === 'center' ? 'translate3d(0,0,0)'
@@ -1740,11 +1740,17 @@ const handleAddTxn=(tx)=>{
             // before transitioning to center — use double RAF for smoothness
             setSplashAnim("enterRight");
             requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
+
+            // After the splash centers, trigger the exit animation, but
+            // defer mounting the heavy `home` screen until exit completes.
             setTimeout(() => {
               sessionStorage.setItem("loggedIn", "true");
-              setScreen("home");
+              // start exit animation
               setSplashAnim("exitRight");
+
+              // when exit animation finishes, mount home and hide splash
               setTimeout(() => {
+                setScreen("home");
                 setIsLoggingIn(false);
                 setSplashAnim("hidden");
               }, styles.splashExitDuration * 1000);
