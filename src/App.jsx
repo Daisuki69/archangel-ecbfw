@@ -409,6 +409,7 @@ const DateChip = ({label, styles=STYLES}) => (
             }}>Clear Selected Day</button>
             <button style={btnGray} onClick={()=>setView("main")}>Cancel</button>
           </>}
+          {view==="main" && <>
           <div style={{...row}} onClick={()=>{onLogout();onClose();}}>
             <span style={{fontSize:14,fontWeight:800,color:"#e74c3c"}}>🚪 Log Out</span>
           </div>
@@ -428,7 +429,7 @@ const DateChip = ({label, styles=STYLES}) => (
               }}/>
             </div>
           </div>
-        </>}
+          </>}
 
         {view==="editBal" && <>
           <div style={{fontSize:13,color:C.med,marginBottom:4,fontWeight:700}}>Current balance</div>
