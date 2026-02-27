@@ -1643,7 +1643,7 @@ export default function MayaApp() {
 
       // Guard to avoid redundant native calls when splashAnim hasn't changed
       const isSplashVisible = isAppLoading || overlay === 'splash';
-      if (!prevSplashRef.current) prevSplashRef.current = isSplashVisible;
+      if (prevSplashRef.current === null) { prevSplashRef.current = isSplashVisible; return; }
       if (prevSplashRef.current === isSplashVisible) return;
 
       // Use native animated transition when available to smoothly follow splash
@@ -1727,35 +1727,15 @@ export default function MayaApp() {
   };
 
   const handleNavigate = (dest) => {
-    if (transitioning) return;
-    setTransitioning(true);
     setOverlay(dest);
-    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
-    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      setSlidePosition(1);
-      const delay = fastMode ? 0 : 400;
-      setTimeout(() => {
-        setTransitioning(false);
-        NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-        NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-      }, delay);
-    }));
+    requestAnimationFrame(() => requestAnimationFrame(() => setSlidePosition(1)));
   };
 
   const handleBack = () => {
-    if (transitioning) return;
-    setTransitioning(true);
-    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
-    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
     setSlidePosition(0);
-    const delay = fastMode ? 0 : 400;
     setTimeout(() => {
       setOverlay(null);
-      setTransitioning(false);
-      NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-      NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-    }, delay);
+    }, 400); // Standard slide duration
   };
 
   const handleVote=(name,cnt,cost)=>{
