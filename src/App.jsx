@@ -1566,6 +1566,28 @@ export default function MayaApp() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [splashAnim, setSplashAnim] = useState(wasLoggedIn ? "hidden" : "visible");
   const prevSplashRef = useRef(null);
+  const splashReadyRef = useRef(false);
+
+  // Pre-decode the splash image to avoid image-decode stalls during animation.
+  const preloadSplash = async () => {
+    if (splashReadyRef.current) return;
+    try {
+      if (typeof createImageBitmap === 'function') {
+        const resp = await fetch('/mayasplashscreen.jpg', { cache: 'force-cache' });
+        const blob = await resp.blob();
+        // createImageBitmap helps decode the image off the main layout path
+        await createImageBitmap(blob);
+      } else {
+        const img = new Image();
+        img.src = '/mayasplashscreen.jpg';
+        if (img.decode) await img.decode();
+        else await new Promise((res) => { img.onload = img.onerror = res; });
+      }
+    } catch (e) {
+      // best-effort; decoding failed or unsupported — continue anyway
+    }
+    splashReadyRef.current = true;
+  };
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
@@ -1581,6 +1603,9 @@ export default function MayaApp() {
   const [styles, setStyles] = useState({...DEFAULT_STYLES});
 
   useEffect(() => {
+    let timerId = null;
+    let finishId = null;
+
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
       // make system bars transparent so splash can draw under them
@@ -1591,23 +1616,26 @@ export default function MayaApp() {
       }
     }
 
-    // Show the splash in center, then run exit animation, then mark app loaded.
-    const timer = setTimeout(() => {
-      // Trigger exit animation first so UI (and system bars) can follow it
-      setSplashAnim("exitUp");
+    // Preload and decode the splash image, then start the timed exit sequence.
+    let mounted = true;
+    preloadSplash().then(() => {
+      if (!mounted) return;
+      // Keep splash shown for the designed duration, then exit
+      timerId = setTimeout(() => {
+        setSplashAnim("exitUp");
+        // Wait for the exit animation to finish, then hide splash and mark loading done
+        finishId = setTimeout(() => {
+          setSplashAnim("hidden");
+          setIsAppLoading(false);
+        }, 150);
+      }, 7000);
+    });
 
-      // Wait for the exit animation to finish, then hide splash and mark loading done
-      // exitUp uses a very short transition so 150ms is safe; adjust if you change CSS
-      const finish = setTimeout(() => {
-        setSplashAnim("hidden");
-        setIsAppLoading(false);
-      }, 150);
-
-      // ensure finish clears if outer effect is cleaned up
-      return () => clearTimeout(finish);
-    }, 7000);
-
-    return () => clearTimeout(timer);
+    return () => {
+      mounted = false;
+      if (timerId) clearTimeout(timerId);
+      if (finishId) clearTimeout(finishId);
+    };
   }, []);
 
     useEffect(() => {
@@ -1736,25 +1764,33 @@ const handleAddTxn=(tx)=>{
           
           {screen === "login" && <LoginScreen onLogin={() => {
             setIsLoggingIn(true);
-            // ensure the "enterRight" state is flushed to the compositor
-            // before transitioning to center — use double RAF for smoothness
-            setSplashAnim("enterRight");
-            requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
 
-            // After the splash centers, trigger the exit animation, but
-            // defer mounting the heavy `home` screen until exit completes.
-            setTimeout(() => {
-              sessionStorage.setItem("loggedIn", "true");
-              // start exit animation
-              setSplashAnim("exitRight");
+            const startLoginSequence = () => {
+              // ensure the "enterRight" state is flushed to the compositor
+              // before transitioning to center — use double RAF for smoothness
+              setSplashAnim("enterRight");
+              requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
 
-              // when exit animation finishes, mount home and hide splash
+              // After the splash centers, trigger the exit animation, but
+              // defer mounting the heavy `home` screen until exit completes.
               setTimeout(() => {
-                setScreen("home");
-                setIsLoggingIn(false);
-                setSplashAnim("hidden");
-              }, styles.splashExitDuration * 1000);
-            }, fastMode ? 50 : styles.splashCenterDuration);
+                sessionStorage.setItem("loggedIn", "true");
+                // start exit animation
+                setSplashAnim("exitRight");
+
+                // when exit animation finishes, mount home and hide splash
+                setTimeout(() => {
+                  setScreen("home");
+                  setIsLoggingIn(false);
+                  setSplashAnim("hidden");
+                }, styles.splashExitDuration * 1000);
+              }, fastMode ? 50 : styles.splashCenterDuration);
+            };
+
+            // If the splash image hasn't finished preloading, wait for it first
+            if (!splashReadyRef.current) {
+              preloadSplash().then(startLoginSequence);
+            } else startLoginSequence();
           }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
