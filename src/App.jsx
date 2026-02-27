@@ -1675,8 +1675,21 @@ const handleAddTxn=(tx)=>{
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           {splashAnim !== "hidden" && <SplashScreen animState={splashAnim}/>}
           
-          {(screen === "login" || isLoggingIn) && <LoginScreen onLogin={() => { setIsLoggingIn(true); setSplashAnim("enterRight"); setTimeout(() => setSplashAnim("center"), 50); setTimeout(() => { setSplashAnim("exitRight"); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home", true); setTimeout(() => setSplashAnim("hidden"), 400); }, 400); }, fastMode ? 50 : 1200); }} fastMode={fastMode} />}
-          {(screen === "home" || isLoggingIn) && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
+          {screen === "login" && <LoginScreen onLogin={() => {
+            setIsLoggingIn(true);
+            setSplashAnim("enterRight");
+            setTimeout(() => setSplashAnim("center"), 50);
+            setTimeout(() => {
+              sessionStorage.setItem("loggedIn", "true");
+              setScreen("home");
+              setSplashAnim("exitRight");
+              setTimeout(() => {
+                setIsLoggingIn(false);
+                setSplashAnim("hidden");
+              }, 400);
+            }, fastMode ? 50 : 1200);
+          }} fastMode={fastMode} />}
+          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
           
