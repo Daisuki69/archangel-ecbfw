@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { Suspense, useState, useRef, useEffect } from 'react';
+const HomeScreenLazy = React.lazy(() => import('./components/HomeScreen'));
 import { db } from "./firebase";
 import { doc, onSnapshot, updateDoc, runTransaction } from "firebase/firestore";
 import { App as CapApp } from '@capacitor/app';
@@ -119,11 +120,10 @@ let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 // --- STEP 1: Add this component at the top ---
 const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => {
   const isEntering = animState === 'enterRight' || animState === 'center';
-  const isExiting = animState === 'exitRight' || animState === 'exitUp';
+  const isExiting = animState === 'exitRight';
   const transitionDuration = isEntering ? styles.splashEnterDuration : (isExiting ? styles.splashExitDuration : 0);
   const transition = transitionDuration > -10 ? `transform ${transitionDuration}s ease` : 'none';
-  const transform = animState === 'exitUp' ? 'translate3d(0,-100%,0)'
-    : animState === 'enterRight' ? 'translate3d(100%,0,0)'
+  const transform = animState === 'enterRight' ? 'translate3d(100%,0,0)'
     : animState === 'center' ? 'translate3d(0,0,0)'
     : animState === 'exitRight' ? 'translate3d(100%,0,0)'
     : 'translate3d(0,0,0)';
@@ -1021,275 +1021,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
   );
 };
 
-// ── HOME SCREEN ────────────────────────────────────────────────────────────────
-const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES}) => {
-  const [showBal,setShowBal]=useState(true);
-  const [pullY,setPullY]=useState(0);
-  const [isRefreshing,setIsRefreshing]=useState(false);
-  const pullStartY=useRef(0);
-  const scrollRef=useRef(null);
-  const PULL_MAX=80;
-  const PULL_THRESHOLD=60;
-  const [tab,setTab]=useState("Wallet");
-
-  const tabs=["Wallet","Savings","Credit","Loans","Cards"];
-  const shortcuts=[
-    {icon:"bank",label:"Bank\ntransfer"},
-    {icon:"raffle",label:"Raffle\nPromo"},
-    {icon:"crypto",label:"Crypto"},
-    {icon:"refer",label:"Refer &\nEarn"},
-    {icon:"load",label:"Load"},
-    {icon:"bills",label:"Bills"},
-    {icon:"pbb",label:"PBB",badge:true,action:onPBB},
-    {icon:"more",label:"More"},
-  ];
-  
-  const feb21Stamped = FEB21.map(tx=>({...tx, timestamp: tx.timestamp||new Date("2026-02-21").getTime()}));
-  const combinedTxns = [...todayTxns, ...feb21Stamped].sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0, 5);
-
-  const getDisplayDate = (tx) => {
-    if (!tx.timestamp) return "21 Feb 2026";
-    const txDate = new Date(tx.timestamp);
-    const now = new Date();
-    
-    if (txDate.toDateString() === now.toDateString()) {
-      return relativeTime(tx.timestamp); 
-    }
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    return `${txDate.getDate()} ${months[txDate.getMonth()]} ${txDate.getFullYear()}`;
-  };
-
-return (
-    <div style={{height:"100%",display:"flex",flexDirection:"column",background:C.bg,position:"relative", fontFamily: "'Jeko', sans-serif", fontWeight: 400}}>
-      <div style={{background:C.white}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:styles.headerPadding}}>
-          <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center",marginTop:styles.profileIconMarginTop,marginLeft:styles.profileIconMarginLeft}}>
-            <Ic n="user" s={18} c={C.green}/>
-          </div>
-          <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            {/* The Settings Button is back! */}
-            <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
-            <Ic n="chat" s={22}/>
-            <div style={{position:"relative"}}>
-              <Ic n="bell" s={22}/>
-              <div style={{position:"absolute",top:-6,right:-8,background:C.green,borderRadius:10,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"white",border:"2px solid white"}}>90</div>
-            </div>
-          </div>
-        </div>
-        <div style={{display:"flex",paddingLeft:tab===tabs[0]?styles.tabFirstActivePaddingLeft:styles.tabFirstInactivePaddingLeft,overflowX:"auto",paddingBottom:8,scrollbarWidth:"none",transition:"padding-left 0.15s"}}>
-          {tabs.map(t=>(
-            <div key={t} onClick={()=>setTab(t)} style={{
-              marginLeft:styles.tabRowGap,
-              padding:`${styles.tabPillPaddingY}px ${styles.tabPillPaddingX}px`,
-              borderRadius:styles.tabPillRadius,
-              fontWeight:tab===t?styles.tabActiveFontWeight:styles.tabInactiveFontWeight,
-              fontSize:tab===t?styles.tabActiveFontSize:styles.tabInactiveFontSize,
-              fontFamily:`'${styles.tabFont}',sans-serif`,
-              background:tab===t?styles.tabPillBg:"transparent",
-              color:tab===t?styles.tabPillColor:styles.tabInactiveColor,
-              cursor:"pointer",
-              whiteSpace:"nowrap",
-              flexShrink:0,
-              transition:"all 0.15s"
-            }}>{t}</div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{overflow:"hidden",height:pullY>0||isRefreshing?Math.min(pullY,PULL_MAX):0,transition:pullY===0?"height 0.3s":undefined,display:"flex",alignItems:"center",justifyContent:"center"}}>
-        <svg viewBox="0 0 60 20" width={50} height={18} style={{opacity:isRefreshing?1:Math.min(pullY/PULL_THRESHOLD,1),transform:`scale(${isRefreshing?1:0.6+0.4*Math.min(pullY/PULL_THRESHOLD,1)})`,transition:pullY===0?"all 0.3s":undefined}}>
-          <path d="M2,10 C6,2 12,2 15,10 C18,18 24,18 30,10 C36,2 42,2 45,10 C48,18 54,18 58,10" stroke={isRefreshing?C.green:"#aaa"} strokeWidth="3" fill="none" strokeLinecap="round"/>
-        </svg>
-      </div>
-      <div ref={scrollRef}
-        onTouchStart={e=>{
-          if(scrollRef.current?.scrollTop===0){
-            pullStartY.current=e.touches[0].clientY;
-          }
-        }}
-        onTouchMove={e=>{
-          if(pullStartY.current===0) return;
-          const delta=e.touches[0].clientY-pullStartY.current;
-          if(delta>0 && scrollRef.current?.scrollTop===0){
-            setPullY(Math.min(delta*0.5,PULL_MAX));
-          }
-        }}
-        onTouchEnd={()=>{
-          if(pullY>=PULL_THRESHOLD){
-            setIsRefreshing(true);
-            setTimeout(()=>{
-              sessionStorage.setItem("loggedIn","true");
-              document.body.style.transition="opacity 0.3s";
-              document.body.style.opacity="0";
-              document.body.style.background="#f2f2f2";
-              setTimeout(()=>window.location.reload(),300);
-            },900);
-          } else {
-            setPullY(0);
-          }
-          pullStartY.current=0;
-        }}
-        style={{flex:1,overflowY:"auto",padding:"12px 12px 100px"}}>
-        <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div>
-              <div style={{fontSize:styles.balanceFontSize,fontWeight:styles.balanceWeight,letterSpacing:-1,fontFamily:`'${styles.balanceFont}',sans-serif`}}>{balance===null?"₱ ••••••••":showBal?`₱${fmt(balance)}`:"₱ ••••••••"}</div>
-              <div style={{fontSize:13,color:C.med,marginTop:2}}>Wallet balance <span style={{color:C.green,fontWeight:800}}>Auto cash in</span></div>
-            </div>
-            <button onClick={()=>setShowBal(!showBal)} style={{background:"none",border:"none",cursor:"pointer",marginTop:styles.eyeIconMarginTop,marginRight:styles.eyeIconMarginRight}}><Ic n={showBal&&balance!==null?"eye":"eyeOff"} s={styles.eyeIconSize} c="#aaa"/></button>
-          </div>
-          <div style={{display:"flex",gap:10,marginTop:16}}>
-            {[{n:"cashin",l:"Cash in"},{n:"send",l:"Send"}].map(b=>(
-              <button key={b.l} style={{flex:1,padding:"12px",borderRadius:12,background:"#e6f9f0",border:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:800,fontSize:13,color:C.green,cursor:"pointer"}}>
-                <Ic n={b.n} s={16} c={C.green}/>{b.l}
-              </button>
-            ))}
-          </div>
-          <div style={{marginTop:12,background:"#f0faf5",borderRadius:12,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div>
-              <div style={{fontWeight:900,fontSize:13}}>Easy Credit</div>
-              <div style={{fontSize:11,color:C.med}}>Borrow up to ₱30K</div>
-            </div>
-            <button style={{background:C.green,border:"none",borderRadius:20,padding:"9px 16px",color:"white",fontWeight:900,fontSize:12,cursor:"pointer"}}>Get it now</button>
-          </div>
-        </div>
-
-        <div style={{background:C.white,borderRadius:20,padding:"14px 8px",marginBottom:12}}>
-          <div className="no-select" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)"}}>
-            {shortcuts.map((s,i)=>(
-              <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 2px",position:"relative",borderRadius:12}}>
-                {s.badge&&<div style={{position:"absolute",top:4,right:8,background:"#e74c3c",color:"white",fontSize:7,fontWeight:900,padding:"2px 5px",borderRadius:4,letterSpacing:0.5,zIndex:2}}>VOTE</div>}
-                <div onClick={s.action} style={{width:styles.shortcutIconSize,height:styles.shortcutIconSize,borderRadius:styles.shortcutIconRadius,background:styles.shortcutIconBg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:5,cursor:s.action?"pointer":"default",overflow:"hidden",position:"relative"}}
-                  onPointerDown={s.action ? e=>{
-                    const el=e.currentTarget;
-                    const ripple=document.createElement("span");
-                    const rect=el.getBoundingClientRect();
-                    const size=Math.max(rect.width,rect.height)*2;
-                    const x=e.clientX-rect.left-size/2;
-                    const y=e.clientY-rect.top-size/2;
-                    ripple.style.cssText=`position:absolute;width:${size}px;height:${size}px;left:${x}px;top:${y}px;border-radius:50%;background:#c8c8c8;opacity:0.4;transform:scale(0);animation:ripple 0.5s linear;pointer-events:none;z-index:0;`;
-                    el.appendChild(ripple);
-                    ripple.addEventListener("animationend",()=>{ ripple.style.transform="scale(1)"; ripple.style.animation="none"; });
-                      } : undefined}
-                      onPointerUp={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}
-                      onPointerLeave={e=>{ e.currentTarget.querySelectorAll("span").forEach(s=>{ s.style.opacity="0"; setTimeout(()=>s.remove(),300); }); }}>
-                {s.icon==="pbb"?<PBBIcon size={28}/>:<Ic n={s.icon} s={22} c={styles.shortcutIconColor}/>}
-              </div>
-              <div style={{fontSize:styles.shortcutLabelSize,ontWeight:styles.shortcutLabelWeight,color:C.dark,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",fontFamily:`'${styles.shortcutLabelFont}',sans-serif`}}>{s.label}</div>
-            </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{background:"#000",borderRadius:20,marginBottom:12,padding:"20px 20px 0",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column"}}>
-          <div style={{color:C.green,fontSize:22,fontWeight:900,lineHeight:1.1,maxWidth:"75%",marginBottom:16,zIndex:2}}>
-            Refer friends<br/>and get P100 per<br/>successful referral
-          </div>
-          <div style={{position:"absolute",right:-20,top:0,opacity:0.6,fontSize:80}}>💸</div>
-          <div style={{background:C.white,margin:"0 -20px",padding:"12px 20px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
-            <span style={{fontSize:16}}>🤩</span>
-            <span style={{fontWeight:900,fontSize:13}}>Refer now</span>
-          </div>
-        </div>
-
-        <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:16}}>
-            <div style={{fontSize:16,fontWeight:900}}>MAYA XP</div>
-            <div style={{fontSize:13,color:C.med,fontWeight:600}}>Beta</div>
-          </div>
-          
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"16px 0",marginBottom:20}}>
-            {[
-              {l:"Unlock\nmore", c:C.green, bg:"#e6f9f0", icon:"LVL\nUP", locked:false},
-              {l:"Singlife\nInsurance", c:C.light, bg:C.bg, icon:"🛡️", locked:false},
-              {l:"InstaPay\nCashback", c:C.light, bg:C.bg, icon:"💸", locked:true},
-              {l:"Bills\nCashback", c:C.light, bg:C.bg, icon:"🧾", locked:true},
-              {l:"Crypto\nCashback", c:C.light, bg:C.bg, icon:"🚀", locked:true},
-              {l:"Insurance\nCashback", c:C.light, bg:C.bg, icon:"🛡️", locked:true},
-            ].map((xp, i) => (
-              <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
-                <div style={{width:54,height:60,position:"relative",marginBottom:8}}>
-                  <svg viewBox="0 0 100 100" width="100%" height="100%">
-                    <polygon points="50 5, 90 25, 90 75, 50 95, 10 75, 10 25" fill={xp.bg} stroke={xp.c} strokeWidth="4"/>
-                  </svg>
-                  <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",fontSize:14,fontWeight:900,color:xp.c,lineHeight:1.1,whiteSpace:"pre-line"}}>
-                    {xp.icon}
-                  </div>
-                  {xp.locked && (
-                    <div style={{position:"absolute",bottom:0,left:0,background:"#000",borderRadius:"50%",width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid white"}}>
-                      <span style={{fontSize:10}}>🔒</span>
-                    </div>
-                  )}
-                </div>
-                <div style={{fontSize:11,fontWeight:800,textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line",color:C.dark}}>{xp.l}</div>
-              </div>
-            ))}
-          </div>
-          
-          <div style={{textAlign:"center",paddingTop:8,borderTop:`1px solid ${C.gray}`}}>
-            <span style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all benefits ›</span>
-          </div>
-        </div>
-
-        <div style={{background:C.white,borderRadius:20,padding:"20px",marginBottom:24}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-            <div style={{fontSize:20,fontWeight:900}}>Transactions</div>
-            <div onClick={onSeeAll} style={{color:C.green,fontWeight:800,fontSize:14,cursor:"pointer"}}>See all</div>
-          </div>
-
-          {combinedTxns.map((tx)=>(
-            <div key={tx.id} style={{padding:"10px 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div>
-                <div style={{fontSize:12,color:C.light,marginBottom:2,fontWeight:600}}>{tx.sub||(tx.positive?"Received money from":"Purchased on")}</div>
-                <div style={{fontSize:14,fontWeight:800}}>{tx.label}</div>
-              </div>
-              <div style={{textAlign:"right"}}>
-                <div style={{fontSize:12,color:C.light,marginBottom:2,fontWeight:600}}>{getDisplayDate(tx)}</div>
-                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{padding:"0 4px",marginBottom:32}}>
-          <div style={{fontSize:18,fontWeight:900,marginBottom:14}}>Get rewards</div>
-          <div style={{display:"flex",gap:12}}>
-            <div style={{flex:1,background:"#00b464",borderRadius:16,padding:"16px",position:"relative",overflow:"hidden",minHeight:100}}>
-              <div style={{position:"relative",zIndex:2}}>
-                <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Missions</div>
-                <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"70%"}}>Earn rewards for completing tasks</div>
-              </div>
-              <div style={{position:"absolute",right:-10,bottom:-10,fontSize:50}}>🎯</div>
-            </div>
-            <div style={{flex:1,background:"#4929aa",borderRadius:16,padding:"16px",position:"relative",overflow:"hidden",minHeight:100}}>
-              <div style={{position:"relative",zIndex:2}}>
-                <div style={{color:"white",fontSize:16,fontWeight:900,marginBottom:4}}>Vouchers</div>
-                <div style={{color:"rgba(255,255,255,0.9)",fontSize:11,lineHeight:1.4,fontWeight:600,maxWidth:"80%"}}>Go claim them before they're gone</div>
-              </div>
-              <div style={{position:"absolute",right:-5,bottom:-5,fontSize:45}}>🎟️</div>
-            </div>
-          </div>
-        </div>
-
-        <div style={{textAlign:"center",padding:"0 10px"}}>
-          <div style={{color:C.green,fontSize:26,fontWeight:900,letterSpacing:-1,marginBottom:12}}>maya</div>
-          <div style={{fontSize:11,color:C.med,lineHeight:1.6,fontWeight:600}}>
-            Maya Philippines, Inc. is regulated by the Bangko<br/>Sentral ng Pilipinas - <span style={{color:C.green}}>bsp.gov.ph</span>.<br/>
-            Visit our Help Center or call us at <span style={{color:C.green}}>+632 8845 7788</span><br/>for any concerns.
-          </div>
-        </div>
-      </div>
-
-      <div style={{position:"absolute",bottom:styles.floatingNavBottom,left:0,width:"100%",display:"flex",justifyContent:"center",zIndex:100,padding:styles.floatingNavOuterPadding}}>
-        <div style={{background:"#000",borderRadius:styles.floatingNavRadius,padding:styles.floatingNavInnerPadding,display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",maxWidth:styles.floatingNavMaxWidth,boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
-          <div style={{background:C.green,borderRadius:8,width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",color:"#000",fontWeight:900,fontSize:16}}>m</div>
-          <Ic n="scan" s={22} c="white"/>
-          <Ic n="grid" s={22} c="white"/>
-        </div>
-      </div>
-    </div>
-  );
-};
+// HomeScreen has been moved to a separate module and is lazy-loaded via `HomeScreenLazy`.
 
 // ── ROOT ───────────────────────────────────────────────────────────────────────
 const FloatingDevButton = ({pendingCount, onOpen}) => {
@@ -1792,7 +1524,11 @@ const handleAddTxn=(tx)=>{
               preloadSplash().then(startLoginSequence);
             } else startLoginSequence();
           }} fastMode={fastMode} />}
-          {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
+          {screen === "home" && (
+            <Suspense fallback={<div style={{height: '100%', display:'flex', alignItems:'center', justifyContent:'center'}}>Loading…</div>}>
+              <HomeScreenLazy balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />
+            </Suspense>
+          )}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
           
