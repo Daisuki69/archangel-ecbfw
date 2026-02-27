@@ -1621,10 +1621,10 @@ export default function MayaApp() {
   checkMidnight();
 }, []);
 
-  const navigate=(dest)=>{
+  const navigate=(dest, skipAnim=false)=>{
     if(transitioning) return;
     setNextScreen(dest);
-    setTransitioning(true);
+    setTransitioning(!skipAnim);
     NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
     NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
     const delay = fastMode ? 0 : 400;
@@ -1675,7 +1675,7 @@ const handleAddTxn=(tx)=>{
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           {splashAnim !== "hidden" && <SplashScreen animState={splashAnim}/>}
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setSplashAnim("enterRight"); setTimeout(() => setSplashAnim("center"), 50); setTimeout(() => { setSplashAnim("exitRight"); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home"); setTimeout(() => setSplashAnim("hidden"), 400); }, 400); }, fastMode ? 50 : 1200); }} fastMode={fastMode} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setSplashAnim("enterRight"); setTimeout(() => setSplashAnim("center"), 50); setTimeout(() => { setSplashAnim("exitRight"); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home", true); setTimeout(() => setSplashAnim("hidden"), 400); }, 400); }, fastMode ? 50 : 1200); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
