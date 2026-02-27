@@ -39,7 +39,7 @@ const DEFAULT_STYLES = {
   datePillBottomPad: 9,
 
   // Balance
-  balanceFontSize: 30,
+  balanceFontSize: 32,
 
   // PBB candidate photo
   pbbPhotoSize: "75%",
@@ -1620,7 +1620,7 @@ export default function MayaApp() {
     setTransitioning(true);
     NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
     NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
-    const delay = fastMode ? 0 : 500 + Math.random()*1000;
+    const delay = fastMode ? 0 : 400;
     setTimeout(()=>{
       setScreen(dest);
       setTransitioning(false);
@@ -1668,7 +1668,7 @@ const handleAddTxn=(tx)=>{
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
           
-          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home"); }, 5000); }} fastMode={fastMode} />}
+          {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home"); }, fastMode ? 0 : 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
           {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
           {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
@@ -1729,10 +1729,9 @@ const handleAddTxn=(tx)=>{
               }}
             />
           )}
-          {transitioning && (
-            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.55)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
-              <div style={{width:36,height:36,border:"4px solid #e0f5ea",borderTop:`4px solid ${C.green}`,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
-              <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+          {transitioning && nextScreen && (
+            <div key={nextScreen} style={{position:"absolute",inset:0,zIndex:500,background:C.bg,animation:"slideInRight 0.4s ease forwards"}}>
+              <style>{`@keyframes slideInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
             </div>
           )}
         </div>
