@@ -1622,12 +1622,8 @@ export default function MayaApp() {
       if (!mounted) return;
       // Keep splash shown for the designed duration, then exit
       timerId = setTimeout(() => {
-        setGlobalSplashState("exitUp");
-        // Wait for the exit animation to finish, then hide splash and mark loading done
-        finishId = setTimeout(() => {
-          setGlobalSplashState("hidden");
+        setGlobalSplashState("hidden");
           setIsAppLoading(false);
-        }, 150);
       }, 7000);
     });
 
