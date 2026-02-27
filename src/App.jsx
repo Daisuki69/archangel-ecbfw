@@ -125,7 +125,7 @@ const SplashScreen = ({ animState }) => (
                animState === 'exitRight' ? 'translateX(100%)' : 'translateY(0%)',
     transition: animState === 'exitUp' ? 'transform 0.08s ease-in' :
                 animState === 'center' ? 'transform 0.4s ease' :
-                animState === 'exitRight' ? 'transform 0.4s ease' : 'none',
+                animState === 'exitRight' ? 'transform 0.6s ease' : 'none',
   }}>
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
   </div>
@@ -1686,7 +1686,7 @@ const handleAddTxn=(tx)=>{
               setTimeout(() => {
                 setIsLoggingIn(false);
                 setSplashAnim("hidden");
-              }, 400);
+              }, 600);
             }, fastMode ? 50 : 2200);
           }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
