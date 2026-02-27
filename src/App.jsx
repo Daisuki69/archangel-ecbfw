@@ -123,58 +123,60 @@ const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => (
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000,
     paddingTop: 0,
-    transform: animState === 'exitUp' ? 'translateY(-100%)' :
-               animState === 'enterRight' ? 'translateX(100%)' :
-               animState === 'center' ? 'translateX(0%)' :
-               animState === 'exitRight' ? 'translateX(100%)' : 'translateY(0%)',
+    willChange: 'transform',
+    backfaceVisibility: 'hidden',
+    transform: animState === 'exitUp' ? 'translate3d(0,-100%,0)' :
+               animState === 'enterRight' ? 'translate3d(100%,0,0)' :
+               animState === 'center' ? 'translate3d(0,0,0)' :
+               animState === 'exitRight' ? 'translate3d(100%,0,0)' : 'translate3d(0,0,0)',
     transition: animState === 'exitUp' ? 'transform 0.08s ease-in' :
                 animState === 'center' ? `transform ${styles.splashEnterDuration}s ease` :
                 animState === 'exitRight' ? `transform ${styles.splashExitDuration}s ease` : 'none',
   }}>
-    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto', objectFit: 'cover' }} />
+    <img src="/mayasplashscreen.jpg" alt="Maya" decoding="async" loading="eager" style={{ width: '100vw', height: '100vh', objectFit: 'cover' }} />
   </div>
 );
 
 const GlobalStyle = () => (
   <style>{`
     /* ─── CEREBRI SANS PRO (Standard App Font) ─── */
-    @font-face { font-family: 'CerebriThin'; src: url('/CerebriSansPro-Thin.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriThinItalic'; src: url('/CerebriSansPro-ThinItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriExtraLight'; src: url('/CerebriSansPro-ExtraLight.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriExtraLightItalic'; src: url('/CerebriSansPro-ExtraLightItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriLight'; src: url('/CerebriSansPro-Light.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriLightItalic'; src: url('/CerebriSansPro-LightItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriBook'; src: url('/CerebriSansPro-Book.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriItalic'; src: url('/CerebriSansPro-Italic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriRegular'; src: url('/CerebriSansPro-Regular.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriMedium'; src: url('/CerebriSansPro-Medium.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriMediumItalic'; src: url('/CerebriSansPro-MediumItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriSemiBold'; src: url('/CerebriSansPro-SemiBold.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriSemiBoldItalic'; src: url('/CerebriSansPro-SemiBoldItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriBold'; src: url('/CerebriSansPro-Bold.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriBoldItalic'; src: url('/CerebriSansPro-BoldItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriExtraBold'; src: url('/CerebriSansPro-ExtraBold.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriExtraBoldItalic'; src: url('/CerebriSansPro-ExtraBoldItalic.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriHeavy'; src: url('/CerebriSansPro-Heavy.otf') format('opentype'); }
-    @font-face { font-family: 'CerebriHeavyItalic'; src: url('/CerebriSansPro-HeavyItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriThin'; src: url('/CerebriSansPro-Thin.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriThinItalic'; src: url('/CerebriSansPro-ThinItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriExtraLight'; src: url('/CerebriSansPro-ExtraLight.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriExtraLightItalic'; src: url('/CerebriSansPro-ExtraLightItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriLight'; src: url('/CerebriSansPro-Light.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriLightItalic'; src: url('/CerebriSansPro-LightItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriBook'; src: url('/CerebriSansPro-Book.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriItalic'; src: url('/CerebriSansPro-Italic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriRegular'; src: url('/CerebriSansPro-Regular.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriMedium'; src: url('/CerebriSansPro-Medium.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriMediumItalic'; src: url('/CerebriSansPro-MediumItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriSemiBold'; src: url('/CerebriSansPro-SemiBold.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriSemiBoldItalic'; src: url('/CerebriSansPro-SemiBoldItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriBold'; src: url('/CerebriSansPro-Bold.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriBoldItalic'; src: url('/CerebriSansPro-BoldItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriExtraBold'; src: url('/CerebriSansPro-ExtraBold.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriExtraBoldItalic'; src: url('/CerebriSansPro-ExtraBoldItalic.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriHeavy'; src: url('/CerebriSansPro-Heavy.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'CerebriHeavyItalic'; src: url('/CerebriSansPro-HeavyItalic.otf') format('opentype'); }
 
     /* ─── JEKO (Numbers, Balances, Login) ─── */
-    @font-face { font-family: 'JekoThin'; src: url('/fonnts.com-Jeko_Thin.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoThinItalic'; src: url('/fonnts.com-Jeko_Thin_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoLight'; src: url('/fonnts.com-Jeko_Light.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoLightItalic'; src: url('/fonnts.com-Jeko_Light_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoRegular'; src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoRegularItalic'; src: url('/fonnts.com-Jeko_Regular_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoMedium'; src: url('/Jeko-Medium.otf') format('opentype'); }
-    @font-face { font-family: 'JekoMediumItalic'; src: url('/fonnts.com-Jeko_Medium_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoSemiBold'; src: url('/fonnts.com-Jeko_SemiBold.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoSemiBoldItalic'; src: url('/fonnts.com-Jeko_SemiBold_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoBold'; src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoBoldItalic'; src: url('/fonnts.com-Jeko_Bold_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoBlack'; src: url('/fonnts.com-Jeko_Black.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoBlackItalic'; src: url('/fonnts.com-Jeko_Black_Italic.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoVariable'; src: url('/fonnts.com-Jeko_Variable.ttf') format('truetype'); }
-    @font-face { font-family: 'JekoItalicVariable'; src: url('/fonnts.com-Jeko_Italic_Variable.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoThin'; src: url('/fonnts.com-Jeko_Thin.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoThinItalic'; src: url('/fonnts.com-Jeko_Thin_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoLight'; src: url('/fonnts.com-Jeko_Light.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoLightItalic'; src: url('/fonnts.com-Jeko_Light_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoRegular'; src: url('/fonnts.com-Jeko_Regular.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoRegularItalic'; src: url('/fonnts.com-Jeko_Regular_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoMedium'; src: url('/Jeko-Medium.otf') format('opentype'); }
+    @font-face { font-display: swap; font-family: 'JekoMediumItalic'; src: url('/fonnts.com-Jeko_Medium_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoSemiBold'; src: url('/fonnts.com-Jeko_SemiBold.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoSemiBoldItalic'; src: url('/fonnts.com-Jeko_SemiBold_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoBold'; src: url('/fonnts.com-Jeko_Bold.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoBoldItalic'; src: url('/fonnts.com-Jeko_Bold_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoBlack'; src: url('/fonnts.com-Jeko_Black.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoBlackItalic'; src: url('/fonnts.com-Jeko_Black_Italic.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoVariable'; src: url('/fonnts.com-Jeko_Variable.ttf') format('truetype'); }
+    @font-face { font-display: swap; font-family: 'JekoItalicVariable'; src: url('/fonnts.com-Jeko_Italic_Variable.ttf') format('truetype'); }
 
     /* Default App Font */
     body { 
@@ -1554,6 +1556,7 @@ export default function MayaApp() {
   const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [splashAnim, setSplashAnim] = useState(wasLoggedIn ? "hidden" : "visible");
+  const prevSplashRef = useRef(null);
 
   const [nextScreen,setNextScreen]=useState(null);
   const [transitioning,setTransitioning]=useState(false);
@@ -1599,37 +1602,42 @@ export default function MayaApp() {
   }, []);
 
     useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+      if (!Capacitor.isNativePlatform()) return;
 
-    // Use native animated transition when available to smoothly follow splash
-    const dur = (splashAnim === 'center') ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
-    if (splashAnim !== "hidden" || isLoggingIn) {
-      // ensure bars remain transparent while splash visible
-      if (NavBar && NavBar.setSystemBarsTransparent) {
-        NavBar.setSystemBarsTransparent({ transparent: true }).catch(() => {});
-      }
-      // animate to black (status/navigation)
-      if (NavBar && NavBar.animateColors) {
-        NavBar.animateColors({ statusBarTo: '#000000', navBarTo: '#000000', duration: Math.max(200, dur), statusBarDarkIcons: false, navBarDarkButtons: false }).catch(() => {});
+      // Guard to avoid redundant native calls when splashAnim hasn't changed
+      if (!prevSplashRef.current) prevSplashRef.current = splashAnim;
+      if (prevSplashRef.current === splashAnim) return;
+
+      // Use native animated transition when available to smoothly follow splash
+      const dur = (splashAnim === 'center') ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
+      if (splashAnim !== "hidden" || isLoggingIn) {
+        // ensure bars remain transparent while splash visible
+        if (NavBar && NavBar.setSystemBarsTransparent) {
+          NavBar.setSystemBarsTransparent({ transparent: true }).catch(() => {});
+        }
+        // animate to black (status/navigation)
+        if (NavBar && NavBar.animateColors) {
+          NavBar.animateColors({ statusBarTo: '#000000', navBarTo: '#000000', duration: Math.max(200, dur), statusBarDarkIcons: false, navBarDarkButtons: false }).catch(() => {});
+        } else {
+          NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+          NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+        }
       } else {
-        NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
-        NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+        // animate to white (status/navigation)
+        if (NavBar && NavBar.animateColors) {
+          NavBar.animateColors({ statusBarTo: '#ffffff', navBarTo: '#ffffff', duration: Math.max(200, dur), statusBarDarkIcons: true, navBarDarkButtons: true }).catch(() => {});
+        } else {
+          NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
+          NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+        }
+        // when splash is hidden, restore bars to normal after a short delay
+        if (splashAnim === 'hidden' && NavBar && NavBar.setSystemBarsTransparent) {
+          setTimeout(() => {
+            NavBar.setSystemBarsTransparent({ transparent: false, statusRestore: '#ffffff', navRestore: '#ffffff', statusDarkIcons: true, navDarkButtons: true }).catch(() => {});
+          }, 120);
+        }
       }
-    } else {
-      // animate to white (status/navigation)
-      if (NavBar && NavBar.animateColors) {
-        NavBar.animateColors({ statusBarTo: '#ffffff', navBarTo: '#ffffff', duration: Math.max(200, dur), statusBarDarkIcons: true, navBarDarkButtons: true }).catch(() => {});
-      } else {
-        NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-        NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-      }
-      // when splash is hidden, restore bars to normal after a short delay
-      if (splashAnim === 'hidden' && NavBar && NavBar.setSystemBarsTransparent) {
-        setTimeout(() => {
-          NavBar.setSystemBarsTransparent({ transparent: false, statusRestore: '#ffffff', navRestore: '#ffffff', statusDarkIcons: true, navDarkButtons: true }).catch(() => {});
-        }, 120);
-      }
-    }
+      prevSplashRef.current = splashAnim;
   }, [splashAnim, isLoggingIn, styles]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones

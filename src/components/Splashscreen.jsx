@@ -14,11 +14,14 @@ const SplashScreen = ({ message = "" }) => {
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 9999, 
+      willChange: 'transform',
+      backfaceVisibility: 'hidden',
     }}>
       <img 
         src="/mayasplashscreen.jpg" 
         alt="Maya Logo" 
-        style={{ width: '20', height: '43' }} 
+        decoding="async" loading="eager"
+        style={{ width: '100vw', height: '100vh', objectFit: 'cover' }} 
       />
       {message && <p style={{ color: '#00ffaa', marginTop: '20px', fontFamily: 'sans-serif' }}>{message}</p>}
     </div>
