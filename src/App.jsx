@@ -122,7 +122,7 @@ const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => (
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000,
-    paddingTop: '3vh',
+    paddingTop: 0,
     transform: animState === 'exitUp' ? 'translateY(-100%)' :
                animState === 'enterRight' ? 'translateX(100%)' :
                animState === 'center' ? 'translateX(0%)' :
@@ -131,7 +131,7 @@ const SplashScreen = ({ animState, styles = DEFAULT_STYLES }) => (
                 animState === 'center' ? `transform ${styles.splashEnterDuration}s ease` :
                 animState === 'exitRight' ? `transform ${styles.splashExitDuration}s ease` : 'none',
   }}>
-    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
+    <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto', objectFit: 'cover' }} />
   </div>
 );
 
@@ -1571,20 +1571,25 @@ export default function MayaApp() {
   useEffect(() => {
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
-      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+      // make system bars transparent so splash can draw under them
+      if (NavBar && NavBar.setSystemBarsTransparent) {
+        NavBar.setSystemBarsTransparent({ transparent: true }).catch(() => {});
+      } else {
+        NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+      }
     }
 
     // Show the splash in center, then run exit animation, then mark app loaded.
     const timer = setTimeout(() => {
-      // Trigger horizontal exit so the splash can sweep edge-to-edge under transparent bars
-      setSplashAnim("exitRight");
+      // Trigger exit animation first so UI (and system bars) can follow it
+      setSplashAnim("exitUp");
 
       // Wait for the exit animation to finish, then hide splash and mark loading done
-      const exitMs = (styles.splashExitDuration || DEFAULT_STYLES.splashExitDuration) * 1000;
+      // exitUp uses a very short transition so 150ms is safe; adjust if you change CSS
       const finish = setTimeout(() => {
         setSplashAnim("hidden");
         setIsAppLoading(false);
-      }, Math.max(150, exitMs + 50));
+      }, 150);
 
       // ensure finish clears if outer effect is cleaned up
       return () => clearTimeout(finish);
@@ -1596,36 +1601,33 @@ export default function MayaApp() {
     useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    // Keep bars transparent while splash is visible so the web content can animate under them.
+    // Use native animated transition when available to smoothly follow splash
     const dur = (splashAnim === 'center') ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
     if (splashAnim !== "hidden" || isLoggingIn) {
-      // Ensure bars are transparent and icons are initially light for dark splash background
-      if (NavBar && NavBar.animateColors) {
-        NavBar.animateColors({ statusBarTo: '#00000000', navBarTo: '#00000000', duration: Math.max(100, dur), statusBarDarkIcons: false, navBarDarkButtons: false }).catch(() => {});
-      } else {
-        NavBar.setStatusBarColor({ color: '#00000000', darkIcons: false }).catch(() => {});
-        NavBar.setColor({ color: '#00000000', darkButtons: false }).catch(() => {});
+      // ensure bars remain transparent while splash visible
+      if (NavBar && NavBar.setSystemBarsTransparent) {
+        NavBar.setSystemBarsTransparent({ transparent: true }).catch(() => {});
       }
-
-      // Toggle icon contrast at mid-animation so icons switch as the splash edge passes
-      const mid = Math.max(80, Math.floor(dur / 2));
-      const t = setTimeout(() => {
-        if (NavBar && NavBar.animateColors) {
-          // animate to transparent but set dark icon flags at the end
-          NavBar.animateColors({ statusBarTo: '#00000000', navBarTo: '#00000000', duration: 120, statusBarDarkIcons: true, navBarDarkButtons: true }).catch(() => {});
-        } else {
-          NavBar.setStatusBarColor({ color: '#00000000', darkIcons: true }).catch(() => {});
-          NavBar.setColor({ color: '#00000000', darkButtons: true }).catch(() => {});
-        }
-      }, mid);
-      return () => clearTimeout(t);
+      // animate to black (status/navigation)
+      if (NavBar && NavBar.animateColors) {
+        NavBar.animateColors({ statusBarTo: '#000000', navBarTo: '#000000', duration: Math.max(200, dur), statusBarDarkIcons: false, navBarDarkButtons: false }).catch(() => {});
+      } else {
+        NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+        NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+      }
     } else {
-      // When splash hidden, ensure final light background and dark icons
+      // animate to white (status/navigation)
       if (NavBar && NavBar.animateColors) {
         NavBar.animateColors({ statusBarTo: '#ffffff', navBarTo: '#ffffff', duration: Math.max(200, dur), statusBarDarkIcons: true, navBarDarkButtons: true }).catch(() => {});
       } else {
         NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
         NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+      }
+      // when splash is hidden, restore bars to normal after a short delay
+      if (splashAnim === 'hidden' && NavBar && NavBar.setSystemBarsTransparent) {
+        setTimeout(() => {
+          NavBar.setSystemBarsTransparent({ transparent: false, statusRestore: '#ffffff', navRestore: '#ffffff', statusDarkIcons: true, navDarkButtons: true }).catch(() => {});
+        }, 120);
       }
     }
   }, [splashAnim, isLoggingIn, styles]);
