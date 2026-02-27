@@ -1571,7 +1571,7 @@ export default function MayaApp() {
   useEffect(() => {
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
-      NavBar.animateColors({ statusBarColor: '#000000', navBarColor: '#000000', duration: 0, darkIcons: false, darkButtons: false }).catch(() => {});
+      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
     }
 
     // Show the splash in center, then run exit animation, then mark app loaded.
@@ -1596,14 +1596,26 @@ export default function MayaApp() {
     useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    // Make system bars follow the splash animation state so they transition
-    // in sync with the visible splash/dim effect.
+    // Use native animated transition when available to smoothly follow splash
+    const dur = (splashAnim === 'center') ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
     if (splashAnim !== "hidden" || isLoggingIn) {
-      NavBar.animateColors({ statusBarColor: '#000000', navBarColor: '#000000', duration: 300, darkIcons: false, darkButtons: false }).catch(() => {});
+      // animate to black (status/navigation)
+      if (NavBar && NavBar.animateColors) {
+        NavBar.animateColors({ statusBarTo: '#000000', navBarTo: '#000000', duration: Math.max(200, dur), statusBarDarkIcons: false, navBarDarkButtons: false }).catch(() => {});
+      } else {
+        NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+        NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+      }
     } else {
-      NavBar.animateColors({ statusBarColor: '#ffffff', navBarColor: '#ffffff', duration: 500, darkIcons: true, darkButtons: true }).catch(() => {});
+      // animate to white (status/navigation)
+      if (NavBar && NavBar.animateColors) {
+        NavBar.animateColors({ statusBarTo: '#ffffff', navBarTo: '#ffffff', duration: Math.max(200, dur), statusBarDarkIcons: true, navBarDarkButtons: true }).catch(() => {});
+      } else {
+        NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
+        NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+      }
     }
-  }, [splashAnim, isLoggingIn]);
+  }, [splashAnim, isLoggingIn, styles]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
@@ -1640,13 +1652,15 @@ export default function MayaApp() {
     if(transitioning) return;
     setNextScreen(dest);
     setTransitioning(!skipAnim);
-    NavBar.animateColors({ statusBarColor: '#e8e8e8', navBarColor: '#e8e8e8', duration: 200, darkIcons: true, darkButtons: true }).catch(() => {});
+    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
+    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
     const delay = fastMode ? 0 : 400;
     setTimeout(()=>{
       setScreen(dest);
       setTransitioning(false);
       setNextScreen(null);
-      NavBar.animateColors({ statusBarColor: '#ffffff', navBarColor: '#ffffff', duration: 300, darkIcons: true, darkButtons: true }).catch(() => {});
+      NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
+      NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
     }, delay);
   };
 
