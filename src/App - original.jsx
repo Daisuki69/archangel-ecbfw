@@ -1562,11 +1562,10 @@ export default function MayaApp() {
       window.removeEventListener("unhandledrejection", handler);
     };
   },[]);
+  const [screen,setScreen]=useState(wasLoggedIn?"home":"login");
   const [isAppLoading, setIsAppLoading] = useState(!wasLoggedIn);
-  const [globalSplashState, setGlobalSplashState] = useState("visible");
-  const [isLoggedIn, setIsLoggedIn] = useState(wasLoggedIn);
-  const [overlay, setOverlay] = useState(null); // 'splash' | 'pbb' | 'transactions'
-  const [slidePosition, setSlidePosition] = useState(0); // 0 = Left (Main), 1 = Right (Overlay)
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [splashAnim, setSplashAnim] = useState(wasLoggedIn ? "hidden" : "visible");
   const prevSplashRef = useRef(null);
   const splashReadyRef = useRef(false);
 
@@ -1591,6 +1590,8 @@ export default function MayaApp() {
     splashReadyRef.current = true;
   };
 
+  const [nextScreen,setNextScreen]=useState(null);
+  const [transitioning,setTransitioning]=useState(false);
   const [balance, setBalance] = useState(null);
   const [todayTxns, setTodayTxns] = useState([]);
   const [daysLeft, setDaysLeft] = useState(1);
@@ -1622,10 +1623,10 @@ export default function MayaApp() {
       if (!mounted) return;
       // Keep splash shown for the designed duration, then exit
       timerId = setTimeout(() => {
-        setGlobalSplashState("exitUp");
+        setSplashAnim("exitUp");
         // Wait for the exit animation to finish, then hide splash and mark loading done
         finishId = setTimeout(() => {
-          setGlobalSplashState("hidden");
+          setSplashAnim("hidden");
           setIsAppLoading(false);
         }, 150);
       }, 7000);
@@ -1642,13 +1643,12 @@ export default function MayaApp() {
       if (!Capacitor.isNativePlatform()) return;
 
       // Guard to avoid redundant native calls when splashAnim hasn't changed
-      const isSplashVisible = isAppLoading || overlay === 'splash';
-      if (!prevSplashRef.current) prevSplashRef.current = isSplashVisible;
-      if (prevSplashRef.current === isSplashVisible) return;
+      if (!prevSplashRef.current) prevSplashRef.current = splashAnim;
+      if (prevSplashRef.current === splashAnim) return;
 
       // Use native animated transition when available to smoothly follow splash
-      const dur = (overlay === 'splash' && slidePosition === 1) ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
-      if (isSplashVisible) {
+      const dur = (splashAnim === 'center') ? styles.splashEnterDuration * 1000 : styles.splashExitDuration * 1000;
+      if (splashAnim !== "hidden" || isLoggingIn) {
         // ensure bars remain transparent while splash visible
         if (NavBar && NavBar.setSystemBarsTransparent) {
           NavBar.setSystemBarsTransparent({ transparent: true }).catch(() => {});
@@ -1669,14 +1669,14 @@ export default function MayaApp() {
           NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
         }
         // when splash is hidden, restore bars to normal after a short delay
-        if (!isSplashVisible && NavBar && NavBar.setSystemBarsTransparent) {
+        if (splashAnim === 'hidden' && NavBar && NavBar.setSystemBarsTransparent) {
           setTimeout(() => {
             NavBar.setSystemBarsTransparent({ transparent: false, statusRestore: '#ffffff', navRestore: '#ffffff', statusDarkIcons: true, navDarkButtons: true }).catch(() => {});
           }, 120);
         }
       }
-      prevSplashRef.current = isSplashVisible;
-  }, [isAppLoading, overlay, slidePosition, styles]);
+      prevSplashRef.current = splashAnim;
+  }, [splashAnim, isLoggingIn, styles]);
 
   // LOAD from Firebase on mount, and listen for changes from other phones
   useEffect(() => {
@@ -1709,52 +1709,19 @@ export default function MayaApp() {
   checkMidnight();
 }, []);
 
-  const handleLogin = () => {
-    setOverlay("splash");
-    requestAnimationFrame(() => requestAnimationFrame(() => setSlidePosition(1)));
-
-    setTimeout(() => {
-      setIsLoggedIn(true);
-      sessionStorage.setItem("loggedIn", "true");
-      
-      requestAnimationFrame(() => {
-        setSlidePosition(0);
-        setTimeout(() => {
-          setOverlay(null);
-        }, styles.splashExitDuration * 1000);
-      });
-    }, fastMode ? 50 : styles.splashCenterDuration);
-  };
-
-  const handleNavigate = (dest) => {
-    if (transitioning) return;
-    setTransitioning(true);
+  const navigate=(dest, skipAnim=false)=>{
+    if(transitioning) return;
+    setNextScreen(dest);
+    setTransitioning(!skipAnim);
     NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
     NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
-    setOverlay(dest);
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      setSlidePosition(1);
-      const delay = fastMode ? 0 : 400;
-      setTimeout(() => {
-        NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-        NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-        setTransitioning(false);
-      }, delay);
-    }));
-  };
-
-  const handleBack = () => {
-    if (transitioning) return;
-    setTransitioning(true);
-    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
-    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
-    setSlidePosition(0);
     const delay = fastMode ? 0 : 400;
-    setTimeout(() => {
-      setOverlay(null);
+    setTimeout(()=>{
+      setScreen(dest);
+      setTransitioning(false);
+      setNextScreen(null);
       NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
       NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
-      setTransitioning(false);
     }, delay);
   };
 
@@ -1785,7 +1752,7 @@ const handleAddTxn=(tx)=>{
 };
 
   // --- STEP 4: The Gatekeeper ---
-  if (isAppLoading) return <SplashScreen animState={globalSplashState} styles={styles}/>;
+  if (isAppLoading) return <SplashScreen animState={splashAnim} styles={styles}/>;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
@@ -1801,33 +1768,56 @@ const handleAddTxn=(tx)=>{
             height: '100%',
             // If splash is entering or centered, we shift left by 50% (showing the right half/splash)
             // Otherwise we are at 0% (showing the left half/login or home)
-            transform: `translateX(-${slidePosition * 50}%)`,
-            transition: `transform ${
-              overlay === 'splash' 
-                ? (slidePosition === 1 ? styles.splashEnterDuration : styles.splashExitDuration) 
-                : 0.4
-            }s ease`,
+            transform: (splashAnim === 'enterRight' || splashAnim === 'center') ? 'translateX(-50%)' : 'translateX(0%)',
+            transition: `transform ${splashAnim === 'enterRight' ? styles.splashEnterDuration : styles.splashExitDuration}s ease`,
             willChange: 'transform'
           }}>
             {/* LEFT PANEL (50% width): Shows LoginScreen or HomeScreen */}
             <div style={{ width: '50%', height: '100%', flexShrink: 0, position: 'relative' }}>
-              {!isLoggedIn ? (
-                <LoginScreen onLogin={() => {
-                  if (!splashReadyRef.current) {
-                    preloadSplash().then(handleLogin);
-                  } else handleLogin();
-                }} fastMode={fastMode} />
-              ) : (
-                <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => handleNavigate("pbb")} onSeeAll={() => handleNavigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />
-              )}
+              {screen === "login" && <LoginScreen onLogin={() => {
+                setIsLoggingIn(true);
+
+                const startLoginSequence = () => {
+                  // ensure the "enterRight" state is flushed to the compositor
+                  // before transitioning to center — use double RAF for smoothness
+                  setSplashAnim("enterRight");
+                  requestAnimationFrame(() => requestAnimationFrame(() => setSplashAnim("center")));
+
+                  // After the splash centers, trigger the exit animation, but
+                  // defer mounting the heavy `home` screen until exit completes.
+                  setTimeout(() => {
+                    sessionStorage.setItem("loggedIn", "true");
+                    
+                    // FIX: Switch to Home screen immediately while Splash is covering the view
+                    setScreen("home");
+
+                    // Allow a frame for Home to mount, then slide Splash away to reveal it
+                    requestAnimationFrame(() => {
+                      setSplashAnim("exitRight");
+
+                      // when exit animation finishes, hide splash and cleanup
+                      setTimeout(() => {
+                        setIsLoggingIn(false);
+                        setSplashAnim("hidden");
+                      }, styles.splashExitDuration * 1000);
+                    });
+                  }, fastMode ? 50 : styles.splashCenterDuration);
+                };
+
+                // If the splash image hasn't finished preloading, wait for it first
+                if (!splashReadyRef.current) {
+                  preloadSplash().then(startLoginSequence);
+                } else startLoginSequence();
+              }} fastMode={fastMode} />}
+              {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
+              {screen === "pbb" && <PBBScreen balance={balance} onBack={() => navigate("home")} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
+              {screen === "transactions" && <TransactionsScreen onBack={() => navigate("home")} todayTxns={todayTxns} styles={styles} />}
             </div>
 
             {/* RIGHT PANEL (50% width): Shows SplashScreen */}
             <div style={{ width: '50%', height: '100%', flexShrink: 0, position: 'relative' }}>
               {/* We pass animState="center" to force the internal transform to 0,0,0 so it stays static relative to this container */}
-              {overlay === "splash" && <SplashScreen animState="center" styles={styles} style={{ position: 'absolute', width: '100%', height: '100%' }} />}
-              {overlay === "pbb" && <PBBScreen balance={balance} onBack={handleBack} onVote={handleVote} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} fastMode={fastMode} styles={styles} />}
-              {overlay === "transactions" && <TransactionsScreen onBack={handleBack} todayTxns={todayTxns} styles={styles} />}
+              {splashAnim !== "hidden" && <SplashScreen animState="center" styles={styles} style={{ position: 'absolute', width: '100%', height: '100%' }} />}
             </div>
           </div>
           
@@ -1839,7 +1829,7 @@ const handleAddTxn=(tx)=>{
   });
   setTodayTxns(filtered);
   updateDoc(doc(db,"ecbfw","shared"),{transactions:filtered});
-}} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} onLogout={()=>{ setIsLoggedIn(false); setSlidePosition(0); setOverlay(null); sessionStorage.removeItem("loggedIn"); }} />}
+}} daysLeft={daysLeft} chancesLeft={chancesLeft} maxChances={maxChances} onSavePBB={({days,chances,max}) => { setDaysLeft(days); setChancesLeft(chances); setMaxChances(max); updateDoc(doc(db,"ecbfw","shared"),{daysLeft:days,chancesLeft:chances}); }} fastMode={fastMode} onSetFastMode={setFastMode} devToolsEnabled={devToolsEnabled} onToggleDevTools={()=>setDevToolsEnabled(p=>!p)} onLogout={()=>{ setScreen("login"); }} />}
           
           {/* Transition loading overlay */}
           {devToolsEnabled && (
@@ -1886,6 +1876,11 @@ const handleAddTxn=(tx)=>{
                 }
               }}
             />
+          )}
+          {transitioning && nextScreen && (
+            <div key={nextScreen} style={{position:"absolute",inset:0,zIndex:500,background:C.bg,animation:"slideInRight 0.4s ease forwards"}}>
+              <style>{`@keyframes slideInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
+            </div>
           )}
         </div>
       </div>
