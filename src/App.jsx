@@ -1571,7 +1571,7 @@ export default function MayaApp() {
   useEffect(() => {
     // Set status bar to black immediately on mount (for splash screen)
     if (Capacitor.isNativePlatform()) {
-      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
+      NavBar.animateColors({ statusBarColor: '#000000', navBarColor: '#000000', duration: 0, darkIcons: false, darkButtons: false }).catch(() => {});
     }
 
     // Show the splash in center, then run exit animation, then mark app loaded.
@@ -1599,11 +1599,9 @@ export default function MayaApp() {
     // Make system bars follow the splash animation state so they transition
     // in sync with the visible splash/dim effect.
     if (splashAnim !== "hidden" || isLoggingIn) {
-      NavBar.setStatusBarColor({ color: '#000000', darkIcons: false }).catch(() => {});
-      NavBar.setColor({ color: '#000000', darkButtons: false }).catch(() => {});
+      NavBar.animateColors({ statusBarColor: '#000000', navBarColor: '#000000', duration: 300, darkIcons: false, darkButtons: false }).catch(() => {});
     } else {
-      NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-      NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+      NavBar.animateColors({ statusBarColor: '#ffffff', navBarColor: '#ffffff', duration: 500, darkIcons: true, darkButtons: true }).catch(() => {});
     }
   }, [splashAnim, isLoggingIn]);
 
@@ -1642,15 +1640,13 @@ export default function MayaApp() {
     if(transitioning) return;
     setNextScreen(dest);
     setTransitioning(!skipAnim);
-    NavBar.setStatusBarColor({ color: '#e8e8e8', darkIcons: true }).catch(() => {});
-    NavBar.setColor({ color: '#e8e8e8', darkButtons: true }).catch(() => {});
+    NavBar.animateColors({ statusBarColor: '#e8e8e8', navBarColor: '#e8e8e8', duration: 200, darkIcons: true, darkButtons: true }).catch(() => {});
     const delay = fastMode ? 0 : 400;
     setTimeout(()=>{
       setScreen(dest);
       setTransitioning(false);
       setNextScreen(null);
-      NavBar.setStatusBarColor({ color: '#ffffff', darkIcons: true }).catch(() => {});
-      NavBar.setColor({ color: '#ffffff', darkButtons: true }).catch(() => {});
+      NavBar.animateColors({ statusBarColor: '#ffffff', navBarColor: '#ffffff', duration: 300, darkIcons: true, darkButtons: true }).catch(() => {});
     }, delay);
   };
 
