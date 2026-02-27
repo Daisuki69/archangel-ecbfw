@@ -1664,8 +1664,7 @@ const handleAddTxn=(tx)=>{
 };
 
   // --- STEP 4: The Gatekeeper ---
-  if (isAppLoading) return <SplashScreen />;
-  if (isLoggingIn) return <SplashScreen message="‎ ‎ ‎ " />;
+  if (isAppLoading) return <SplashScreen animState={splashAnim}/>;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
@@ -1674,6 +1673,7 @@ const handleAddTxn=(tx)=>{
       <div style={{ width: "100%", maxWidth: 480, height: "100vh", background: C.white, overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
         
         <div style={{flex:1, overflow:"hidden", position:"relative"}}>
+          {splashAnim !== "hidden" && <SplashScreen animState={splashAnim}/>}
           
           {screen === "login" && <LoginScreen onLogin={() => { setIsLoggingIn(true); setTimeout(() => { setIsLoggingIn(false); sessionStorage.setItem("loggedIn","true"); navigate("home"); }, fastMode ? 0 : 5000); }} fastMode={fastMode} />}
           {screen === "home" && <HomeScreen balance={balance} todayTxns={todayTxns} onPBB={() => navigate("pbb")} onSeeAll={() => navigate("transactions")} onSettings={() => setShowSettings(true)} styles={styles} />}
