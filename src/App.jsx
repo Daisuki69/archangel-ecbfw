@@ -113,17 +113,21 @@ const DEFAULT_STYLES = {
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
 
 // --- STEP 1: Add this component at the top ---
-const SplashScreen = ({ message }) => (
+const SplashScreen = ({ animState }) => (
   <div style={{
     position: 'fixed', inset: 0, backgroundColor: '#000',
     display: 'flex', flexDirection: 'column', justifyContent: 'center',
     alignItems: 'center', zIndex: 10000,
-    paddingTop: '3vh'
-    
+    paddingTop: '3vh',
+    transform: animState === 'exitUp' ? 'translateY(-100%)' :
+               animState === 'enterRight' ? 'translateX(100%)' :
+               animState === 'center' ? 'translateX(0%)' :
+               animState === 'exitRight' ? 'translateX(100%)' : 'translateY(0%)',
+    transition: animState === 'exitUp' ? 'transform 0.08s ease-in' :
+                animState === 'center' ? 'transform 0.4s ease' :
+                animState === 'exitRight' ? 'transform 0.4s ease' : 'none',
   }}>
-    {/* Image zoomed 53% more to 300px */}
     <img src="/mayasplashscreen.jpg" alt="Maya" style={{ width: '53vh', height: 'auto' }} />
-    {message && <p style={{ color: '#2ff29e', marginTop: '20px', fontWeight: '800', fontFamily: 'sans-serif' }}>{message}</p>}
   </div>
 );
 
