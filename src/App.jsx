@@ -111,7 +111,7 @@ const DEFAULT_STYLES = {
   // Splash Animation
   splashEnterDuration: 0.4,
   splashExitDuration: 0.6,
-  splashCenterDuration: 2200,
+  splashCenterDuration: 5000,
 };
 
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
