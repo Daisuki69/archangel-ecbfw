@@ -1093,6 +1093,20 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
   const PULL_MAX=80;
   const PULL_THRESHOLD=60;
   const [tab,setTab]=useState("Wallet");
+  const [moreClicks, setMoreClicks] = useState(0);
+  const moreTimer = useRef(null);
+
+  const handleMore = () => {
+    setMoreClicks(prev => {
+      if (prev + 1 >= 5) {
+        onSettings();
+        return 0;
+      }
+      return prev + 1;
+    });
+    if (moreTimer.current) clearTimeout(moreTimer.current);
+    moreTimer.current = setTimeout(() => setMoreClicks(0), 1000);
+  };
 
   const tabs=["Wallet","Savings","Credit","Loans","Cards"];
   const shortcuts=[
@@ -1103,7 +1117,7 @@ const HomeScreen = ({balance,todayTxns,onPBB,onSeeAll,onSettings,styles=STYLES})
     {icon:"load",label:"Load"},
     {icon:"bills",label:"Bills"},
     {icon:"pbb",label:"PBB",badge:true,action:onPBB},
-    {icon:"more",label:"More"},
+    {icon:"more",label:"More",action:handleMore},
   ];
   
   const feb21Stamped = FEB21.map(tx=>({...tx, timestamp: tx.timestamp||new Date("2026-02-21").getTime()}));
@@ -1129,8 +1143,6 @@ return (
             <Ic n="user" s={18} c={C.green}/>
           </div>
           <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            {/* The Settings Button is back! */}
-            <button onClick={onSettings} style={{background:"none",border:"none",cursor:"pointer",padding:0}}><Ic n="settings" s={20} c={C.dark}/></button>
             <Ic n="chat" s={22}/>
             <div style={{position:"relative"}}>
               <Ic n="bell" s={22}/>
