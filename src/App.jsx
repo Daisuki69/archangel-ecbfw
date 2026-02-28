@@ -1480,33 +1480,35 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
         <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:9000,maxHeight:"75vh",display:"flex",flexDirection:"column",background:C.white,borderRadius:"20px 20px 0 0",boxShadow:"0 -4px 24px rgba(0,0,0,0.18)",opacity}}>
           
           {/* Header */}
-          <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div style={{borderBottom:`1px solid ${C.gray}`,flexShrink:0}}>
+            {/* Row 1: Title */}
+            <div style={{padding:"12px 18px 8px",display:"flex",alignItems:"center",gap:8}}>
               <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools {page === "login" ? "· Login" : ""}</span>
               {pendingChanges.length > 0 && (
                 <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
               )}
             </div>
-            <div style={{display:"flex",gap:8,alignItems:"center"}}>
-              <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginRight:4}}>
+            {/* Row 2: Scrollable buttons */}
+            <div style={{overflowX:"auto",display:"flex",gap:8,alignItems:"center",padding:"0 18px 10px",scrollbarWidth:"none"}}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0}}>
                 <span style={{fontSize:8,fontWeight:800,color:C.light,lineHeight:1,marginBottom:2}}>OPACITY</span>
-                <input 
-                  type="range" min="0.2" max="1" step="0.1" 
-                  value={opacity} 
+                <input
+                  type="range" min="0.2" max="1" step="0.1"
+                  value={opacity}
                   onChange={e=>setOpacity(Number(e.target.value))}
                   style={{width:50,height:4,cursor:"pointer"}}
                 />
               </div>
               {pendingChanges.length > 0 && (
                 <>
-                  <button onClick={() => { setLocalNums({}); onDiscard(); }} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
-                  <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
+                  <button onClick={() => { setLocalNums({}); onDiscard(); }} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>Discard</button>
+                  <button onClick={onCommit} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
                 </>
               )}
-              {page === "home" && <button onClick={() => setPage("login")} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#f0f0ff",color:"#4929aa",fontWeight:800,fontSize:12,cursor:"pointer"}}>🔐 Login</button>}
-              {page === "login" && <button onClick={() => setPage("home")} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>← Back</button>}
-              <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
-              <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
+              {page === "home" && <button onClick={() => setPage("login")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#f0f0ff",color:"#4929aa",fontWeight:800,fontSize:12,cursor:"pointer"}}>🔐 Login</button>}
+              {page === "login" && <button onClick={() => setPage("home")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>← Back</button>}
+              <button onClick={()=>setOpen(false)} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
+              <button onClick={onClose} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
             </div>
           </div>
 
