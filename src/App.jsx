@@ -366,7 +366,7 @@ const TxRow = ({tx, isToday, styles=STYLES}) => {
         </div>
         <div style={{textAlign:"right",flexShrink:0}}>
           <div style={{fontSize:styles.txnSubSize,color:C.light,marginBottom:styles.txnTimeGap,fontWeight:600}}>{displayTime}</div>
-          <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+          {tx.sub !== "Reset" && <div style={{fontSize:styles.txnAmountSize,fontWeight:styles.txnAmountWeight,color:tx.positive?C.green:C.dark,fontFamily:`'${styles.txnAmountFont}',sans-serif`}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>}
         </div>
       </div>
     </div>
@@ -1307,7 +1307,7 @@ return (
               </div>
               <div style={{textAlign:"right"}}>
                 <div style={{fontSize:12,color:C.light,marginBottom:2,fontWeight:600}}>{getDisplayDate(tx)}</div>
-                <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>
+                {tx.sub !== "Reset" && <div style={{fontSize:14,fontWeight:900,color:tx.positive?C.green:C.dark}}>{tx.positive?"":"-"} ₱{fmt(tx.amount)}</div>}
               </div>
             </div>
           ))}
