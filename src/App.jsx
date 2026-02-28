@@ -112,6 +112,26 @@ const DEFAULT_STYLES = {
   splashEnterDuration: 0.4,
   splashExitDuration: 0.6,
   splashCenterDuration: 5000,
+  // Login Screen
+  loginTopSpacing: "22.5vh",
+  loginHelpIconSize: 24,
+  loginHelpIconTop: 24,
+  loginHelpIconRight: 24,
+  loginLogoWidth: 149.1,
+  loginLogoMarginBottom: 19,
+  loginPasswordBoxHeight: 60,
+  loginPasswordBoxRadius: 14,
+  loginPasswordLabelSize: 12,
+  loginEyeIconSize: 20,
+  loginEyeIconRight: 14,
+  loginForgotSize: 14,
+  loginRequiredErrorSize: 12,
+  loginScreenLockRadius: 30,
+  loginScreenLockFontSize: 14.5,
+  loginSwitchAccountSize: 14,
+  loginBtnRadius: 14,
+  loginBtnFontSize: 16,
+  loginBtnPaddingY: 16.5,
 };
 
 let STYLES = { ...DEFAULT_STYLES }; // will be overridden by state
@@ -569,7 +589,7 @@ const TransactionsScreen = ({onBack, todayTxns, styles=STYLES}) => {
 };
 
 // ── LOGIN ──────────────────────────────────────────────────────────────────────
-const LoginScreen = ({onLogin, fastMode}) => {
+const LoginScreen = ({onLogin, fastMode, styles=DEFAULT_STYLES}) => {
   const [pw,setPw]=useState("");
   const [show,setShow]=useState(true);
   const [loading,setLoading]=useState(false);
@@ -632,7 +652,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 };
 
   const LoginBtn = (
-    <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"16.5px",borderRadius:14,border:"none",fontSize:16,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
+    <button onClick={handleLogin} disabled={loading} style={{width:"100%",padding:`${styles.loginBtnPaddingY}px`,borderRadius:styles.loginBtnRadius,border:"none",fontSize:styles.loginBtnFontSize,fontWeight:900,color:C.white,background:pw?C.green:"#a1dfbf",cursor:pw&&!loading?"pointer":"default",transition:"background 0.2s",opacity:loading?0.7:1}}>
       Log in
     </button>
   );
@@ -666,8 +686,8 @@ const LoginScreen = ({onLogin, fastMode}) => {
       )}
 
       {/* Top Right Help Icon */}
-      <div style={{position:"absolute", top: 24, right: 24, zIndex: 10}}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{cursor: "pointer"}}>
+      <div style={{position:"absolute", top: styles.loginHelpIconTop, right: styles.loginHelpIconRight, zIndex: 10}}>
+        <svg width={styles.loginHelpIconSize} height={styles.loginHelpIconSize} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{cursor: "pointer"}}>
           <path fillRule="evenodd" clipRule="evenodd" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12.02 8.00391C11.0291 8.00391 10.2227 8.80898 10.2227 9.78009V9.98879H8.22266V9.78009C8.22266 7.68471 9.94438 6.00391 12.02 6.00391C14.0724 6.00391 15.775 7.66591 15.775 9.73809C15.775 11.0011 15.1366 12.1785 14.0782 12.8676L12.7911 13.7054V14.4868H10.7911V12.621L12.987 11.1914C13.4785 10.8714 13.775 10.3246 13.775 9.73809C13.775 8.79018 12.9877 8.00391 12.02 8.00391ZM12.7949 16.001V18.001H10.7949V16.001H12.7949Z" fill="black"/>
         </svg>
       </div>
@@ -684,12 +704,12 @@ const LoginScreen = ({onLogin, fastMode}) => {
         {/* Top Block: Logo, Number, Name, Password Box, Forgot Password */}
         <div style={{
           display:"flex", flexDirection:"column", alignItems:"center", width: "100%", 
-          marginTop: isKeyboardOpen ? "100px" : "22.5vh",
+          marginTop: isKeyboardOpen ? "100px" : styles.loginTopSpacing,
           transition: "margin-top 0.3s ease"
         }}>
           
-          <div style={{marginBottom: 19}}>
-            <svg width="149.1" height="44.1" viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div style={{marginBottom: styles.loginLogoMarginBottom}}>
+            <svg width={styles.loginLogoWidth} height={styles.loginLogoWidth * (44.1/149.1)} viewBox="0 0 71 21" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15.9846 0.5C14.3885 0.499563 12.8556 1.13491 11.7139 2.27011L12.3328 3.46698L12.079 3.67486C11.5427 2.72918 10.774 1.94165 9.8484 1.38948C8.92281 0.837307 7.87211 0.53947 6.79931 0.525193C3.43217 0.525193 0.708736 3.52368 0.708736 7.0387V14.5979C0.706114 14.6623 0.716653 14.7266 0.739676 14.7866C0.7627 14.8467 0.797719 14.9012 0.842509 14.9468C0.887299 14.9924 0.940883 15.028 0.999893 15.0515C1.0589 15.0749 1.12206 15.0856 1.18535 15.0829H3.63024C3.68929 15.0829 3.74773 15.071 3.80221 15.0478C3.85669 15.0246 3.90608 14.9907 3.94754 14.9479C3.98901 14.9051 4.02174 14.8543 4.04377 14.7986C4.06579 14.7428 4.0767 14.6832 4.07588 14.6231V6.95681C4.07588 5.21189 5.11571 3.80715 6.88594 3.80715C8.53856 3.80715 9.72078 5.06701 9.72078 6.92531V13.2246C9.71657 13.2871 9.72492 13.3498 9.74534 13.4088C9.76576 13.4679 9.79783 13.5221 9.83956 13.5681C9.88128 13.6141 9.93178 13.6509 9.98799 13.6763C10.0442 13.7018 10.1049 13.7153 10.1665 13.716H12.4999C12.5614 13.7153 12.6222 13.7018 12.6784 13.6763C12.7346 13.6509 12.7851 13.6141 12.8268 13.5681C12.8685 13.5221 12.9006 13.4679 12.921 13.4088C12.9414 13.3498 12.9498 13.2871 12.9456 13.2246V6.92531C12.9182 6.52302 12.973 6.11931 13.1067 5.73969C13.2403 5.36006 13.4499 5.01277 13.7221 4.71975C13.9943 4.42672 14.3232 4.19434 14.6882 4.03726C15.0531 3.88018 15.4461 3.80182 15.8423 3.80715C17.6063 3.80715 18.5905 5.23709 18.5905 6.95681V14.6105C18.5953 14.7352 18.6478 14.8532 18.7369 14.9391C18.8259 15.025 18.9444 15.0721 19.0671 15.0703H21.481C21.5445 15.074 21.6081 15.0639 21.6676 15.0409C21.727 15.0178 21.781 14.9822 21.826 14.9364C21.871 14.8906 21.906 14.8356 21.9286 14.7751C21.9513 14.7146 21.9612 14.6499 21.9576 14.5853V7.0261C21.9329 3.49848 19.358 0.5 15.9846 0.5Z" fill="#00A651"/>
               <path d="M38.1396 0.772125H35.8861C35.8234 0.767832 35.7606 0.776377 35.7014 0.797218C35.6423 0.818058 35.5883 0.850743 35.5427 0.893192C35.4971 0.935641 35.461 0.986927 35.4367 1.04381C35.4124 1.10069 35.4003 1.16191 35.4013 1.2236V1.52665L36.2008 2.76357L35.9868 2.97385C35.3251 2.20998 34.5048 1.59404 33.5808 1.16735C32.6569 0.740672 31.6507 0.513125 30.6299 0.5C28.6616 0.5 26.7739 1.26823 25.382 2.63568C23.9902 4.00314 23.2083 5.8578 23.2083 7.79167C23.2083 9.72554 23.9902 11.5802 25.382 12.9476C26.7739 14.3151 28.6616 15.0833 30.6299 15.0833C31.6548 15.0725 32.6654 14.8461 33.5938 14.4194C34.5221 13.9927 35.3467 13.3755 36.012 12.6095L36.2008 12.7579L35.4013 14.0443V14.3288C35.4005 14.3916 35.4125 14.4539 35.4365 14.512C35.4606 14.5702 35.4962 14.623 35.5414 14.6674C35.5866 14.7118 35.6404 14.7468 35.6996 14.7705C35.7587 14.7941 35.8222 14.8059 35.8861 14.805H38.1396C38.2042 14.8086 38.2688 14.7987 38.3293 14.7761C38.3897 14.7534 38.4447 14.7185 38.4904 14.6735C38.5362 14.6286 38.5718 14.5746 38.5948 14.5152C38.6179 14.4558 38.6279 14.3923 38.6243 14.3288V1.2236C38.6273 1.16137 38.6167 1.09924 38.593 1.04144C38.5694 0.983631 38.5333 0.931513 38.4873 0.888653C38.4413 0.845792 38.3864 0.813195 38.3264 0.793084C38.2664 0.772974 38.2027 0.765823 38.1396 0.772125ZM30.6299 11.9354C29.5097 11.9354 28.4353 11.4981 27.6432 10.7199C26.8511 9.94164 26.4061 8.8861 26.4061 7.78548C26.4061 6.68486 26.8511 5.62933 27.6432 4.85108C28.4353 4.07283 29.5097 3.63561 30.6299 3.63561C31.7501 3.63561 32.8244 4.07283 33.6166 4.85108C34.4087 5.62933 34.8537 6.68486 34.8537 7.78548C34.8537 8.8861 34.4087 9.94164 33.6166 10.7199C32.8244 11.4981 31.7501 11.9354 30.6299 11.9354Z" fill="#00A651"/>
               <path d="M69.8062 0.772125H67.5527C67.49 0.767832 67.4272 0.776377 67.3681 0.797218C67.309 0.818058 67.2549 0.850743 67.2093 0.893192C67.1637 0.935641 67.1276 0.986927 67.1033 1.04381C67.079 1.10069 67.067 1.16191 67.068 1.2236V1.52665L67.8674 2.76357L67.6534 2.97385C66.9917 2.20998 66.1714 1.59404 65.2475 1.16735C64.3235 0.740672 63.3174 0.513125 62.2965 0.5C60.3282 0.5 58.4405 1.26823 57.0487 2.63568C55.6569 4.00314 54.875 5.8578 54.875 7.79167C54.875 9.72554 55.6569 11.5802 57.0487 12.9476C58.4405 14.3151 60.3282 15.0833 62.2965 15.0833C63.3214 15.0725 64.332 14.8461 65.2604 14.4194C66.1888 13.9927 67.0133 13.3755 67.6786 12.6095L67.8674 12.7579L67.068 14.0443V14.3288C67.0672 14.3916 67.0791 14.4539 67.1032 14.512C67.1272 14.5702 67.1629 14.623 67.2081 14.6674C67.2533 14.7118 67.307 14.7468 67.3662 14.7705C67.4254 14.7941 67.4888 14.8059 67.5527 14.805H69.8062C69.8708 14.8086 69.9355 14.7987 69.9959 14.7761C70.0564 14.7534 70.1113 14.7185 70.1571 14.6735C70.2028 14.6286 70.2384 14.5746 70.2615 14.5152C70.2845 14.4558 70.2946 14.3923 70.2909 14.3288V1.2236C70.294 1.16137 70.2833 1.09924 70.2597 1.04144C70.236 0.983631 70.2 0.931513 70.154 0.888653C70.108 0.845792 70.053 0.813195 69.993 0.793084C69.933 0.772974 69.8693 0.765823 69.8062 0.772125ZM62.2965 11.9354C61.1763 11.9354 60.102 11.4981 59.3099 10.7199C58.5177 9.94164 58.0727 8.8861 58.0727 7.78548C58.0727 6.68486 58.5177 5.62933 59.3099 4.85108C60.102 4.07283 61.1763 3.63561 62.2965 3.63561C63.4168 3.63561 64.4911 4.07283 65.2832 4.85108C66.0753 5.62933 66.5204 6.68486 66.5204 7.78548C66.5204 8.8861 66.0753 9.94164 65.2832 10.7199C64.4911 11.4981 63.4168 11.9354 62.2965 11.9354Z" fill="#00A651"/>
@@ -701,8 +721,8 @@ const LoginScreen = ({onLogin, fastMode}) => {
           
           <div style={{width:"100%", marginBottom: showRequired ? 4 : 24}}>
             {/* 👇 Changed background to #f9f9f9 and default border to transparent 👇 */}
-            <div style={{position:"relative", height: "60px", background:"#f9f9f9", borderRadius:14, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
-              <div style={{fontSize:12,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
+            <div style={{position:"relative", height: `${styles.loginPasswordBoxHeight}px`, background:"#f9f9f9", borderRadius:styles.loginPasswordBoxRadius, border: `1.5px solid ${boxBorderColor}`,  transition:"all 0.2s", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: "16px"}}>
+              <div style={{fontSize:styles.loginPasswordLabelSize,color:labelColor,fontWeight:800,marginTop:"0px",marginBottom:"4px",transition:"color 0.2s"}}>Password</div>
               <div style={{display: "flex", alignItems: "center", paddingRight: "50px"}}>
                 <input
                   ref={inputRef}
@@ -720,17 +740,17 @@ const LoginScreen = ({onLogin, fastMode}) => {
                   <span className="fake-caret" />
                 )}
               </div>
-              <button onClick={()=>setShow(!show)} style={{position:"absolute",right:14,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <Ic n={show?"eyeOff":"eye"} s={20} c={C.med}/>
+              <button onClick={()=>setShow(!show)} style={{position:"absolute",right:styles.loginEyeIconRight,top:0,bottom:0,margin:"auto",height:"100%",background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <Ic n={show?"eyeOff":"eye"} s={styles.loginEyeIconSize} c={C.med}/>
               </button>
             </div>
           </div>
           
           {showRequired && (
-            <div style={{width:"100%",color:"#d08893",fontSize:12,fontWeight:700,marginBottom:10,paddingLeft:8,marginTop:4}}>Password is required</div>
+            <div style={{width:"100%",color:"#d08893",fontSize:styles.loginRequiredErrorSize,fontWeight:700,marginBottom:10,paddingLeft:8,marginTop:4}}>Password is required</div>
           )}
           
-          <div style={{color:C.green,fontSize:14,fontWeight:800,cursor:"pointer", marginBottom: 24}}>Forgot your password?</div>
+          <div style={{color:C.green,fontSize:styles.loginForgotSize,fontWeight:800,cursor:"pointer", marginBottom: 24}}>Forgot your password?</div>
         </div>
 
         {/* The Spacer: Giant gap when closed, totally disappears when open so the list connects seamlessly */}
@@ -738,7 +758,7 @@ const LoginScreen = ({onLogin, fastMode}) => {
 
         {/* Bottom Links: They sit at the bottom naturally, allowing them to slide up behind the overlay */}
         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width: "100%" }}>
-          <button style={{padding:"12px 24px",borderRadius:30,border:"none",background:"#f2f2f2",color:C.dark,fontSize:14.5,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8, marginBottom: 24}}>
+          <div style={{fontSize:styles.loginSwitchAccountSize,color:C.med, marginBottom: isKeyboardOpen ? 0 : 24}}>Not you?
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
               <path d="M9 14l2 2 4-4"></path>
@@ -1387,6 +1407,7 @@ const NumberInput = ({val, isPending, onStyleChange, keyName}) => {
 const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDiscard, onHide, onClose}) => {
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
+  const [page, setPage] = useState("home");
   const [localNums, setLocalNums] = useState({});
   const [focusedKey, setFocusedKey] = useState(null);
   const [keyboardUp, setKeyboardUp] = useState(false);
@@ -1461,7 +1482,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
           {/* Header */}
           <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.gray}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools</span>
+              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools {page === "login" ? "· Login" : ""}</span>
               {pendingChanges.length > 0 && (
                 <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
               )}
@@ -1482,6 +1503,8 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                   <button onClick={onCommit} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
                 </>
               )}
+              {page === "home" && <button onClick={() => setPage("login")} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#f0f0ff",color:"#4929aa",fontWeight:800,fontSize:12,cursor:"pointer"}}>🔐 Login</button>}
+              {page === "login" && <button onClick={() => setPage("home")} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>← Back</button>}
               <button onClick={()=>setOpen(false)} style={{padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
               <button onClick={onClose} style={{padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
             </div>
@@ -1492,7 +1515,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
             ref={listRef}
             onScroll={(e) => (scrollPos.current = e.target.scrollTop)}
             style={{overflowY:"auto",padding:"12px 18px 32px"}}>
-            {Object.entries(styles).map(([key, val]) => {
+            {Object.entries(styles).filter(([key]) => page === "login" ? key.startsWith("login") : !key.startsWith("login")).map(([key, val]) => {
               const isPending = pendingChanges.some(c => c.key === key);
               const isColor = typeof val === "string" && val.startsWith("#");
               const isNumber = typeof val === "number";
@@ -1788,7 +1811,7 @@ const handleAddTxn=(tx)=>{
             {/* LEFT PANEL (50% width): Shows LoginScreen or HomeScreen */}
             <div style={{ width: '50%', height: '100%', flexShrink: 0, position: 'relative' }}>
               {!isLoggedIn ? (
-                <LoginScreen onLogin={() => {
+                <LoginScreen styles={styles} onLogin={() => {
                   if (!splashReadyRef.current) {
                     preloadSplash().then(handleLogin);
                   } else handleLogin();
