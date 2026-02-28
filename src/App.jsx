@@ -16,11 +16,6 @@ const C = {
 const DEFAULT_STYLES = {
   // Shortcut grid
   headerPadding: "20px 25px",
-  headerIconGap: 20,
-  headerIconSize: 26,
-  headerIconThickness: 2.5,
-  headerIconsX: 0,
-  headerIconsY: 0,
   shortcutIconSize: 56,
   shortcutIconRadius: 14,
   shortcutIconBg: "#f4f6f5",
@@ -93,6 +88,12 @@ const DEFAULT_STYLES = {
   floatingNavRadius: 15,
   floatingNavInnerPadding: "15.7px 40px",
   floatingNavMaxWidth: 265,
+  // Header Icons
+  headerIconSize: 22,
+  headerIconStrokeWidth: 2,
+  headerIconGap: 16,
+  headerIconX: 0,
+  headerIconY: 0,
   // Eye Button
   eyeIconSize: 25,
   eyeIconMarginTop: -22,
@@ -1147,10 +1148,10 @@ return (
           <div style={{width:36,height:36,borderRadius:"50%",background:"#e0f5ea",display:"flex",alignItems:"center",justifyContent:"center",marginTop:styles.profileIconMarginTop,marginLeft:styles.profileIconMarginLeft}}>
             <Ic n="user" s={18} c={C.green}/>
           </div>
-          <div style={{display:"flex",gap:16,alignItems:"center"}}>
-            <Ic n="chat" s={22}/>
+          <div style={{display:"flex",gap:styles.headerIconGap,alignItems:"center",transform:`translate(${styles.headerIconX}px, ${styles.headerIconY}px)`}}>
+            <Ic n="chat" s={styles.headerIconSize} sw={styles.headerIconStrokeWidth}/>
             <div style={{position:"relative"}}>
-              <Ic n="bell" s={22}/>
+              <Ic n="bell" s={styles.headerIconSize} sw={styles.headerIconStrokeWidth}/>
               <div style={{position:"absolute",top:-6,right:-8,background:C.green,borderRadius:10,padding:"2px 4px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"white",border:"2px solid white"}}>90</div>
             </div>
           </div>
