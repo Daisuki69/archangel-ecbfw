@@ -114,6 +114,7 @@ const DEFAULT_STYLES = {
   splashCenterDuration: 5000,
   // Login Screen
   loginTopSpacing: "22.5vh",
+  loginTopSpacingKeyboard: "100px",
   loginHelpIconSize: 24,
   loginHelpIconTop: 24,
   loginHelpIconRight: 24,
@@ -704,7 +705,7 @@ const LoginScreen = ({onLogin, fastMode, styles=DEFAULT_STYLES}) => {
         {/* Top Block: Logo, Number, Name, Password Box, Forgot Password */}
         <div style={{
           display:"flex", flexDirection:"column", alignItems:"center", width: "100%", 
-          marginTop: isKeyboardOpen ? "100px" : styles.loginTopSpacing,
+          marginTop: isKeyboardOpen ? styles.loginTopSpacingKeyboard : styles.loginTopSpacing,
           transition: "margin-top 0.3s ease"
         }}>
           
