@@ -62,6 +62,10 @@ const DEFAULT_STYLES = {
   pbbNotchLabelWeight: 700,
   pbbNotchStatFont: "CerebriBook",
   pbbNotchLabelFont: "CerebriBook",
+  pbbNotchNumSize: 22,
+  pbbNotchNumFont: "JekoMedium",
+  pbbNotchNumWeight: 900,
+  pbbChancesUnlimited: 0,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -381,7 +385,7 @@ const DateChip = ({label, styles=STYLES}) => (
  const SettingsModal = ({balance, onClose, onSaveBalance, onAddTxn, onClearToday, daysLeft, chancesLeft, maxChances, onSavePBB, fastMode, onSetFastMode, devToolsEnabled, onToggleDevTools, onLogout}) => {
   const [view, setView] = useState("main");
   const [newBal, setNewBal] = useState(String(balance));
-  const [form, setForm] = useState({label:"",amount:"",time:`${String(new Date().getHours()).padStart(2,"0")}:${String(new Date().getMinutes()).padStart(2,"0")}`,date:new Date().toISOString().split("T")[0],positive:false});
+  const [form, setForm] = useState({label:"",amount:"",time:`${String(new Date().getHours()).padStart(2,"0")}:${String(new Date().getMinutes()).padStart(2,"0")}`,date:new Date().toISOString().split("T")[0],positive:false,sub:""});
   const [newDays, setNewDays] = useState(String(daysLeft));
   const [newChances, setNewChances] = useState(String(chancesLeft));
   const [newMax, setNewMax] = useState(String(maxChances));
@@ -492,10 +496,22 @@ const DateChip = ({label, styles=STYLES}) => (
           <input style={iStyle} type="time" value={form.time} onChange={e=>setForm({...form,time:e.target.value})}/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Type</label>
           <div style={{display:"flex",gap:10,marginTop:8}}>
-            {[{v:false,l:"Purchased (deduct)"},{v:true,l:"Received (add)"}].map(o=>(
-              <div key={String(o.v)} onClick={()=>setForm({...form,positive:o.v})}
+            {[{v:false,l:"Deduct"},{v:true,l:"Add"}].map(o=>(
+              <div key={String(o.v)} onClick={()=>setForm({...form,positive:o.v,sub:""})}
                 style={{flex:1,padding:"10px 6px",borderRadius:10,border:`2px solid ${form.positive===o.v?C.green:C.gray}`,background:form.positive===o.v?"#e6f9f0":C.white,textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:800,color:form.positive===o.v?C.green:C.med}}>
                 {o.l}
+              </div>
+            ))}
+          </div>
+          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Sub Label</label>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:8}}>
+            {(form.positive
+              ? ["Received money from"]
+              : ["Purchased on","Sent money via","Reset"]
+            ).map(s=>(
+              <div key={s} onClick={()=>setForm({...form,sub:s})}
+                style={{padding:"8px 14px",borderRadius:10,border:`2px solid ${form.sub===s?C.green:C.gray}`,background:form.sub===s?"#e6f9f0":C.white,cursor:"pointer",fontSize:12,fontWeight:800,color:form.sub===s?C.green:C.med}}>
+                {s}
               </div>
             ))}
           </div>
@@ -507,7 +523,8 @@ const DateChip = ({label, styles=STYLES}) => (
             const txDate = base.getTime();
             const h12 = h%12||12, ampm = h>=12?"PM":"AM";
             const timeLabel = `${String(h12).padStart(2,"0")}:${String(m).padStart(2,"0")} ${ampm}`;
-            onAddTxn({id:"m"+Date.now(),label:form.label,time:timeLabel,timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.positive?"Received money from":"Purchased on"});
+            const autoSub = form.positive ? "Received money from" : "Purchased on";
+            onAddTxn({id:"m"+Date.now(),label:form.label,time:timeLabel,timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.sub||autoSub});
             onClose();
           }}>Add Transaction</button>
           <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
@@ -862,12 +879,27 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
         {/* Changed borderRadius to 8 for a boxier look, and padding to 24px for more height */}
         <div style={{ background: C.white, borderRadius: styles.pbbNotchRadius, display: "flex", padding: `${styles.pbbNotchPaddingY}px 0`, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", border: `1px solid ${C.gray}` }}>
           <div style={{ flex: 1, textAlign: "center", borderRight: `1px solid ${C.gray}` }}>
-            <div style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{daysLeft} {daysLeft === 1 ? "day" : "days"}</div>
-            <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>before voting ends</div>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4 }}>
+              <span style={{ fontSize: 14, marginRight: 1 }}>🗓️</span>
+              <span style={{ fontSize: styles.pbbNotchNumSize, fontWeight: styles.pbbNotchNumWeight, color: C.dark, fontFamily: `'${styles.pbbNotchNumFont}', sans-serif` }}>{daysLeft}</span>
+              <span style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{daysLeft === 1 ? "day" : "days"}</span>
+            </div>
+            <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>{daysLeft === 0 ? "voting ends today" : "before voting ends"}</div>
           </div>
           <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>{chancesLeft}/{maxChances}</div>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4 }}>
+              <span style={{ fontSize: 14, marginRight: 1 }}>🎟️</span>
+              {styles.pbbChancesUnlimited === 1 ? (
+                <span style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>unlimited</span>
+              ) : (
+                <>
+                  <span style={{ fontSize: styles.pbbNotchNumSize, fontWeight: styles.pbbNotchNumWeight, color: C.dark, fontFamily: `'${styles.pbbNotchNumFont}', sans-serif` }}>{chancesLeft}</span>
+                  <span style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>/{maxChances}</span>
+                </>
+              )}
+            </div>
             <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>chances left to vote</div>
+            {styles.pbbChancesUnlimited === 1 && <div style={{ fontSize: styles.pbbNotchLabelSize - 1, color: C.light, fontWeight: styles.pbbNotchLabelWeight, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>limited time only</div>}
           </div>
         </div>
       </div>
@@ -1409,6 +1441,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
   const [open, setOpen] = useState(false);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = useState("home");
+  const pageLabels = { home: "🏠 Home", login: "🔐 Login", pbb: "🗳️ PBB", txn: "📋 Txns" };
   const [localNums, setLocalNums] = useState({});
   const [focusedKey, setFocusedKey] = useState(null);
   const [keyboardUp, setKeyboardUp] = useState(false);
@@ -1484,7 +1517,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
           <div style={{borderBottom:`1px solid ${C.gray}`,flexShrink:0}}>
             {/* Row 1: Title */}
             <div style={{padding:"12px 18px 8px",display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools {page === "login" ? "· Login" : ""}</span>
+              <span style={{fontWeight:900,fontSize:15}}>🛠️ DevTools {page !== "home" ? `· ${pageLabels[page]}` : ""}</span>
               {pendingChanges.length > 0 && (
                 <span style={{background:"#e74c3c",color:"white",borderRadius:10,padding:"2px 8px",fontSize:11,fontWeight:900}}>{pendingChanges.length} pending</span>
               )}
@@ -1506,8 +1539,12 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                   <button onClick={onCommit} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.green,color:"white",fontWeight:800,fontSize:12,cursor:"pointer"}}>💾 Save</button>
                 </>
               )}
-              {page === "home" && <button onClick={() => setPage("login")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#f0f0ff",color:"#4929aa",fontWeight:800,fontSize:12,cursor:"pointer"}}>🔐 Login</button>}
-              {page === "login" && <button onClick={() => setPage("home")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>← Back</button>}
+              {page === "home" && <>
+                <button onClick={() => setPage("login")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#f0f0ff",color:"#4929aa",fontWeight:800,fontSize:12,cursor:"pointer"}}>🔐 Login</button>
+                <button onClick={() => setPage("pbb")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#fff3e0",color:"#e65100",fontWeight:800,fontSize:12,cursor:"pointer"}}>🗳️ PBB</button>
+                <button onClick={() => setPage("txn")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#e8f5e9",color:"#2e7d32",fontWeight:800,fontSize:12,cursor:"pointer"}}>📋 Txns</button>
+              </>}
+              {page !== "home" && <button onClick={() => setPage("home")} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>← Back</button>}
               <button onClick={()=>setOpen(false)} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:C.gray,color:C.dark,fontWeight:800,fontSize:12,cursor:"pointer"}}>— Min</button>
               <button onClick={onClose} style={{flexShrink:0,padding:"6px 12px",borderRadius:10,border:"none",background:"#fee",color:"#e74c3c",fontWeight:800,fontSize:12,cursor:"pointer"}}>✕</button>
             </div>
@@ -1518,7 +1555,12 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
             ref={listRef}
             onScroll={(e) => (scrollPos.current = e.target.scrollTop)}
             style={{overflowY:"auto",padding:"12px 18px 32px"}}>
-            {Object.entries(styles).filter(([key]) => page === "login" ? key.startsWith("login") : !key.startsWith("login")).map(([key, val]) => {
+            {Object.entries(styles).filter(([key]) => {
+              if (page === "login") return key.startsWith("login");
+              if (page === "pbb") return key.startsWith("pbb");
+              if (page === "txn") return key.startsWith("txn") || key.startsWith("datePill");
+              return !key.startsWith("login") && !key.startsWith("pbb") && !key.startsWith("txn") && !key.startsWith("datePill");
+            }).map(([key, val]) => {
               const isPending = pendingChanges.some(c => c.key === key);
               const isColor = typeof val === "string" && val.startsWith("#");
               const isNumber = typeof val === "number";
