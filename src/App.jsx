@@ -16,6 +16,11 @@ const C = {
 const DEFAULT_STYLES = {
   // Shortcut grid
   headerPadding: "20px 25px",
+  headerIconGap: 20,
+  headerIconSize: 26,
+  headerIconThickness: 2.5,
+  headerIconsX: 0,
+  headerIconsY: 0,
   shortcutIconSize: 56,
   shortcutIconRadius: 14,
   shortcutIconBg: "#f4f6f5",
@@ -258,8 +263,8 @@ const GlobalStyle = () => (
 
 const fmt = (n) => Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-const Ic = ({n,s=22,c=C.dark}) => {
-  const p = {stroke:c,fill:"none",strokeWidth:"2",strokeLinecap:"round",strokeLinejoin:"round"};
+const Ic = ({n,s=22,c=C.dark,sw=2}) => {
+  const p = {stroke:c,fill:"none",strokeWidth:sw,strokeLinecap:"round",strokeLinejoin:"round"};
   const m = {
     bank: <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path fillRule="evenodd" clipRule="evenodd" d="M12.4741 1.31486C12.1781 1.15546 11.8219 1.15546 11.5259 1.31486L1.77587 6.56522C1.45198 6.73964 1.25 7.07781 1.25 7.44568V9.1958C1.25 9.46102 1.35536 9.71537 1.54289 9.90291C1.73043 10.0904 1.98478 10.1958 2.25 10.1958H3.45569V17.8398C3.45569 18.3921 3.9034 18.8398 4.45569 18.8398H19.5427C20.095 18.8398 20.5427 18.3921 20.5427 17.8398V10.1958H21.75C22.3023 10.1958 22.75 9.74809 22.75 9.1958V7.44568C22.75 7.07781 22.548 6.73964 22.2241 6.56522L12.4741 1.31486ZM5.45569 16.8398V10.1958H8.48474V16.8398H5.45569ZM10.4847 16.8398V10.1958H13.5138V16.8398H10.4847ZM15.5138 16.8398V10.1958H18.5427V16.8398H15.5138Z" fill={c}/><path d="M22.75 20.8049H1.25V22.8049H22.75V20.8049Z" fill={c}/></svg>,
     raffle: <svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>,
