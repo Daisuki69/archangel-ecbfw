@@ -65,7 +65,7 @@ const DEFAULT_STYLES = {
   pbbNotchNumSize: 22,
   pbbNotchNumFont: "JekoMedium",
   pbbNotchNumWeight: 900,
-  pbbChancesUnlimited: 0,
+  pbbChancesUnlimited: false,
   // Fonts
   bodyFont: "CerebriBook",
   balanceFont: "JekoMedium",
@@ -889,7 +889,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
           <div style={{ flex: 1, textAlign: "center" }}>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4 }}>
               <span style={{ fontSize: 14, marginRight: 1 }}>🎟️</span>
-              {styles.pbbChancesUnlimited === 1 ? (
+              {styles.pbbChancesUnlimited ? (
                 <span style={{ fontSize: styles.pbbNotchStatSize, fontWeight: styles.pbbNotchStatWeight, color: C.dark, fontFamily: `'${styles.pbbNotchStatFont}', sans-serif` }}>unlimited</span>
               ) : (
                 <>
@@ -899,7 +899,7 @@ const PBBScreen = ({balance,onBack,onVote,daysLeft,chancesLeft,maxChances,fastMo
               )}
             </div>
             <div style={{ fontSize: styles.pbbNotchLabelSize, color: C.med, fontWeight: styles.pbbNotchLabelWeight, marginTop: 2, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>chances left to vote</div>
-            {styles.pbbChancesUnlimited === 1 && <div style={{ fontSize: styles.pbbNotchLabelSize - 1, color: C.light, fontWeight: styles.pbbNotchLabelWeight, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>limited time only</div>}
+            {styles.pbbChancesUnlimited && <div style={{ fontSize: styles.pbbNotchLabelSize - 1, color: C.light, fontWeight: styles.pbbNotchLabelWeight, fontFamily: `'${styles.pbbNotchLabelFont}', sans-serif` }}>limited time only</div>}
           </div>
         </div>
       </div>
@@ -1566,6 +1566,7 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
               const isNumber = typeof val === "number";
               const isFont = typeof val === "string" && key.toLowerCase().includes("font");
               const isText = typeof val === "string" && !val.startsWith("#") && !isFont;
+              const isBool = typeof val === "boolean";
 
               return (
                 <div key={key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${C.gray}`}}>
@@ -1574,6 +1575,11 @@ const DevToolsPanel = ({styles, onStyleChange, pendingChanges, onCommit, onDisca
                     <div style={{fontSize:10,color:C.light,marginTop:2}}>{Number.isNaN(val) ? "..." : String(val)}</div>
                   </div>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    {isBool && (
+                      <div onClick={() => onStyleChange(key, !val)} style={{width:44,height:24,borderRadius:12,background:val?C.green:C.gray,cursor:"pointer",position:"relative",transition:"background 0.2s",flexShrink:0}}>
+                        <div style={{position:"absolute",top:3,left:val?22:3,width:18,height:18,borderRadius:"50%",background:C.white,transition:"left 0.2s"}}/>
+                      </div>
+                    )}
                     {isColor && (
                       <input type="color" value={val}
                         onChange={e=>onStyleChange(key, e.target.value)}
