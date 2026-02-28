@@ -487,27 +487,31 @@ const DateChip = ({label, styles=STYLES}) => (
 
         {view==="addTxn" && <>
           <label style={{fontSize:13,fontWeight:800,color:C.med}}>Transaction Label</label>
-          <input style={iStyle} value={form.label} onChange={e=>setForm({...form,label:e.target.value})} placeholder="e.g. PBB Save Princess x500"/>
-          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (₱)</label>
-          <input style={iStyle} type="number" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="e.g. 500"/>
+          <input style={{...iStyle, background: form.sub==="Reset" ? C.gray : iStyle.background}} readOnly={form.sub==="Reset"} value={form.sub==="Reset" ? "Password" : form.label} onChange={e=>setForm({...form,label:e.target.value})} placeholder="e.g. PBB Save Princess x500"/>
+          {form.sub !== "Reset" && <>
+            <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Amount (₱)</label>
+            <input style={iStyle} type="number" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="e.g. 500"/>
+          </>}
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Date</label>
           <input style={iStyle} type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/>
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Time</label>
           <input style={iStyle} type="time" value={form.time} onChange={e=>setForm({...form,time:e.target.value})}/>
-          <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Type</label>
-          <div style={{display:"flex",gap:10,marginTop:8}}>
-            {[{v:false,l:"Deduct"},{v:true,l:"Add"}].map(o=>(
-              <div key={String(o.v)} onClick={()=>setForm({...form,positive:o.v,sub:""})}
-                style={{flex:1,padding:"10px 6px",borderRadius:10,border:`2px solid ${form.positive===o.v?C.green:C.gray}`,background:form.positive===o.v?"#e6f9f0":C.white,textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:800,color:form.positive===o.v?C.green:C.med}}>
-                {o.l}
-              </div>
-            ))}
-          </div>
+          {form.sub !== "Reset" && <>
+            <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Type</label>
+            <div style={{display:"flex",gap:10,marginTop:8}}>
+              {[{v:false,l:"Deduct"},{v:true,l:"Add"}].map(o=>(
+                <div key={String(o.v)} onClick={()=>setForm({...form,positive:o.v,sub:""})}
+                  style={{flex:1,padding:"10px 6px",borderRadius:10,border:`2px solid ${form.positive===o.v?C.green:C.gray}`,background:form.positive===o.v?"#e6f9f0":C.white,textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:800,color:form.positive===o.v?C.green:C.med}}>
+                  {o.l}
+                </div>
+              ))}
+            </div>
+          </>}
           <label style={{fontSize:13,fontWeight:800,color:C.med,marginTop:14,display:"block"}}>Sub Label</label>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginTop:8}}>
             {(form.positive
               ? ["Received money from"]
-              : ["Purchased on","Sent money via","Reset"]
+              : ["Purchased on","Sent money via","Sent money to","Reset"]
             ).map(s=>(
               <div key={s} onClick={()=>setForm({...form,sub:s})}
                 style={{padding:"8px 14px",borderRadius:10,border:`2px solid ${form.sub===s?C.green:C.gray}`,background:form.sub===s?"#e6f9f0":C.white,cursor:"pointer",fontSize:12,fontWeight:800,color:form.sub===s?C.green:C.med}}>
@@ -516,7 +520,8 @@ const DateChip = ({label, styles=STYLES}) => (
             ))}
           </div>
           <button style={btnPrimary} onClick={()=>{
-            if(!form.label||!form.amount) return;
+            const isReset = form.sub === "Reset";
+            if(!isReset && (!form.label||!form.amount)) return;
             const [h,m] = (form.time||"00:00").split(":").map(Number);
             const base = form.date ? new Date(form.date) : new Date();
             base.setHours(h,m,0,0);
@@ -524,7 +529,10 @@ const DateChip = ({label, styles=STYLES}) => (
             const h12 = h%12||12, ampm = h>=12?"PM":"AM";
             const timeLabel = `${String(h12).padStart(2,"0")}:${String(m).padStart(2,"0")} ${ampm}`;
             const autoSub = form.positive ? "Received money from" : "Purchased on";
-            onAddTxn({id:"m"+Date.now(),label:form.label,time:timeLabel,timestamp:txDate,amount:parseFloat(form.amount)||0,positive:form.positive,sub:form.sub||autoSub});
+            const label = isReset ? "Password" : form.label;
+            const amount = isReset ? 0 : parseFloat(form.amount)||0;
+            const positive = isReset ? false : form.positive;
+            onAddTxn({id:"m"+Date.now(),label,time:timeLabel,timestamp:txDate,amount,positive,sub:form.sub||autoSub});
             onClose();
           }}>Add Transaction</button>
           <button style={btnGray} onClick={()=>setView("main")}>← Back</button>
