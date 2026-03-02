@@ -675,7 +675,7 @@ const LoginScreen = ({onLogin, fastMode, styles=DEFAULT_STYLES}) => {
   const delay = fastMode ? 0 : 500 + Math.random() * 1000;
   setTimeout(() => {
     setLoading(false);
-    if (pw === "Carl123__--") {
+    if (pw === "1234567890") {
       onLogin();
     } else {
       setError(true);
